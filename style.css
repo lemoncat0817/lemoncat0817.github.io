@@ -35,6 +35,14 @@
     background: rgb(0, 189, 207);
 }
 
+.level3 .skill {
+    font-size: 100px;
+}
+
+.skillTitle {
+    width: 200px;
+}
+
 .githubLogo:hover {
     opacity: 0.5;
 }
@@ -54,6 +62,10 @@
     .level2 .portfolio {
         font-size: 90px;
     }
+
+    .level3 .skill {
+        font-size: 90px;
+    }
 }
 
 /* BreakPoints lg */
@@ -68,6 +80,10 @@
     }
 
     .level2 .portfolio {
+        font-size: 80px;
+    }
+
+    .level3 .skill {
         font-size: 80px;
     }
 }
@@ -95,6 +111,10 @@
     .level2 .portfolioTitle {
         font-size: 45px;
     }
+
+    .level3 .skill {
+        font-size: 70px;
+    }
 }
 
 /* BreakPoints sm */
@@ -120,6 +140,14 @@
     .level2 .portfolioTitle {
         font-size: 40px;
     }
+
+    .level3 .skill {
+        font-size: 60px;
+    }
+
+    .skillTitle {
+        width: 200px;
+    }
 }
 
 /* BreakPoints xs */
@@ -144,5 +172,13 @@
 
     .level2 .portfolioTitle {
         font-size: 30px;
+    }
+
+    .level3 .skill {
+        font-size: 55px;
+    }
+
+    .skillTitle {
+        width: 150px;
     }
 }
