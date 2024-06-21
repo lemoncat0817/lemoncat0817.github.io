@@ -12,4 +12,7 @@ $(document).ready(function () {
   $('.gotoTodo').click(function () {
     window.location.href = 'https://lemoncat0817.github.io/Vue-TodoList/';
   });
+  $('.githubLogo').click(function () {
+    window.location.href = 'https://github.com/lemoncat0817';
+  });
 })

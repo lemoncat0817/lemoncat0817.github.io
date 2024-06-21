@@ -128,8 +128,14 @@ table {
     background: url('./image/Bg.jpg') no-repeat;
     background-size: cover;
 }
-.homeLink:hover {
-    color: rgb(255, 255, 255, 0.6);
+
+.home p {
+    font-size: 140px;
+}
+
+.home img {
+    width: 120px;
+    height: 120px;
 }
 
 .level2 {
@@ -138,4 +144,69 @@ table {
 
 .level3 {
     background: rgb(0, 189, 207);
+}
+
+.githubLogo:hover {
+    opacity: 0.5;
+}
+
+/* RWD響應式設計 */
+/* BreakPoints xl */
+@media (max-width: 1200px) {
+    .home p {
+        font-size: 100px;
+    }
+
+    .home img {
+        width: 100px;
+        height: 100px;
+    }
+}
+
+/* BreakPoints lg */
+@media (max-width: 992px) {
+    .home p {
+        font-size: 80px;
+    }
+
+    .home img {
+        width: 80px;
+        height: 80px;
+    }
+}
+
+/* BreakPoints md */
+@media (max-width: 768px) {
+    .home p {
+        font-size: 60px;
+    }
+
+    .home img {
+        width: 60px;
+        height: 60px;
+    }
+}
+
+/* BreakPoints sm */
+@media (max-width: 576px) {
+    .home p {
+        font-size: 40px;
+    }
+
+    .home img {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* BreakPoints xs */
+@media (max-width: 320px) {
+    .home p {
+        font-size: 30px;
+    }
+
+    .home img {
+        width: 30px;
+        height: 30px;
+    }
 }
