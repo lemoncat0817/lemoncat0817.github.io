@@ -47,6 +47,16 @@
     opacity: 0.5;
 }
 
+footer p {
+    font-size: 30px;
+}
+
+footer img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+}
+
 /* RWD響應式設計 */
 /* BreakPoints xl */
 @media (max-width: 1200px) {
@@ -148,6 +158,15 @@
     .skillTitle {
         width: 200px;
     }
+
+    footer p {
+        font-size: 25px;
+    }
+
+    footer img {
+        width: 25px;
+        height: 25px;
+    }
 }
 
 /* BreakPoints xs */
@@ -180,5 +199,14 @@
 
     .skillTitle {
         width: 150px;
+    }
+
+    footer p {
+        font-size: 15px;
+    }
+
+    footer img {
+        width: 15px;
+        height: 15px;
     }
 }
