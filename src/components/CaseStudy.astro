@@ -1,0 +1,161 @@
+---
+import { Image } from 'astro:assets';
+import { render, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getLangFromUrl, useTranslations, localizePath } from '../i18n/utils';
+import { entrySlug } from '../lib/work';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  next: CollectionEntry<'work'>;
+}
+
+const { entry, next } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const meta = [
+  { label: t('case.year'), value: String(data.year) },
+  { label: t('case.role'), value: data.role },
+  { label: t('case.type'), value: data.type },
+];
+---
+
+<BaseLayout title={data.title} description={data.summary} type="article">
+  <article>
+    <header class="shell pt-10 pb-12 sm:pt-16">
+      <a
+        href={`${localizePath('/', lang)}#work`}
+        class="inline-flex items-center gap-1.5 font-mono text-xs text-muted transition-colors hover:text-accent-text"
+      >
+        <span aria-hidden="true">←</span>
+        {t('case.backToWork')}
+      </a>
+
+      <h1 class="text-display mt-6 font-semibold">{data.title}</h1>
+      <p class="mt-4 max-w-2xl text-lg text-muted sm:text-xl">{data.tagline}</p>
+
+      <div class="mt-9 flex flex-wrap items-center gap-3">
+        <a
+          href={data.demo}
+          rel="noopener"
+          class="inline-flex items-center gap-2 btn-accent rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+        >
+          {t('case.liveDemo')}
+          <span aria-hidden="true">↗</span>
+        </a>
+        <a
+          href={data.repo}
+          rel="noopener"
+          class="inline-flex items-center gap-2 rounded-full border border-line-hi px-5 py-2.5 text-sm font-semibold transition-colors hover:bg-surface"
+        >
+          {t('case.sourceCode')}
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </header>
+
+    <div class="shell">
+      <Image
+        src={data.cover}
+        alt={data.coverAlt}
+        widths={[640, 1024, 1600]}
+        sizes="(max-width: 1024px) 92vw, 1400px"
+        loading="eager"
+        fetchpriority="high"
+        class="aspect-[16/9] w-full rounded-2xl border border-line object-cover"
+      />
+    </div>
+
+    {/* 專案概要：年份／角色／類型／技術棧 */}
+    <div class="shell mt-12">
+      <dl class="grid grid-cols-2 gap-6 border-y border-line py-7 sm:grid-cols-4">
+        {
+          meta.map((item) => (
+            <div>
+              <dt class="font-mono text-[11px] tracking-widest text-faint uppercase">
+                {item.label}
+              </dt>
+              <dd class="mt-1.5 text-sm font-medium">{item.value}</dd>
+            </div>
+          ))
+        }
+        <div class="col-span-2 sm:col-span-1">
+          <dt class="font-mono text-[11px] tracking-widest text-faint uppercase">
+            {t('case.stack')}
+          </dt>
+          <dd class="mt-1.5 flex flex-wrap gap-1.5">
+            {
+              data.stack.map((tech) => (
+                <span class="rounded-md border border-line px-2 py-0.5 font-mono text-[11px] text-muted">
+                  {tech}
+                </span>
+              ))
+            }
+          </dd>
+        </div>
+      </dl>
+    </div>
+
+    {
+      data.stats && (
+        <div class="shell mt-10">
+          <dl class="grid grid-cols-3 gap-4">
+            {data.stats.map((stat) => (
+              <div class="rounded-xl border border-line bg-surface p-5">
+                <dd class="font-mono text-2xl font-semibold sm:text-3xl">{stat.value}</dd>
+                <dt class="mt-1 text-xs text-faint">{stat.label}</dt>
+              </div>
+            ))}
+          </dl>
+        </div>
+      )
+    }
+
+    <div class="shell mt-14">
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    {
+      data.video && (
+        <div class="shell mt-14">
+          <h2 class="text-title font-semibold">{t('case.videoTitle')}</h2>
+          <div class="mt-5 aspect-video overflow-hidden rounded-2xl border border-line bg-surface">
+            <iframe
+              src={`https://www.youtube-nocookie.com/embed/${data.video}`}
+              title={`${data.title} — ${t('case.videoTitle')}`}
+              loading="lazy"
+              allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerpolicy="strict-origin-when-cross-origin"
+              allowfullscreen
+              class="size-full border-0"
+            />
+          </div>
+        </div>
+      )
+    }
+
+    <nav class="shell mt-20" aria-label={t('case.nextProject')}>
+      <a
+        href={localizePath(`/work/${entrySlug(next)}`, lang)}
+        class="group flex flex-col gap-2 rounded-2xl border border-line bg-surface p-7 transition-[transform,border-color] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:border-line-hi sm:p-9"
+      >
+        <span class="font-mono text-xs tracking-widest text-faint uppercase">
+          {t('case.nextProject')}
+        </span>
+        <span class="text-title flex items-center gap-3 font-semibold">
+          {next.data.title}
+          <span
+            class="text-muted transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1.5 group-hover:text-accent-text"
+            aria-hidden="true">→</span
+          >
+        </span>
+      </a>
+    </nav>
+  </article>
+</BaseLayout>

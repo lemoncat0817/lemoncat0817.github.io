@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Hero from '../../components/Hero.astro';
+import WorkCard from '../../components/WorkCard.astro';
+import TechStack from '../../components/TechStack.astro';
+import Contact from '../../components/Contact.astro';
+import { getWorkEntries, entrySlug } from '../../lib/work';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const entries = await getWorkEntries(lang);
+const projectTitles = Object.fromEntries(entries.map((e) => [entrySlug(e), e.data.title]));
+---
+
+<BaseLayout>
+  <Hero />
+
+  <section id="work" class="shell scroll-mt-24 py-12 sm:py-16">
+    <header class="max-w-2xl">
+      <p class="reveal font-mono text-xs tracking-widest text-accent-text uppercase">
+        {t('work.eyebrow')}
+      </p>
+      <h2 class="reveal text-display mt-3 font-semibold">{t('work.title')}</h2>
+      <p class="reveal mt-4 text-muted">{t('work.intro')}</p>
+    </header>
+
+    <div class="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        entries.map((entry, i) => (
+          <WorkCard entry={entry} slug={entrySlug(entry)} large={entry.data.featured} index={i} />
+        ))
+      }
+    </div>
+  </section>
+
+  <TechStack projectTitles={projectTitles} />
+
+  <Contact />
+</BaseLayout>

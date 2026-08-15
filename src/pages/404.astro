@@ -1,0 +1,37 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { useTranslations, localizePath } from '../i18n/utils';
+
+// GitHub Pages 的 404 是全站共用的單一頁面，無法依語言分流，
+// 因此這頁同時呈現中英文，兩種訪客都看得懂。
+const zh = useTranslations('zh-TW');
+const en = useTranslations('en');
+---
+
+<BaseLayout title="404">
+  <section class="shell flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
+    <p class="font-mono text-6xl font-semibold text-accent-text sm:text-8xl">404</p>
+
+    <h1 class="text-title mt-6 font-semibold">{zh('404.title')}</h1>
+    <p class="mt-2 max-w-md text-muted">{zh('404.intro')}</p>
+
+    <p class="text-title mt-8 font-semibold" lang="en">{en('404.title')}</p>
+    <p class="mt-2 max-w-md text-muted" lang="en">{en('404.intro')}</p>
+
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href={localizePath('/', 'zh-TW')}
+        class="btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+      >
+        {zh('404.back')}
+      </a>
+      <a
+        href={localizePath('/', 'en')}
+        lang="en"
+        class="rounded-full border border-line-hi px-6 py-3 font-semibold transition-colors hover:bg-surface"
+      >
+        {en('404.back')}
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,109 @@
+---
+import { getLangFromUrl, useTranslations, localizePath } from '../i18n/utils';
+import { techStack } from '../data/profile';
+
+interface Props {
+  /** slug → 專案標題，用於顯示篩選結果 */
+  projectTitles: Record<string, string>;
+}
+const { projectTitles } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section id="stack" class="shell scroll-mt-24 py-20 sm:py-28">
+  <header class="max-w-2xl">
+    <p class="reveal font-mono text-xs tracking-widest text-accent-text uppercase">
+      {t('stack.eyebrow')}
+    </p>
+    <h2 class="reveal text-display mt-3 font-semibold">{t('stack.title')}</h2>
+    <p class="reveal mt-4 text-muted">{t('stack.intro')}</p>
+  </header>
+
+  <div class="reveal mt-10" data-stack>
+    <ul class="flex flex-wrap gap-2" role="list">
+      {
+        techStack.map((tech) => (
+          <li>
+            <button
+              type="button"
+              class="rounded-full border border-line bg-surface px-4 py-2 font-mono text-sm text-muted transition-colors duration-200 hover:border-line-hi hover:text-fg aria-pressed:border-accent-edge aria-pressed:bg-accent aria-pressed:text-accent-ink"
+              data-tech={tech.name}
+              data-projects={tech.projects.join(',')}
+              aria-pressed="false"
+            >
+              {tech.name}
+            </button>
+          </li>
+        ))
+      }
+    </ul>
+
+    <div class="mt-8 border-t border-line pt-6">
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <p class="font-mono text-xs tracking-widest text-faint uppercase" data-stack-label>
+          {t('stack.usedIn')}
+        </p>
+        <ul class="flex flex-wrap gap-2" role="list" data-stack-results>
+          {
+            Object.entries(projectTitles).map(([slug, title]) => (
+              <li data-project={slug} class="transition-opacity duration-300">
+                <a
+                  href={localizePath(`/work/${slug}`, lang)}
+                  class="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-sm text-muted transition-colors hover:border-line-hi hover:text-fg"
+                >
+                  {title}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <button
+          type="button"
+          class="ml-auto hidden font-mono text-xs text-accent-text underline-offset-4 hover:underline"
+          data-stack-reset
+        >
+          {t('stack.showAll')}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  // 技術棧篩選。約 500 bytes，是整站第二段也是最後一段常駐 JS。
+  const root = document.querySelector<HTMLElement>('[data-stack]');
+  if (root) {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-tech]');
+    const items = root.querySelectorAll<HTMLLIElement>('[data-project]');
+    const reset = root.querySelector<HTMLButtonElement>('[data-stack-reset]');
+
+    const clear = () => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', 'false'));
+      items.forEach((li) => {
+        li.style.opacity = '';
+        li.hidden = false;
+      });
+      reset?.classList.add('hidden');
+    };
+
+    buttons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const isActive = button.getAttribute('aria-pressed') === 'true';
+        clear();
+        if (isActive) return; // 再按一次 = 取消篩選
+
+        button.setAttribute('aria-pressed', 'true');
+        const slugs = (button.dataset.projects ?? '').split(',');
+        items.forEach((li) => {
+          const match = slugs.includes(li.dataset.project ?? '');
+          li.style.opacity = match ? '1' : '0.25';
+        });
+        reset?.classList.remove('hidden');
+      });
+    });
+
+    reset?.addEventListener('click', clear);
+  }
+</script>

@@ -1,0 +1,380 @@
+@import 'tailwindcss';
+
+/* ── 深色模式 variant ────────────────────────────────────────────────
+   深色為預設，因此 dark: 前綴其實很少用到；保留給需要明確反轉的情境。
+   淺色以 [data-theme="light"] 覆寫 token（見下方 :root[data-theme='light']）。 */
+@custom-variant light (&:where([data-theme='light'], [data-theme='light'] *));
+
+/* ── 設計 Token ──────────────────────────────────────────────────────
+   色彩以 OKLCH 定義：感知均勻，深淺色切換時彩度不會飄。 */
+@theme {
+  /* 表面 */
+  --color-bg: oklch(0.16 0.012 264);
+  --color-surface: oklch(0.21 0.016 264);
+  --color-surface-hi: oklch(0.26 0.018 264);
+
+  /* 文字 */
+  --color-fg: oklch(0.96 0.004 264);
+  --color-muted: oklch(0.72 0.016 264);
+  --color-faint: oklch(0.54 0.016 264);
+
+  /* 品牌強調色：檸檬黃，呼應 Lemoncat。
+     刻意把「填色」與「文字色」拆成兩個 token —— 黃色是亮色相，
+     當底色很好看，但直接拿來當文字色在淺色背景上對比不足。
+     這是設計系統的標準做法：品牌填色 ≠ 可讀的文字色。 */
+  --color-accent: oklch(0.86 0.17 96); /* 填色：按鈕底、狀態燈、光暈 */
+  --color-accent-ink: oklch(0.22 0.06 96); /* 疊在 accent 填色上的文字 */
+  --color-accent-text: oklch(0.86 0.17 96); /* 文字／圖示／焦點框用 */
+  /* 淺色模式下黃色按鈕與白底的對比先天不足（最高僅約 2.4:1），
+     因此加一圈描邊來界定按鈕邊界，滿足 WCAG 1.4.11 非文字對比。 */
+  --color-accent-edge: transparent;
+
+  --color-line: oklch(1 0 0 / 0.1);
+  --color-line-hi: oklch(1 0 0 / 0.18);
+
+  /* 字體
+     中文走系統堆疊：0 bytes、立即繪製、使用者裝置上最好的中文字。
+     Latin 用 Space Grotesk（由 Astro 字體 API 自架）。 */
+  --font-sans:
+    var(--font-display), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang TC',
+    'Microsoft JhengHei', 'Noto Sans TC', 'Helvetica Neue', sans-serif;
+  --font-mono: var(--font-mono-web), ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
+
+  /* 流體字級：以 clamp() 取代舊站那 6 段 media query */
+  --text-hero: clamp(2.75rem, 9vw, 8rem);
+  --text-hero--line-height: 0.95;
+  --text-hero--letter-spacing: -0.035em;
+
+  --text-display: clamp(2rem, 5.5vw, 4rem);
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.025em;
+
+  --text-title: clamp(1.375rem, 2.6vw, 2rem);
+  --text-title--line-height: 1.2;
+  --text-title--letter-spacing: -0.015em;
+
+  /* 動效 */
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.36, 0.64, 1);
+
+  /* 版心 */
+  --spacing-gutter: clamp(1.25rem, 5vw, 5rem);
+}
+
+/* 淺色模式：只覆寫 token，所有元件自動跟著變 */
+:root[data-theme='light'] {
+  --color-bg: oklch(0.985 0.003 264);
+  --color-surface: oklch(1 0 0);
+  --color-surface-hi: oklch(0.96 0.005 264);
+
+  --color-fg: oklch(0.19 0.014 264);
+  --color-muted: oklch(0.44 0.016 264);
+  --color-faint: oklch(0.58 0.014 264);
+
+  /* 填色維持品牌黃（配深色文字，對比 11.3:1），
+     文字色改用壓深的琥珀色（白底上 5.9:1，達 AA） */
+  --color-accent: oklch(0.86 0.17 96);
+  --color-accent-ink: oklch(0.22 0.06 96);
+  --color-accent-text: oklch(0.5 0.13 70);
+  --color-accent-edge: oklch(0.5 0.13 70 / 0.55);
+
+  --color-line: oklch(0 0 0 / 0.1);
+  --color-line-hi: oklch(0 0 0 / 0.16);
+}
+
+/* ── Base ───────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    color-scheme: dark;
+    /* 讓原生 UI（捲軸、表單控制項）跟著主題走 */
+    scrollbar-color: var(--color-line-hi) transparent;
+  }
+  :root[data-theme='light'] {
+    color-scheme: light;
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    /* 中文行距需要比西文寬鬆才好讀 */
+    line-height: 1.7;
+    overflow-x: clip;
+  }
+
+  /* 標題在中文語境用較緊的行距 */
+  h1,
+  h2,
+  h3,
+  h4 {
+    line-height: 1.15;
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+
+  /* 焦點樣式：鍵盤可及性的核心，絕不移除。
+     用 accent-text 而非 accent —— 淺色模式下亮黃色焦點框對白底只有 1.5:1，
+     等於看不見。 */
+  :focus-visible {
+    outline: 2px solid var(--color-accent-text);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* 圖片預設不變形、且不造成 CLS */
+  img,
+  video,
+  iframe {
+    max-width: 100%;
+    height: auto;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+  }
+}
+
+/* ── 動效基元 ────────────────────────────────────────────────────────
+   全部包在 no-preference 內，且僅動 transform / opacity（GPU 合成，
+   不觸發 layout / paint）。 */
+@layer components {
+  /* 進場：逐項浮現。用 --i 控制延遲順序 */
+  .rise {
+    opacity: 1;
+  }
+
+  /* 捲動觸發：優先用原生 CSS scroll-driven animation。
+     以 @supports 漸進增強 — 不支援的瀏覽器直接顯示內容，不會空白。 */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      .reveal {
+        /* 刻意使用 longhand：`animation` 簡寫在省略時間值時，
+           animation-duration 在各家實作上是 0s 還是 auto 並不一致，
+           而捲動驅動動畫需要 auto 才會跟著時間軸走。 */
+        animation-name: reveal-in;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: view();
+        /* 只用 entry 區間：元素完全進入視窗前就結束，
+           確保頁尾元素不會因為捲不到而卡在半透明狀態。 */
+        animation-range: entry 0% entry 55%;
+      }
+    }
+
+    .rise {
+      opacity: 0;
+      animation: rise-in 0.75s var(--ease-out-expo) forwards;
+      animation-delay: calc(var(--i, 0) * 70ms);
+    }
+  }
+
+  @keyframes rise-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 1.25rem, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  @keyframes reveal-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 2.5rem, 0);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  /* 主要行動按鈕。
+     描邊在深色模式是透明的（黃底對深色底已有 12.7:1 對比，不需要），
+     在淺色模式才顯現 —— 因為黃底對白底最高只有約 2.4:1，
+     需要邊界來滿足 WCAG 1.4.11 非文字對比。 */
+  .btn-accent {
+    background-color: var(--color-accent);
+    color: var(--color-accent-ink);
+    border: 1px solid var(--color-accent-edge);
+  }
+
+  /* 版心容器 */
+  .shell {
+    width: 100%;
+    max-width: 88rem;
+    margin-inline: auto;
+    padding-inline: var(--spacing-gutter);
+  }
+
+  /* ── 長文排版 ──────────────────────────────────────────────────
+     自建而非引入 @tailwindcss/typography：需求單純、可完全控制
+     中文的行距與標點，也少一個相依套件。 */
+  .prose {
+    max-width: 44rem;
+    font-size: 1.0625rem;
+    line-height: 1.85;
+    color: var(--color-muted);
+  }
+  .prose > * + * {
+    margin-top: 1.35em;
+  }
+
+  .prose h2 {
+    margin-top: 2.75em;
+    margin-bottom: 0.9em;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 600;
+    color: var(--color-fg);
+    scroll-margin-top: 6rem;
+  }
+  .prose h3 {
+    margin-top: 2.1em;
+    margin-bottom: 0.7em;
+    font-size: clamp(1.15rem, 1.9vw, 1.375rem);
+    font-weight: 600;
+    color: var(--color-fg);
+    scroll-margin-top: 6rem;
+  }
+
+  .prose strong {
+    color: var(--color-fg);
+    font-weight: 600;
+  }
+
+  .prose a {
+    color: var(--color-accent-text);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-thickness: 1px;
+  }
+
+  .prose ul,
+  .prose ol {
+    padding-left: 1.4em;
+  }
+  .prose ul {
+    list-style: disc;
+  }
+  .prose ol {
+    list-style: decimal;
+  }
+  .prose li::marker {
+    color: var(--color-faint);
+  }
+  .prose li + li {
+    margin-top: 0.55em;
+  }
+
+  .prose blockquote {
+    border-left: 3px solid var(--color-accent-text);
+    padding-left: 1.15em;
+    color: var(--color-fg);
+    font-style: normal;
+  }
+
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.875em;
+    background: var(--color-surface-hi);
+    padding: 0.15em 0.4em;
+    border-radius: 0.3rem;
+    color: var(--color-fg);
+  }
+
+  /* 表格在窄螢幕要能自己橫向捲動，不能撐破版面。
+     Markdown 產出的是裸 <table>（Astro 7 預設的 Sätteri 處理器不會加包裝元素，
+     要加就得多裝 @astrojs/markdown-remark），所以這裡用純 CSS 解決：
+     display:block + width:max-content + max-width:100% 讓表格自己成為捲動容器。 */
+  .prose table {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    overflow-x: auto;
+    border-collapse: collapse;
+    border: 1px solid var(--color-line);
+    border-radius: 0.75rem;
+    font-size: 0.9375rem;
+    scrollbar-width: thin;
+  }
+  .prose th,
+  .prose td {
+    padding: 0.7rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--color-line);
+  }
+  .prose th {
+    color: var(--color-fg);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .prose tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .prose hr {
+    border: 0;
+    border-top: 1px solid var(--color-line);
+    margin-block: 2.5em;
+  }
+
+  /* 跳至主要內容 */
+  .skip-link {
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    z-index: 100;
+    transform: translateY(-200%);
+    background: var(--color-accent);
+    color: var(--color-accent-ink);
+    padding: 0.6rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: transform 0.2s var(--ease-out-expo);
+  }
+  .skip-link:focus-visible {
+    transform: none;
+  }
+}
+
+/* ── View Transitions ───────────────────────────────────────────── */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+  ::view-transition-old(root) {
+    animation: vt-out 0.25s var(--ease-out-expo) both;
+  }
+  ::view-transition-new(root) {
+    animation: vt-in 0.35s var(--ease-out-expo) both;
+  }
+  @keyframes vt-out {
+    to {
+      opacity: 0;
+    }
+  }
+  @keyframes vt-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.75rem, 0);
+    }
+  }
+}

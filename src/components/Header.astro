@@ -1,0 +1,63 @@
+---
+import { getLangFromUrl, useTranslations, localizePath, alternateUrl } from '../i18n/utils';
+import { profile } from '../data/profile';
+import ThemeToggle from './ThemeToggle.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const home = localizePath('/', lang);
+
+const links = [
+  { href: `${home}#work`, label: t('nav.work') },
+  { href: `${home}#stack`, label: t('nav.stack') },
+  { href: localizePath('/about', lang), label: t('nav.about') },
+];
+---
+
+<header
+  class="sticky top-0 z-50 border-b border-line/60 bg-bg/70 backdrop-blur-xl backdrop-saturate-150"
+>
+  <div class="shell flex h-16 items-center justify-between gap-4">
+    <a
+      href={home}
+      class="group flex items-center gap-2.5 font-mono text-sm font-semibold tracking-tight"
+      aria-label={t('nav.home')}
+    >
+      <span
+        class="grid size-7 place-items-center btn-accent rounded-md transition-transform duration-300 ease-[var(--ease-spring)] group-hover:rotate-12"
+        aria-hidden="true">L</span
+      >
+      <span>{profile.name}</span>
+    </a>
+
+    <nav class="flex items-center gap-1 sm:gap-2" aria-label={t('nav.work')}>
+      <ul class="hidden items-center gap-1 sm:flex">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class="rounded-lg px-3 py-2 text-sm text-muted transition-colors hover:bg-surface hover:text-fg"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mx-1 hidden h-5 w-px bg-line sm:block" aria-hidden="true"></div>
+
+      <a
+        href={alternateUrl(Astro.url, lang)}
+        class="rounded-lg px-2.5 py-2 font-mono text-xs font-semibold text-muted transition-colors hover:bg-surface hover:text-fg"
+        lang={lang === 'zh-TW' ? 'en' : 'zh-Hant-TW'}
+        title={t('nav.switchLang')}
+      >
+        {lang === 'zh-TW' ? 'EN' : '中'}
+      </a>
+
+      <ThemeToggle label={t('nav.toggleTheme')} />
+    </nav>
+  </div>
+</header>

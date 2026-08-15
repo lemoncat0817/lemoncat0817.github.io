@@ -1,0 +1,49 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { profile } from '../data/profile';
+import GithubIcon from './GithubIcon.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<section id="contact" class="shell scroll-mt-24 py-20 sm:py-28">
+  <div
+    class="reveal relative overflow-hidden rounded-3xl border border-line bg-surface px-6 py-14 text-center sm:px-12 sm:py-20"
+  >
+    <div
+      class="pointer-events-none absolute -top-1/2 left-1/2 aspect-square w-[40rem] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl"
+      style="background: radial-gradient(circle, var(--color-accent), transparent 65%)"
+      aria-hidden="true"
+    >
+    </div>
+
+    <div class="relative">
+      <p class="font-mono text-xs tracking-widest text-accent-text uppercase">{t('contact.eyebrow')}</p>
+      <h2 class="text-display mt-3 font-semibold">{t('contact.title')}</h2>
+      <p class="mx-auto mt-4 max-w-lg text-muted">{t('contact.intro')}</p>
+
+      <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href={profile.github}
+          rel="noopener"
+          class="inline-flex items-center gap-2.5 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+        >
+          <GithubIcon class="size-[18px]" />
+          {t('contact.github')}
+        </a>
+
+        {
+          profile.email && (
+            <a
+              href={`mailto:${profile.email}`}
+              class="inline-flex items-center gap-2 rounded-full border border-line-hi px-6 py-3 font-semibold transition-colors hover:bg-surface-hi"
+            >
+              {t('contact.email')}
+            </a>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

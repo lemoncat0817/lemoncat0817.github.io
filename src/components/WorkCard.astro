@@ -1,0 +1,90 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import { getLangFromUrl, useTranslations, localizePath } from '../i18n/utils';
+
+interface Props {
+  entry: CollectionEntry<'work'>;
+  slug: string;
+  /** 主打作品在 Bento 網格佔兩欄 */
+  large?: boolean;
+  index?: number;
+}
+
+const { entry, slug, large = false, index = 0 } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const { data } = entry;
+
+const href = localizePath(`/work/${slug}`, lang);
+---
+
+<article
+  class:list={[
+    'reveal group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-[transform,border-color,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:border-line-hi hover:shadow-2xl hover:shadow-black/25',
+    large && 'sm:col-span-2',
+  ]}
+  style={`--i: ${index}`}
+>
+  <a href={href} class="absolute inset-0 z-10" aria-label={`${data.title} — ${t('work.readCase')}`}
+  ></a>
+
+  <div class="relative aspect-[16/10] overflow-hidden bg-surface-hi">
+    <Image
+      src={data.cover}
+      alt={data.coverAlt}
+      widths={large ? [480, 800, 1200] : [360, 600, 900]}
+      sizes={large
+        ? '(max-width: 640px) 92vw, (max-width: 1024px) 60vw, 700px'
+        : '(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 420px'}
+      loading={index < 2 ? 'eager' : 'lazy'}
+      fetchpriority={index === 0 ? 'high' : 'auto'}
+      class="size-full object-cover transition-transform duration-700 ease-[var(--ease-out-expo)] group-hover:scale-[1.04]"
+    />
+    <span
+      class="absolute top-3 left-3 rounded-full bg-bg/80 px-2.5 py-1 font-mono text-[11px] text-muted backdrop-blur-md"
+    >
+      {data.year}
+    </span>
+  </div>
+
+  <div class="flex flex-1 flex-col gap-3 p-5 sm:p-6">
+    <div class="flex items-start justify-between gap-3">
+      <h3 class="text-title font-semibold">{data.title}</h3>
+      <span
+        class="mt-1 shrink-0 text-muted transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-1 group-hover:text-accent-text"
+        aria-hidden="true">→</span
+      >
+    </div>
+
+    <p class="text-sm leading-relaxed text-muted">{data.tagline}</p>
+
+    <ul class="mt-auto flex flex-wrap gap-1.5 pt-2" aria-label={t('case.stack')}>
+      {
+        data.stack.slice(0, large ? 6 : 4).map((tech) => (
+          <li class="rounded-md border border-line px-2 py-0.5 font-mono text-[11px] text-faint">
+            {tech}
+          </li>
+        ))
+      }
+    </ul>
+
+    {/* 這兩個連結要能被獨立點擊，所以 z-index 疊在覆蓋層之上 */}
+    <div class="relative z-20 flex items-center gap-4 pt-1 font-mono text-xs">
+      <a
+        href={data.demo}
+        rel="noopener"
+        class="text-muted underline-offset-4 transition-colors hover:text-accent-text hover:underline"
+      >
+        {t('work.viewDemo')} ↗
+      </a>
+      <a
+        href={data.repo}
+        rel="noopener"
+        class="text-muted underline-offset-4 transition-colors hover:text-accent-text hover:underline"
+      >
+        {t('work.viewSource')} ↗
+      </a>
+    </div>
+  </div>
+</article>

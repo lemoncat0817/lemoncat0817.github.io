@@ -1,0 +1,8 @@
+# 統一換行符，避免 Windows / CI 之間的差異造成無謂 diff
+* text=auto eol=lf
+
+# 二進位檔不做轉換
+*.png binary
+*.jpg binary
+*.woff2 binary
+*.ico binary
