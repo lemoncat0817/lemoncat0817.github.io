@@ -25,24 +25,46 @@ export default defineConfig({
   // 即使切片也會嚴重拖累 LCP。台灣使用者的系統本來就有優秀的中文字體
   // （PingFang TC / 微軟正黑體），改用系統堆疊 → 0 bytes 且立即繪製。
   // 詳見 src/styles/global.css 的 --font-sans 定義。
+  // 字體檔自架於 src/assets/fonts/，不在建置期向 Google 取檔。
+  //
+  // 原本用 fontProviders.google()，但 Google 會輪換 gstatic 的檔名 hash，
+  // 一旦 Astro 快取到舊網址就會 404 而導致建置失敗（實際發生過）。
+  // 把 woff2 收進 repo 之後：建置不依賴外部網路、結果可重現、CI 不會因為
+  // 第三方服務變動而掛掉，也省下建置期的下載時間。
+  //
+  // 要更新字體版本時執行：npm run fonts
   fonts: [
     {
-      provider: fontProviders.google(),
+      provider: fontProviders.local(),
       name: 'Space Grotesk',
       cssVariable: '--font-display',
-      weights: ['300 700'], // 可變字體區間
-      subsets: ['latin'],
       display: 'swap',
       fallbacks: ['system-ui', 'sans-serif'],
+      options: {
+        variants: [
+          {
+            src: ['./src/assets/fonts/SpaceGrotesk-latin.woff2'],
+            weight: '300 700', // 可變字體區間
+            style: 'normal',
+          },
+        ],
+      },
     },
     {
-      provider: fontProviders.google(),
+      provider: fontProviders.local(),
       name: 'JetBrains Mono',
       cssVariable: '--font-mono-web',
-      weights: ['400 600'],
-      subsets: ['latin'],
       display: 'swap',
       fallbacks: ['ui-monospace', 'monospace'],
+      options: {
+        variants: [
+          {
+            src: ['./src/assets/fonts/JetBrainsMono-latin.woff2'],
+            weight: '400 600',
+            style: 'normal',
+          },
+        ],
+      },
     },
   ],
 

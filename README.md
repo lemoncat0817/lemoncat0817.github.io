@@ -11,7 +11,7 @@
 | 框架 | Astro 7（靜態產出，預設不送 JS） |
 | 樣式 | Tailwind CSS 4（透過 `@tailwindcss/vite`） |
 | 內容 | Content Collections + Zod schema 驗證 |
-| 字體 | Astro 內建 Fonts API（自架、subset、preload） |
+| 字體 | Astro Fonts API + 收進 repo 的 woff2（建置期不連外） |
 | 語言 | 繁體中文（`/`）與英文（`/en/`） |
 | 部署 | GitHub Actions → GitHub Pages |
 
@@ -25,7 +25,15 @@ npm run dev       # 開發伺服器 http://localhost:4321
 npm run build     # 型別檢查 + 建置到 dist/
 npm run preview   # 預覽建置結果
 npm run og        # 重新產生社群分享圖與 icon
+npm run fonts     # 重新下載字體檔（只有要換字體時才需要）
 ```
+
+### 為什麼字體檔要進版控
+
+`src/assets/fonts/` 的 woff2 是刻意收進 repo 的。原本讓 Astro 在建置時去
+Google Fonts 抓，但 Google 會輪換 `fonts.gstatic.com` 的檔名 hash，舊網址
+會變 404，建置就直接失敗（實際發生過）。字體進版控之後建置完全離線可重現，
+CI 也不會因為第三方服務變動而掛掉。
 
 ## 專案結構
 
