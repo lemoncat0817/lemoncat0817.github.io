@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths } from 'astro';
+import CaseStudy from '../../components/CaseStudy.astro';
+import { getWorkEntries, entrySlug, nextEntry } from '../../lib/work';
+
+export const getStaticPaths = (async () => {
+  const entries = await getWorkEntries('zh-TW');
+  return entries.map((entry) => ({
+    params: { slug: entrySlug(entry) },
+    props: { entry, next: nextEntry(entries, entry) },
+  }));
+}) satisfies GetStaticPaths;
+
+const { entry, next } = Astro.props;
+---
+
+<CaseStudy entry={entry} next={next} />

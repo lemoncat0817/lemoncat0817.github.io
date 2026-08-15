@@ -1,0 +1,113 @@
+---
+import { Font } from 'astro:assets';
+import '../styles/global.css';
+import { profile } from '../data/profile';
+import { getLangFromUrl, useTranslations, htmlLang, alternateUrl } from '../i18n/utils';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** 社群分享圖，未提供時使用預設 OG 圖 */
+  ogImage?: string;
+  /** 案例研究頁設為 'article' */
+  type?: 'website' | 'article';
+}
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const { title, description, ogImage, type = 'website' } = Astro.props;
+
+const pageTitle = title ? `${title} — ${profile.name}` : t('meta.title');
+const pageDescription = description ?? t('meta.description');
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImageUrl = new URL(ogImage ?? '/og-default.png', Astro.site).href;
+
+// hreflang：兩個語言互指 + x-default 指向繁中
+const zhHref = new URL(alternateUrl(Astro.url, 'en'), Astro.site).href;
+const enHref = new URL(alternateUrl(Astro.url, 'zh-TW'), Astro.site).href;
+const zhUrl = lang === 'zh-TW' ? canonical : zhHref;
+const enUrl = lang === 'en' ? canonical : enHref;
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  alternateName: profile.nameZh,
+  url: profile.siteUrl,
+  jobTitle: t('hero.role'),
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: 'Kaohsiung',
+    addressCountry: 'TW',
+  },
+  sameAs: [profile.github],
+  knowsAbout: ['Vue.js', 'TypeScript', 'JavaScript', 'Frontend Development', 'Web Accessibility'],
+};
+---
+
+<!doctype html>
+<html lang={htmlLang(lang)} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+
+    <link rel="alternate" hreflang="zh-Hant-TW" href={zhUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={zhUrl} />
+
+    <meta property="og:type" content={type} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:locale" content={lang === 'zh-TW' ? 'zh_TW' : 'en_US'} />
+    <meta property="og:site_name" content={profile.name} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content="#25252b" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <Font cssVariable="--font-display" preload />
+    <Font cssVariable="--font-mono-web" />
+
+    {/* 在繪製前套用主題，避免深淺色閃爍（FOUC）。刻意行內、刻意同步。 */}
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const theme =
+          stored ??
+          (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+
+    <script
+      type="application/ld+json"
+      is:inline
+      set:html={JSON.stringify(personSchema)}
+    />
+  </head>
+
+  <body>
+    <a class="skip-link" href="#main">{t('nav.skipToContent')}</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

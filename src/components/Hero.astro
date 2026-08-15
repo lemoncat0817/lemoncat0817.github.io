@@ -1,0 +1,104 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { profile } from '../data/profile';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const years = new Date().getFullYear() - profile.codingSince;
+
+/** 逐字（中文）／逐詞（英文）拆解，供標題動畫使用 */
+function splitHeadline(text: string): string[] {
+  return lang === 'zh-TW' ? [...text] : text.split(' ');
+}
+
+const line1 = splitHeadline(t('hero.headline.1'));
+const line2 = splitHeadline(t('hero.headline.2'));
+let charIndex = 0;
+---
+
+<section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28">
+  {/* 背景光暈：純 CSS 漸層，取代舊站 540 KB 的背景圖 */}
+  <div
+    class="pointer-events-none absolute -top-1/3 left-1/2 -z-10 aspect-square w-[min(120vw,60rem)] -translate-x-1/2 rounded-full opacity-[0.14] blur-3xl"
+    style="background: radial-gradient(circle, var(--color-accent), transparent 62%)"
+    aria-hidden="true"
+  >
+  </div>
+
+  <div class="shell">
+    <p
+      class="rise flex items-center gap-2.5 font-mono text-xs tracking-widest text-muted uppercase sm:text-sm"
+      style="--i: 0"
+    >
+      {
+        profile.available && (
+          <span class="relative flex size-2" aria-hidden="true">
+            <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60" />
+            <span class="relative inline-flex size-2 rounded-full bg-accent" />
+          </span>
+        )
+      }
+      {t('hero.role')} · {t('hero.location')}
+    </p>
+
+    <h1 class="text-hero mt-6 font-semibold">
+      <span class="block">
+        {
+          line1.map((unit) => (
+            <span class="rise inline-block whitespace-pre" style={`--i: ${++charIndex}`}>
+              {unit}
+              {lang === 'en' ? ' ' : ''}
+            </span>
+          ))
+        }
+      </span>
+      <span class="block text-accent-text">
+        {
+          line2.map((unit) => (
+            <span class="rise inline-block whitespace-pre" style={`--i: ${++charIndex}`}>
+              {unit}
+              {lang === 'en' ? ' ' : ''}
+            </span>
+          ))
+        }
+      </span>
+    </h1>
+
+    <p
+      class="rise mt-8 max-w-2xl text-lg text-muted sm:text-xl"
+      style={`--i: ${charIndex + 1}`}
+    >
+      {t('hero.intro')}
+    </p>
+
+    <div
+      class="rise mt-10 flex flex-wrap items-center gap-x-8 gap-y-5"
+      style={`--i: ${charIndex + 2}`}
+    >
+      <a
+        href="#work"
+        class="group inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+      >
+        {t('hero.viewWork')}
+        <span
+          class="transition-transform duration-300 group-hover:translate-y-0.5"
+          aria-hidden="true">↓</span
+        >
+      </a>
+
+      <dl class="flex items-center gap-8">
+        <div>
+          <dt class="sr-only">{t('hero.projectCount')}</dt>
+          <dd class="font-mono text-2xl font-semibold">4</dd>
+          <p class="text-xs text-faint">{t('hero.projectCount')}</p>
+        </div>
+        <div>
+          <dt class="sr-only">{t('hero.yearsLabel')}</dt>
+          <dd class="font-mono text-2xl font-semibold">{years}+</dd>
+          <p class="text-xs text-faint">{t('hero.yearsLabel')}</p>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
