@@ -31,17 +31,17 @@ stats:
 
 ## What it is
 
-The second version of Weather, Explained. The original was a lookup-style SPA — pick a city, see the forecast. This version is built for the moments people actually reach for a weather site: animated radar, typhoon tracks with an uncertainty cone, earthquake intensity maps, and warnings for every county, all in one place, deployed on Cloudflare's edge network.
+Weather, Explained turns Taiwan's Central Weather Administration open data into a platform built for the moments people actually reach for it — animated radar, typhoon tracks with an uncertainty cone, earthquake intensity maps, and warnings for every county, all in one place, built on Nuxt 4 and deployed on Cloudflare's edge network.
 
 ## The problem
 
-The previous version carried two clear pieces of technical debt: the CWA API key sat fully visible in the frontend bundle, and there was no caching at all — every city switch refetched from the agency's API. Both problems have the same fix: a server that actually executes code, which a pure frontend cannot provide.
+A pure frontend can't solve two problems that come with the territory: an API key is visible the moment it's bundled, and without a server there's nowhere to do real caching — every city switch means refetching from the agency's API.
 
-Taiwan's Central Weather Administration (CWA) open data brought its own familiar problem too: forecasts, observations, typhoons and earthquakes are four differently-shaped datasets, each with its own field naming, nesting and casing conventions.
+Taiwan's Central Weather Administration (CWA) open data brings its own familiar problem too: forecasts, observations, typhoons and earthquakes are four differently-shaped datasets, each with its own field naming, nesting and casing conventions.
 
 ## What I did
 
-I moved to Nuxt 4, so the same project holds both the frontend and server API routes (via Nitro), deployed to Cloudflare Workers:
+Nuxt 4 gives the same project both the frontend and server API routes (via Nitro), deployed to Cloudflare Workers:
 
 - **The key lives only on the server.** The CWA key is read at request time through `useRuntimeConfig()`, and never enters the frontend bundle or any API response.
 - **An anti-corruption layer normalises everything.** `server/utils/normalize/**` converts four differently-shaped CWA responses — forecast, observation, typhoon, earthquake — into the domain model defined in `shared/types`. Components only ever see their own types; they never need to know what CWA's raw JSON looks like.
@@ -50,9 +50,9 @@ I moved to Nuxt 4, so the same project holds both the frontend and server API ro
 
 ## Technical decisions
 
-### Why move off a Vue SPA and onto Nuxt
+### Why Nuxt instead of a pure frontend SPA
 
-A pure frontend cannot solve the "hide the key" problem — hiding a key needs a server that executes code, not just static files. Nuxt's Nitro meant I did not have to stand up and maintain a separate backend project; one repo and one deploy gives me both pages and API routes.
+A pure frontend can't solve the "hide the key" problem — hiding a key needs a server that executes code, not just static files. Nuxt's Nitro means I don't have to stand up and maintain a separate backend project; one repo and one deploy gives me both pages and API routes.
 
 ### Why Cloudflare Workers instead of conventional serverless
 
@@ -60,7 +60,7 @@ Weather data is read-heavy with low real-time demands — most users are checkin
 
 ### The anti-corruption layer earns its cost
 
-Writing a normaliser for each of the four CWA datasets is more code up front. But that cost is paid once, and in exchange components never touch nested JSON, and a field rename by the agency means changing one file instead of hunting through components. That is the same lesson from the previous version, applied more thoroughly this time.
+Writing a normaliser for each of the four CWA datasets is more code up front. But that cost is paid once, and in exchange components never touch nested JSON, and a field rename by the agency means changing one file instead of hunting through components.
 
 ## What went wrong
 

@@ -1,6 +1,6 @@
 ---
 title: Todo List
-tagline: A zero-dependency exercise, rewritten into something that holds up under test
+tagline: Local-first, keyboard-first, and it doesn't lose your data
 summary: A local-first todo system with natural-language quick add, recurring tasks, a command palette, saveable filters and full undo support, plus optional cross-device sync. Unit tests, E2E and accessibility scans all run in CI.
 year: 2026
 role: Frontend developer (solo)
@@ -22,30 +22,21 @@ cover: ../../../assets/work/todo-list.png
 coverAlt: The Todo List app, showing the Today/Upcoming/Inbox sidebar with projects and tags, the task list, and the quick-add field
 order: 2
 featured: false
-stats:
-  - label: Test layers
-    value: Unit / E2E / A11y
-  - label: Persistence
-    value: IndexedDB
-  - label: Cross-device sync
-    value: Optional
 ---
 
 ## What it is
 
-A todo list — but this time without the deliberate constraint. The previous version used exactly one dependency, Vue itself, to prove I understood the fundamentals. This rewrite is the opposite exercise: build everything a real task manager needs — data that survives, an interface fully operable from the keyboard, undo for every risky action, and quick add through to cross-device sync, all built from scratch.
+A local-first todo list, built on the shape of mature task tools like Todoist: a Today/Upcoming/Inbox sidebar, projects and tags, saveable filters, a command palette. Data is written to the browser first and works completely on its own; configuring an account adds cross-device sync on top.
 
-The interface borrows the shape of mature task tools like Todoist: a Today/Upcoming/Inbox sidebar, projects and tags, saveable filters, a command palette. But the data model and edge cases behind each feature were worked out from first principles, not copied from a template.
+The data model and edge cases behind each feature were worked out from first principles, not copied from a template.
 
 ## The problem
 
-The previous version left three clear gaps: refreshing the page lost every task, there was no keyboard support, and deletion had no undo. Underneath, those three problems are really one problem — a todo list is a high-frequency, low-tolerance-for-error interface, and what it needs most is not more features but a sense of safety. Users need to be able to type, delete and refresh without hesitation.
+A todo list is a high-frequency, low-tolerance-for-error interface — people need to be able to type, delete and refresh without hesitation. Most bare-bones todo apps handle "add a task, check it off" and stop there, without answering the questions that actually matter: does a refresh lose anything? Can a mistaken delete be undone? Does it work as well without a mouse?
 
-So the goal of this rewrite was not to add features for their own sake — it was to make that sense of safety complete: persistence, undo, offline availability, cross-device consistency.
+So this project treats that sense of safety as the core requirement, not an afterthought — persistence, undo, offline availability and cross-device consistency shaped the entire data layer before any feature was built on top of it.
 
 ## What I did
-
-The data layer came first; everything else was built on top of it.
 
 - **Local-first.** Everything is written to the browser's IndexedDB (wrapped with `idb`) before anything else happens. No login required, nothing is lost on refresh or offline.
 - **Quick add parses natural language.** Typing "tomorrow 3pm submit report p1 #work @office" fills in the due date, priority, project and tag in one line. If the whole string gets consumed by parsing (typing just "tomorrow", say), it falls back to using the raw text as the title rather than producing a nameless task.
@@ -67,18 +58,6 @@ True real-time multi-user collaboration (CRDTs, operational transforms) would be
 
 Unit tests (Vitest) cover pure logic like the filter query language and date advancement for recurring tasks. E2E (Playwright) covers real user flows. `@axe-core/playwright` scans for accessibility violations during the same E2E run. Each layer catches a different class of bug; none of them substitutes for the others.
 
-## What went wrong
-
-**Recurring tasks at month end.** A "monthly" task due on Jan 31 would overflow to March 3 if the next date were computed with a naive `setMonth` call, since February has no 31st. The fix is to compute the last day of the target month first, then take the smaller of the two.
-
-**Undo granularity for batch actions.** Undo was originally recorded per row. Rescheduling 20 tasks at once meant pressing `Ctrl+Z` twenty times to fully undo it — a bad experience. Changing the unit of undo from "one data change" to "one user action" made batch operations actually usable.
-
 ## Outcome
 
 CI runs type checking, linting, unit tests, and E2E with accessibility scanning on every push, and all four have to pass. The full feature set works offline in the live demo; configuring Supabase adds cross-device sync on top.
-
-## What I would change
-
-1. **Move sync from polling to Realtime.** Cross-device sync currently takes up to 30 seconds or a manual trigger. Supabase already offers Realtime subscriptions, which would make sync close to instant.
-2. **Field-level merging instead of whole-row overwrite.** The current last-write-wins approach can, in rare cases, clobber a concurrent edit from another device. Merging at the field level would make that far less likely.
-3. **Make due-date reminders an actual push notification.** Reminders currently only fire while the tab is open. Making them work with the tab closed needs Web Push and a small backend.

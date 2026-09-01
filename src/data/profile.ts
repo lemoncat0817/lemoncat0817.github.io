@@ -15,8 +15,8 @@ export const profile = {
   /** 是否在 Hero 顯示「開放合作機會」狀態燈。 */
   available: true,
 
-  /** GitHub 帳號建立於 2022-04，用來自動算年資，不必每年手動改。 */
-  codingSince: 2022,
+  /** 用來自動算年資，不必每年手動改。 */
+  codingSince: 2023,
 } as const;
 
 /**

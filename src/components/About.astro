@@ -11,13 +11,13 @@ const zh = lang === 'zh-TW';
 
 const paragraphs = zh
   ? [
-      `我是 ${profile.nameZh}，一位在高雄的前端工程師，主要用 Vue 生態系開發網頁應用。`,
+      `我是 ${profile.nameZh}，一位在高雄的網頁工程師，主要用 Vue 生態系開發網頁應用。`,
       `我做過的專案橫跨幾種很不一樣的問題：POS 系統要處理複雜的商業邏輯與權限，氣象平台要把政府開放資料馴服成颱風天、地震後真的會打開來看的即時資訊，品牌網站要經營的是氣氛與信任感、最後還要接得住訂位這種真實動作，而一套待辦系統則逼我把資料持久化、鍵盤操作與自動化測試這些基本功一次做完整。`,
       `這些專案讓我建立了一個判斷標準：技術選擇要服務問題，而不是反過來。該用元件庫的時候用（POS 用 Element Plus 省下重造表格的時間；寵物咖啡廳後來改用 shadcn-vue，因為訂位表單需要能直接改到原始碼的彈性），該加一層伺服器的時候就加（氣象平台把 API 金鑰搬到 Cloudflare Workers 上，而不是留在前端假裝安全）。`,
       `我也在持續補上以前忽略的東西 —— 型別、無障礙、效能、測試。這個網站本身就是一次練習：從 Bootstrap 加 jQuery 的舊版本，重寫成一個幾乎不送 JavaScript 的靜態網站；作品集裡的待辦系統也把單元測試、E2E 與自動化無障礙掃描接進了 CI。`,
     ]
   : [
-      `I'm ${profile.name}, a frontend engineer based in Kaohsiung, Taiwan, building web applications mainly with the Vue ecosystem.`,
+      `I'm ${profile.name}, a web engineer based in Kaohsiung, Taiwan, building web applications mainly with the Vue ecosystem.`,
       `My projects span quite different problems: a POS system with complex business logic and access control, a weather platform that tames government open data into something people actually open during a typhoon or after an earthquake, a brand site where the real work is atmosphere and trust — and, eventually, handling an actual booking — and a todo app that forced me to get persistence, keyboard operation and automated testing right in one pass.`,
       `Those projects gave me a working principle: technology choices serve the problem, not the other way round. Use a component library when it earns its place (Element Plus saved me from rebuilding data tables in the POS; the pet cafe later moved to shadcn-vue because its reservation form needed validation logic I could edit directly in the source), and add a server layer when the problem needs one (the weather platform's API key now lives on Cloudflare Workers instead of pretending to be safe in the frontend bundle).`,
       `I'm also filling in the things I used to overlook — types, accessibility, performance, testing. This site is itself an exercise in that: rewritten from a Bootstrap-and-jQuery page into a static site that ships almost no JavaScript, and the todo app in this portfolio now runs unit tests, E2E and automated accessibility scans in CI.`,

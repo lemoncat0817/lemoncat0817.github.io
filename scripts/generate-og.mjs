@@ -31,7 +31,7 @@ const og = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" vi
   <text x="97" y="121" font-family="${FONT}" font-size="34" font-weight="700" fill="${ACCENT_INK}">L</text>
   <text x="152" y="120" font-family="${FONT}" font-size="27" font-weight="600" fill="${FG}">Lemoncat</text>
 
-  <text x="80" y="300" font-family="${FONT}" font-size="76" font-weight="700" fill="${FG}">Frontend Engineer</text>
+  <text x="80" y="300" font-family="${FONT}" font-size="76" font-weight="700" fill="${FG}">Web Engineer</text>
   <text x="80" y="392" font-family="${FONT}" font-size="76" font-weight="700" fill="${ACCENT}">Vue · TypeScript</text>
   <text x="80" y="482" font-family="${FONT}" font-size="30" fill="${MUTED}">Kaohsiung, Taiwan · 4 shipped projects</text>
 

@@ -29,27 +29,29 @@ stats:
 
 ## What it is
 
-The second version of Lohas Pet Cafe. The original was a single-page brand site with one job: make people want to visit. This version pushes that a step further into a nine-page site that can actually carry someone from "I want to go" to "I have a table booked", statically generated with Nuxt 4.
+Lohas Pet Cafe is a nine-page brand site for a pet-friendly cafe, statically generated with Nuxt 4 — each page does one job, carrying someone from discovering the brand, to browsing the menu, to actually booking a table.
 
 ## The problem
 
-The previous case study named three clear gaps: unoptimised images were dragging down load time, changing a single word of content meant editing code, and the site never told anyone how to get there or when it was open. All three point at the same thing — for a brand site, making people want to visit isn't enough; it has to let them actually go.
+Brand sites commonly leave a gap between making people want to visit and letting them actually go: unoptimised images drag down load time, content baked into images can't be searched, and the site never says how to get there, when it's open, or whether a table is available.
+
+This site closes that gap — every step from browsing to booking has a page and clear feedback behind it.
 
 ## What I did
 
-I split the single-page narrative into nine purpose-built pages and replaced the technical foundation underneath them:
+The site is split into nine purpose-built pages:
 
 - **`/reservation` for online booking.** Built with `vee-validate` and `zod`, the form automatically disables closed days and outside-hours slots, so nobody can select a time that would never be accepted.
-- **`/contact` now has an address, map, and opening hours** — the exact final step the previous case study flagged as missing.
+- **`/contact` carries a full address, map, and opening hours.**
 - **`/menu` uses real data, not images.** Prices live as structured HTML, not baked into a picture — searchable by search engines, and eligible for Menu structured data.
-- **Images go entirely through `@nuxt/image`,** emitting multi-size WebP automatically — the single change the previous case study called the highest-return fix.
-- **The component library is now shadcn-vue,** built on Reka UI, with the component source copied straight into `app/components/ui` rather than pulled in as an opaque dependency — for something like a reservation form that needs precisely customised validation and styling, owning the code outright beats inheriting a generic component's defaults.
+- **Images go entirely through `@nuxt/image`,** emitting multi-size WebP automatically — fast to load without sacrificing quality.
+- **The component library is shadcn-vue,** built on Reka UI, with the component source copied straight into `app/components/ui` rather than pulled in as an opaque dependency — for something like a reservation form that needs precisely customised validation and styling, owning the code outright beats inheriting a generic component's defaults.
 
 ## Technical decisions
 
-### Why move from single-page to multi-page
+### Why multi-page instead of a single page
 
-Content like a reservation form, a full menu, or FAQs is something people arrive looking for with clear intent — a single scrolling page is a worse fit than a dedicated URL that can be bookmarked or shared directly. Moving to Nuxt let "multi-page" and "statically generated" coexist: `nuxi generate` emits every route as a static file, so deployment stays exactly as simple as before, while the architecture is now a proper multi-page app.
+Content like a reservation form, a full menu, or FAQs is something people arrive looking for with clear intent — a single scrolling page is a worse fit than a dedicated URL that can be bookmarked or shared directly. Nuxt lets "multi-page" and "statically generated" coexist: `nuxi generate` emits every route as a static file, so deployment stays simple while the architecture is a proper multi-page app.
 
 ### Why shadcn-vue instead of a conventional component library
 

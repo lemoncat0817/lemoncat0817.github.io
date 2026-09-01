@@ -8,9 +8,9 @@ export type Lang = keyof typeof languages;
 
 export const ui = {
   'zh-TW': {
-    'meta.title': 'Lemoncat — 前端工程師',
+    'meta.title': 'Lemoncat — 網頁工程師',
     'meta.description':
-      '專注 Vue 生態系的前端工程師，來自高雄。作品包含 POS 點餐系統、氣象資訊站、寵物咖啡廳形象網站與待辦事項應用。',
+      '專注 Vue 生態系的網頁工程師，來自高雄。作品包含 POS 點餐系統、氣象資訊站、寵物咖啡廳形象網站與待辦事項應用。',
 
     'nav.work': '作品',
     'nav.stack': '技術',
@@ -21,7 +21,7 @@ export const ui = {
     'nav.home': '回首頁',
     'nav.menu': '選單',
 
-    'hero.role': '前端工程師',
+    'hero.role': '網頁工程師',
     'hero.headline.1': '我把想法',
     'hero.headline.2': '變成能用的介面',
     'hero.intro':
@@ -35,7 +35,7 @@ export const ui = {
 
     'work.eyebrow': '精選作品',
     'work.title': '四個從零做到上線的專案',
-    'work.intro': '每個專案都有完整的問題背景、技術決策與踩坑紀錄，不只是截圖。',
+    'work.intro': '每個專案都有完整的問題背景與技術決策，不只是截圖。',
     'work.readCase': '閱讀案例研究',
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
@@ -79,9 +79,9 @@ export const ui = {
   },
 
   en: {
-    'meta.title': 'Lemoncat — Frontend Engineer',
+    'meta.title': 'Lemoncat — Web Engineer',
     'meta.description':
-      'Frontend engineer from Kaohsiung, Taiwan, focused on the Vue ecosystem. Projects include a POS ordering system, a weather data app, a pet cafe site, and a todo app.',
+      'Web engineer from Kaohsiung, Taiwan, focused on the Vue ecosystem. Projects include a POS ordering system, a weather data app, a pet cafe site, and a todo app.',
 
     'nav.work': 'Work',
     'nav.stack': 'Stack',
@@ -92,7 +92,7 @@ export const ui = {
     'nav.home': 'Back to home',
     'nav.menu': 'Menu',
 
-    'hero.role': 'Frontend Engineer',
+    'hero.role': 'Web Engineer',
     'hero.headline.1': 'I turn ideas',
     'hero.headline.2': 'into interfaces that work',
     'hero.intro':
@@ -107,7 +107,7 @@ export const ui = {
     'work.eyebrow': 'Selected work',
     'work.title': 'Four projects taken from zero to production',
     'work.intro':
-      'Each one comes with the problem, the technical decisions, and the things that went wrong — not just screenshots.',
+      'Each one comes with the problem behind it and the technical decisions made along the way — not just screenshots.',
     'work.readCase': 'Read case study',
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
