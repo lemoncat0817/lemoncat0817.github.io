@@ -22,7 +22,7 @@ export const profile = {
    * Serverless 表單轉發端點（Formspree / Web3Forms 等）。
    * 訪客可在站內彈窗直接填表送出，自動轉寄至上方 email。
    */
-  formEndpoint: 'https://formspree.io/f/xpwzgkqv',
+  formEndpoint: 'https://formspree.io/f/mljebebn',
 } as const;
 
 /**
