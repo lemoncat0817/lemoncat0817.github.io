@@ -2,6 +2,7 @@
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile } from '../data/profile';
 import GithubIcon from './GithubIcon.astro';
+import EmailButton from './EmailButton.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -33,16 +34,7 @@ const t = useTranslations(lang);
           {t('contact.github')}
         </a>
 
-        {
-          profile.email && (
-            <a
-              href={`mailto:${profile.email}`}
-              class="inline-flex items-center gap-2 rounded-full border border-line-hi px-6 py-3 font-semibold transition-colors hover:bg-surface-hi"
-            >
-              {t('contact.email')}
-            </a>
-          )
-        }
+        <EmailButton />
       </div>
     </div>
   </div>

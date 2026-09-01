@@ -2,6 +2,7 @@
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile, techStack } from '../data/profile';
 import GithubIcon from './GithubIcon.astro';
+import EmailButton from './EmailButton.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -70,14 +71,18 @@ const facts = zh
         </ul>
       </div>
 
-      <a
-        href={profile.github}
-        rel="noopener"
-        class="inline-flex items-center justify-center gap-2.5 rounded-full border border-line-hi px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
-      >
-        <GithubIcon class="size-[18px]" />
-        {t('contact.github')}
-      </a>
+      <div class="flex flex-col gap-3">
+        <a
+          href={profile.github}
+          rel="noopener"
+          class="inline-flex items-center justify-center gap-2.5 rounded-full border border-line-hi px-5 py-3 text-sm font-semibold transition-colors hover:bg-surface"
+        >
+          <GithubIcon class="size-[18px]" />
+          {t('contact.github')}
+        </a>
+
+        <EmailButton class="px-5 py-3 text-sm" />
+      </div>
     </aside>
   </div>
 </section>

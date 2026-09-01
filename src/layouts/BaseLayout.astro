@@ -39,6 +39,7 @@ const personSchema = {
   alternateName: profile.nameZh,
   url: profile.siteUrl,
   jobTitle: t('hero.role'),
+  ...(profile.email ? { email: profile.email } : {}),
   address: {
     '@type': 'PostalAddress',
     addressLocality: 'Kaohsiung',

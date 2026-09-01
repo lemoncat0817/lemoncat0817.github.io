@@ -56,6 +56,8 @@ export const ui = {
     'contact.intro': '對我的作品有興趣，或想聊聊合作機會，歡迎透過 GitHub 找到我。',
     'contact.github': '前往 GitHub',
     'contact.email': '寄信給我',
+    'contact.copied': '已複製 Email！',
+    'contact.copyHint': '點擊複製信箱',
 
     'case.overview': '專案概要',
     'case.role': '擔任角色',
@@ -129,6 +131,8 @@ export const ui = {
       'If my work interests you or you want to talk about working together, find me on GitHub.',
     'contact.github': 'Go to GitHub',
     'contact.email': 'Send me an email',
+    'contact.copied': 'Email copied!',
+    'contact.copyHint': 'Click to copy email',
 
     'case.overview': 'Overview',
     'case.role': 'Role',

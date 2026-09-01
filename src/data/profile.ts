@@ -10,7 +10,7 @@ export const profile = {
   siteUrl: 'https://lemoncat0817.github.io',
 
   /** 留空字串就不會顯示 email 連結，只保留 GitHub。 */
-  email: '',
+  email: 'jimdeng0817@gmail.com',
 
   /** 是否在 Hero 顯示「開放合作機會」狀態燈。 */
   available: true,
