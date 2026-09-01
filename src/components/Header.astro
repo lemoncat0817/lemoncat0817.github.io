@@ -58,6 +58,73 @@ const links = [
       </a>
 
       <ThemeToggle label={t('nav.toggleTheme')} />
+
+      {/* 手機版導覽：桌機用不到，>=640px 直接不渲染這顆按鈕的用途 */}
+      <button
+        type="button"
+        id="nav-toggle"
+        class="grid size-9 place-items-center rounded-lg text-muted transition-colors hover:bg-surface hover:text-fg sm:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-nav"
+        aria-label={t('nav.menu')}
+      >
+        <svg
+          class="size-[18px] [[aria-expanded='true']_&]:hidden"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M3 6h18M3 12h18M3 18h18"></path>
+        </svg>
+        <svg
+          class="hidden size-[18px] [[aria-expanded='true']_&]:block"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.8"
+          stroke-linecap="round"
+          aria-hidden="true"
+        >
+          <path d="M6 6l12 12M18 6L6 18"></path>
+        </svg>
+      </button>
     </nav>
   </div>
+
+  <ul id="mobile-nav" hidden class="shell border-t border-line/60 py-2 sm:hidden">
+    {
+      links.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class="block rounded-lg px-3 py-2.5 text-sm text-muted transition-colors hover:bg-surface hover:text-fg"
+          >
+            {link.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
 </header>
+
+<script>
+  // 手機選單：顯示/隱藏由 hidden 屬性控制，圖示切換交給上面的 CSS 屬性選擇器。
+  const toggle = document.getElementById('nav-toggle');
+  const panel = document.getElementById('mobile-nav');
+  if (toggle && panel) {
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') === 'true';
+      toggle.setAttribute('aria-expanded', String(!open));
+      panel.hidden = open;
+    });
+    panel.querySelectorAll('a').forEach((a) => {
+      a.addEventListener('click', () => {
+        toggle.setAttribute('aria-expanded', 'false');
+        panel.hidden = true;
+      });
+    });
+  }
+</script>

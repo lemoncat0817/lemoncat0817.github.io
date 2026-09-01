@@ -19,6 +19,7 @@ export const ui = {
     'nav.toggleTheme': '切換深淺色主題',
     'nav.switchLang': 'Switch to English',
     'nav.home': '回首頁',
+    'nav.menu': '選單',
 
     'hero.role': '前端工程師',
     'hero.headline.1': '我把想法',
@@ -89,6 +90,7 @@ export const ui = {
     'nav.toggleTheme': 'Toggle colour theme',
     'nav.switchLang': '切換為繁體中文',
     'nav.home': 'Back to home',
+    'nav.menu': 'Menu',
 
     'hero.role': 'Frontend Engineer',
     'hero.headline.1': 'I turn ideas',
