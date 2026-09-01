@@ -1,0 +1,271 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { profile } from '../data/profile';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${profile.email}&su=${encodeURIComponent(
+  lang === 'zh-TW' ? '【作品集合作諮詢】' : '[Portfolio Inquiry]'
+)}`;
+---
+
+<dialog
+  id="contact-modal"
+  class="fixed inset-0 m-auto w-[min(92vw,32rem)] rounded-3xl border border-line bg-surface/95 p-0 text-fg shadow-2xl backdrop:bg-bg/80 backdrop:backdrop-blur-md max-h-[90vh] overflow-y-auto"
+  aria-labelledby="contact-modal-title"
+>
+  <div class="relative p-6 sm:p-8">
+    {/* 關閉按鈕 */}
+    <button
+      type="button"
+      id="modal-close-btn"
+      class="absolute right-5 top-5 grid size-8 place-items-center rounded-full text-muted transition-colors hover:bg-surface-hi hover:text-fg"
+      aria-label={t('modal.close')}
+    >
+      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    {/* 表單主體 */}
+    <div id="modal-form-container">
+      <div class="pr-6">
+        <p class="font-mono text-xs tracking-widest text-accent-text uppercase">{t('contact.eyebrow')}</p>
+        <h3 id="contact-modal-title" class="mt-1 text-xl font-semibold sm:text-2xl">{t('modal.title')}</h3>
+        <p class="mt-1.5 text-xs text-muted leading-relaxed sm:text-sm">{t('modal.subtitle')}</p>
+      </div>
+
+      <form
+        id="contact-form"
+        action={profile.formEndpoint}
+        method="POST"
+        class="mt-6 flex flex-col gap-4"
+      >
+        {/* Anti-spam Honeypot */}
+        <input type="text" name="_gotcha" class="hidden" tabindex="-1" autocomplete="off" style="display:none !important;" />
+        <input type="hidden" name="_subject" value={`來自作品集的聯絡信件 (${profile.name})`} />
+
+        <div>
+          <label for="contact-name" class="block font-mono text-xs font-medium text-muted">
+            {t('modal.name')} <span class="text-accent-text">*</span>
+          </label>
+          <input
+            type="text"
+            id="contact-name"
+            name="name"
+            required
+            placeholder={t('modal.namePlaceholder')}
+            class="mt-1.5 w-full rounded-xl border border-line bg-surface-hi px-3.5 py-2.5 text-sm text-fg placeholder:text-faint focus:border-accent-text focus:outline-none transition-colors"
+          />
+        </div>
+
+        <div>
+          <label for="contact-email" class="block font-mono text-xs font-medium text-muted">
+            {t('modal.email')} <span class="text-accent-text">*</span>
+          </label>
+          <input
+            type="email"
+            id="contact-email"
+            name="email"
+            required
+            placeholder={t('modal.emailPlaceholder')}
+            class="mt-1.5 w-full rounded-xl border border-line bg-surface-hi px-3.5 py-2.5 text-sm text-fg placeholder:text-faint focus:border-accent-text focus:outline-none transition-colors"
+          />
+        </div>
+
+        <div>
+          <label for="contact-message" class="block font-mono text-xs font-medium text-muted">
+            {t('modal.message')} <span class="text-accent-text">*</span>
+          </label>
+          <textarea
+            id="contact-message"
+            name="message"
+            rows="4"
+            required
+            placeholder={t('modal.messagePlaceholder')}
+            class="mt-1.5 w-full resize-none rounded-xl border border-line bg-surface-hi px-3.5 py-2.5 text-sm text-fg placeholder:text-faint focus:border-accent-text focus:outline-none transition-colors"
+          ></textarea>
+        </div>
+
+        {/* 錯誤提示 */}
+        <div id="form-error-banner" class="hidden rounded-xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-300">
+          <p class="font-semibold">{t('modal.errorTitle')}</p>
+          <p class="mt-0.5 text-rose-300/80">{t('modal.errorDesc')}</p>
+        </div>
+
+        <button
+          type="submit"
+          id="form-submit-btn"
+          class="mt-2 inline-flex items-center justify-center gap-2 btn-accent rounded-xl py-3 text-sm font-semibold transition-all duration-300 ease-[var(--ease-spring)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <svg id="submit-spinner" class="hidden size-4 animate-spin" viewBox="0 0 24 24" fill="none">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          <span id="submit-btn-text">{t('modal.send')}</span>
+        </button>
+      </form>
+
+      {/* 底部快速通道 */}
+      <div class="mt-6 border-t border-line/70 pt-4 flex flex-col sm:flex-row items-center justify-between gap-2.5 font-mono text-xs">
+        <a
+          href={gmailUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-muted hover:text-accent-text transition-colors inline-flex items-center gap-1.5"
+        >
+          <span>✉️ {t('modal.orGmail')}</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+
+        <button
+          type="button"
+          id="modal-copy-email-btn"
+          data-email={profile.email}
+          class="text-faint hover:text-fg transition-colors"
+        >
+          {t('modal.copyEmail')}
+        </button>
+      </div>
+    </div>
+
+    {/* 送出成功畫面 */}
+    <div id="modal-success-container" class="hidden py-8 text-center">
+      <div class="mx-auto grid size-14 place-items-center rounded-full bg-accent/15 text-accent-text">
+        <svg class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      </div>
+      <h3 class="mt-4 text-xl font-semibold">{t('modal.successTitle')}</h3>
+      <p class="mx-auto mt-2 max-w-sm text-sm text-muted leading-relaxed">{t('modal.successDesc')}</p>
+      <button
+        type="button"
+        id="modal-success-close-btn"
+        class="mt-6 inline-flex items-center gap-2 rounded-full border border-line-hi px-6 py-2.5 text-sm font-semibold transition-colors hover:bg-surface-hi"
+      >
+        {t('modal.close')}
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  function initContactModal() {
+    const modal = document.getElementById('contact-modal') as HTMLDialogElement | null;
+    if (!modal || modal.dataset.initialized === 'true') return;
+    modal.dataset.initialized = 'true';
+
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    const formContainer = document.getElementById('modal-form-container');
+    const successContainer = document.getElementById('modal-success-container');
+    const closeBtn = document.getElementById('modal-close-btn');
+    const successCloseBtn = document.getElementById('modal-success-close-btn');
+    const submitBtn = document.getElementById('form-submit-btn') as HTMLButtonElement | null;
+    const submitSpinner = document.getElementById('submit-spinner');
+    const submitBtnText = document.getElementById('submit-btn-text');
+    const errorBanner = document.getElementById('form-error-banner');
+    const copyBtn = document.getElementById('modal-copy-email-btn');
+
+    // 開啟 Modal 事件綁定
+    const openModal = () => {
+      // 重設狀態
+      formContainer?.classList.remove('hidden');
+      successContainer?.classList.add('hidden');
+      errorBanner?.classList.add('hidden');
+      modal.showModal();
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeModal = () => {
+      modal.close();
+      document.body.style.overflow = '';
+    };
+
+    // 全站開啟按鈕綁定
+    document.querySelectorAll('[data-open-contact-modal]').forEach((trigger) => {
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        openModal();
+      });
+    });
+
+    closeBtn?.addEventListener('click', closeModal);
+    successCloseBtn?.addEventListener('click', closeModal);
+
+    // 點擊背景遮罩關閉
+    modal.addEventListener('click', (e) => {
+      const rect = modal.getBoundingClientRect();
+      const isInDialog =
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width;
+      if (!isInDialog) {
+        closeModal();
+      }
+    });
+
+    modal.addEventListener('close', () => {
+      document.body.style.overflow = '';
+    });
+
+    // 複製信箱
+    copyBtn?.addEventListener('click', async () => {
+      const email = copyBtn.getAttribute('data-email') || '';
+      if (!email) return;
+      try {
+        await navigator.clipboard.writeText(email);
+        const prev = copyBtn.textContent;
+        copyBtn.textContent = '✓ 已複製！';
+        setTimeout(() => {
+          copyBtn.textContent = prev;
+        }, 2000);
+      } catch {
+        // Fallback
+      }
+    });
+
+    // 表單非同步提交 (AJAX)
+    if (form && submitBtn) {
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        errorBanner?.classList.add('hidden');
+
+        // UI 進入 Loading
+        submitBtn.disabled = true;
+        submitSpinner?.classList.remove('hidden');
+        if (submitBtnText) submitBtnText.textContent = '傳送中...';
+
+        try {
+          const formData = new FormData(form);
+          const response = await fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              Accept: 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            form.reset();
+            formContainer?.classList.add('hidden');
+            successContainer?.classList.remove('hidden');
+          } else {
+            throw new Error(`Submit failed with status ${response.status}`);
+          }
+        } catch {
+          errorBanner?.classList.remove('hidden');
+        } finally {
+          submitBtn.disabled = false;
+          submitSpinner?.classList.add('hidden');
+          if (submitBtnText) submitBtnText.textContent = '送出訊息';
+        }
+      });
+    }
+  }
+
+  initContactModal();
+  document.addEventListener('astro:page-load', initContactModal);
+</script>

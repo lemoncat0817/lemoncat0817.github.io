@@ -17,6 +17,12 @@ export const profile = {
 
   /** 用來自動算年資，不必每年手動改。 */
   codingSince: 2023,
+
+  /**
+   * Serverless 表單轉發端點（Formspree / Web3Forms 等）。
+   * 訪客可在站內彈窗直接填表送出，自動轉寄至上方 email。
+   */
+  formEndpoint: 'https://formspree.io/f/xpwzgkqv',
 } as const;
 
 /**

@@ -21,20 +21,16 @@ const baseStyle =
   profile.email && (
     <button
       type="button"
-      data-email-btn
-      data-email={profile.email}
-      data-copied-text={t('contact.copied')}
-      data-original-text={t('contact.email')}
-      title={`${t('contact.copyHint')}: ${profile.email}`}
+      data-open-contact-modal
+      title={`${t('contact.email')}: ${profile.email}`}
       aria-label={`${t('contact.email')} (${profile.email})`}
       class:list={[
-        'group inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold transition-all duration-300 ease-[var(--ease-spring)] active:scale-95',
+        'group inline-flex cursor-pointer items-center justify-center gap-2 rounded-full px-6 py-3 font-semibold transition-all duration-300 ease-[var(--ease-spring)] hover:scale-[1.02] active:scale-95',
         baseStyle,
         className,
       ]}
     >
       <svg
-        data-icon-mail
         class="size-[18px] shrink-0 transition-transform duration-300 group-hover:scale-110"
         viewBox="0 0 24 24"
         fill="none"
@@ -47,89 +43,7 @@ const baseStyle =
         <rect width="20" height="16" x="2" y="4" rx="2" />
         <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
       </svg>
-      <svg
-        data-icon-check
-        class="hidden size-[18px] shrink-0 text-accent-text"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2.2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        aria-hidden="true"
-      >
-        <polyline points="20 6 9 17 4 12" />
-      </svg>
-      <span data-email-text>{t('contact.email')}</span>
+      <span>{t('contact.email')}</span>
     </button>
   )
 }
-
-<script>
-  function setupEmailButtons() {
-    document.querySelectorAll<HTMLButtonElement>('[data-email-btn]').forEach((btn) => {
-      if (btn.dataset.bound === 'true') return;
-      btn.dataset.bound = 'true';
-
-      const email = btn.dataset.email || '';
-      const copiedText = btn.dataset.copiedText || '已複製 Email！';
-      const originalText = btn.dataset.originalText || '寄信給我';
-      const textSpan = btn.querySelector('[data-email-text]');
-      const mailIcon = btn.querySelector('[data-icon-mail]');
-      const checkIcon = btn.querySelector('[data-icon-check]');
-
-      let timer: number | undefined;
-
-      btn.addEventListener('click', async () => {
-        if (!email) return;
-
-        // 1. 複製到剪貼簿 (支援現代 API 與舊環境 Fallback)
-        let copied = false;
-        try {
-          if (navigator.clipboard && window.isSecureContext) {
-            await navigator.clipboard.writeText(email);
-            copied = true;
-          } else {
-            const textArea = document.createElement('textarea');
-            textArea.value = email;
-            textArea.style.position = 'fixed';
-            textArea.style.opacity = '0';
-            document.body.appendChild(textArea);
-            textArea.focus();
-            textArea.select();
-            copied = document.execCommand('copy');
-            document.body.removeChild(textArea);
-          }
-        } catch {
-          copied = false;
-        }
-
-        // 2. 切換按鈕狀態（即時視覺回饋）
-        if (textSpan) textSpan.textContent = copied ? copiedText : email;
-        mailIcon?.classList.add('hidden');
-        checkIcon?.classList.remove('hidden');
-        btn.classList.add('border-accent-text', 'text-accent-text');
-
-        window.clearTimeout(timer);
-        timer = window.setTimeout(() => {
-          if (textSpan) textSpan.textContent = originalText;
-          mailIcon?.classList.remove('hidden');
-          checkIcon?.classList.add('hidden');
-          btn.classList.remove('border-accent-text', 'text-accent-text');
-        }, 2200);
-
-        // 3. 嘗試開啟 mailto 協定
-        const mailtoLink = `mailto:${email}`;
-        const tempLink = document.createElement('a');
-        tempLink.href = mailtoLink;
-        tempLink.style.display = 'none';
-        document.body.appendChild(tempLink);
-        tempLink.click();
-        document.body.removeChild(tempLink);
-      });
-    });
-  }
-
-  setupEmailButtons();
-  document.addEventListener('astro:page-load', setupEmailButtons);
-</script>
