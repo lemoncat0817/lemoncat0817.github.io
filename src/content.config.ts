@@ -40,12 +40,6 @@ const work = defineCollection({
       order: z.number().int(),
       /** 是否為主打作品（在 Bento 網格佔較大版位） */
       featured: z.boolean().default(false),
-
-      /** 案例頁重點數據，最多 4 組 */
-      stats: z
-        .array(z.object({ label: z.string(), value: z.string() }))
-        .max(4)
-        .optional(),
     }),
 });
 

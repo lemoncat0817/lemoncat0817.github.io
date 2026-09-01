@@ -69,7 +69,6 @@ export const ui = {
     'case.videoTitle': '功能展示影片',
     'case.toc': '本頁內容',
 
-    'footer.builtWith': '使用 Astro 與 Tailwind CSS 建置',
     'footer.rights': '版權所有',
     'footer.source': '本站原始碼',
 
@@ -143,7 +142,6 @@ export const ui = {
     'case.videoTitle': 'Feature walkthrough',
     'case.toc': 'On this page',
 
-    'footer.builtWith': 'Built with Astro and Tailwind CSS',
     'footer.rights': 'All rights reserved',
     'footer.source': 'Source of this site',
 

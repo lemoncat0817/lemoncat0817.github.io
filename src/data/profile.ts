@@ -4,7 +4,7 @@
  */
 export const profile = {
   name: 'Lemoncat',
-  nameZh: '檸檬',
+  nameZh: '檸檬貓',
   github: 'https://github.com/lemoncat0817',
   githubUser: 'lemoncat0817',
   siteUrl: 'https://lemoncat0817.github.io',

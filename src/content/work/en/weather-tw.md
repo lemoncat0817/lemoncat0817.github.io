@@ -20,13 +20,6 @@ cover: ../../../assets/work/weather-tw.png
 coverAlt: The Weather, Explained homepage, showing county warnings, typhoon status, a recent earthquake, current conditions, a 24-hour trend chart and a radar map
 order: 3
 featured: true
-stats:
-  - label: Data sections
-    value: '8'
-  - label: Deployed on
-    value: Cloudflare Workers
-  - label: Data source
-    value: Taiwan CWA
 ---
 
 ## What it is
@@ -62,18 +55,6 @@ Weather data is read-heavy with low real-time demands — most users are checkin
 
 Writing a normaliser for each of the four CWA datasets is more code up front. But that cost is paid once, and in exchange components never touch nested JSON, and a field rename by the agency means changing one file instead of hunting through components.
 
-## What went wrong
-
-**The radar animation needed a server-side rolling window.** CWA's radar imagery is a series of static frames; handing the entire history to the frontend would make load time grow indefinitely. The server now returns only the most recent window of frames, so the client never has to decide what to discard.
-
-**The typhoon uncertainty cone is interpolated, not provided directly by CWA.** The agency publishes discrete forecast points along the track; the 70%-probability radius has to be interpolated across the forecast horizon. That visualisation is computed entirely on the frontend, not read straight off the API.
-
 ## Outcome
 
 CI runs type checking, linting and tests on every push to `master`, and all three have to pass before it builds and deploys to Cloudflare Workers. The live site answers weather, map and typhoon queries for any county in Taiwan.
-
-## What I would change
-
-1. **Add scrubbing to the radar animation.** It currently only auto-plays the latest sequence of frames; letting users drag to any point in time would make it more useful.
-2. **Add push subscriptions for warnings.** Warnings are currently only visible while the site is open. A subscription model scoped to specific counties would make this feature actually actionable.
-3. **Extend earthquakes into historical search.** Only recent events are shown today; a magnitude/region filterable history would round this section out.

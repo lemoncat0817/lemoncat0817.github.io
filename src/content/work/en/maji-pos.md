@@ -22,13 +22,6 @@ cover: ../../../assets/work/maji-pos.jpg
 coverAlt: The MAJI Tea POS ordering screen, with drink categories on the left and the current order on the right
 order: 1
 featured: true
-stats:
-  - label: Feature modules
-    value: '7'
-  - label: Roles
-    value: Staff / Manager
-  - label: Scale
-    value: Largest
 ---
 
 ## What it is
@@ -85,18 +78,6 @@ I moved to a guard in **Vue Router**'s `beforeEach`, deciding access by role. Th
 
 <!-- To confirm: if this project talks to a real backend API, this section could describe how the server validates permissions -->
 
-## What went wrong
-
-**Cart option combinations.** Is "pearl milk tea, full sugar, no ice, with pearls" the same line item as "half sugar, less ice, no toppings"? I initially keyed the cart by drink ID, so the second cup overwrote the first. I had to build the key from the item ID *plus every selected option* before same-item-different-customisation priced correctly.
-
-**ECharts sizing inside dialogs.** If a chart initialises while its container is still `display: none`, ECharts measures zero width and height and renders a squashed mess. The fix was calling `resize()` after the dialog's open animation finishes.
-
 ## Outcome
 
 All seven modules were completed and shipped. The full flow is in the walkthrough video below.
-
-## What I would change
-
-1. **Add tests.** Discount calculation is the thing that most deserves testing — it directly affects money, and it was the part I verified purely by clicking through manually.
-2. **Use TypeScript.** This project is plain JavaScript. The order object travels between many modules, and types would have saved a lot of debugging. I switched to TypeScript on the next project.
-3. **Make discount rules configuration, not code.** Adding a discount type currently means changing code; ideally a manager could define rules from the admin panel.

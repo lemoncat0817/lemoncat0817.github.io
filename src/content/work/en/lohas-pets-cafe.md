@@ -18,13 +18,6 @@ cover: ../../../assets/work/lohas-pets-cafe.png
 coverAlt: The Lohas Pet Cafe homepage, a full-bleed close-up of an espresso machine behind the brand tagline and Book Now / View Menu buttons
 order: 4
 featured: false
-stats:
-  - label: Pages
-    value: '9'
-  - label: Component system
-    value: shadcn-vue
-  - label: Structured data
-    value: Restaurant / Menu / Review
 ---
 
 ## What it is
@@ -61,18 +54,6 @@ A library like Element Plus ships components as an opaque npm package. shadcn-vu
 
 `@nuxtjs/color-mode` doesn't just toggle a class — it keeps `color-scheme` in sync too, so native browser UI that CSS can't reach (form controls, scrollbars) switches along with everything else. Without that, a dark site can end up with a jarringly white input box.
 
-## What went wrong
-
-**Closed-day logic had to match between client and server.** The reservation form originally only blocked closed dates in the UI, but submitting with a crafted request still succeeded. The closed-day rule was pulled out into shared logic so both sides run the same check — the UI alone was never enough.
-
-**Page transitions needed a fallback outside Chromium.** `experimental.viewTransition` only gets native transitions in Chromium-based browsers; everywhere else needed verifying that it degrades to a plain swap rather than getting stuck mid-transition.
-
 ## Outcome
 
 All nine pages shipped and browsable offline (static generation), the reservation form disables invalid slots against the current date in real time, and both light and dark mode are fully supported across every page.
-
-## What I would change
-
-1. **Wire the reservation form to a real confirmation flow.** Submissions currently just trigger an email; there is no "the cafe has confirmed" state to show the person who booked.
-2. **Move menu pricing into lightweight content management.** Prices are no longer baked into images, but changing one still means editing code and regenerating the static site. A small headless CMS would let the owner maintain it directly.
-3. **Generate page-specific social preview images.** The OG image is currently one static graphic for the whole site; per-page images (menu, reservation) would make link previews more accurate.

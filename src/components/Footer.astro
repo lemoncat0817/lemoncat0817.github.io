@@ -10,13 +10,10 @@ const year = new Date().getFullYear();
 
 <footer class="mt-32 border-t border-line">
   <div class="shell flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
-    <div class="flex flex-col gap-1.5">
-      <p class="text-sm text-muted">
-        © {year}
-        {lang === 'zh-TW' ? profile.nameZh : profile.name} · {t('footer.rights')}
-      </p>
-      <p class="font-mono text-xs text-faint">{t('footer.builtWith')}</p>
-    </div>
+    <p class="text-sm text-muted">
+      © {year}
+      {lang === 'zh-TW' ? profile.nameZh : profile.name} · {t('footer.rights')}
+    </p>
 
     <div class="flex items-center gap-2">
       <a
