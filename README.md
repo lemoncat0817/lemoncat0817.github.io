@@ -28,13 +28,6 @@ npm run og        # 重新產生社群分享圖與 icon
 npm run fonts     # 重新下載字體檔（只有要換字體時才需要）
 ```
 
-### 為什麼字體檔要進版控
-
-`src/assets/fonts/` 的 woff2 是刻意收進 repo 的。原本讓 Astro 在建置時去
-Google Fonts 抓，但 Google 會輪換 `fonts.gstatic.com` 的檔名 hash，舊網址
-會變 404，建置就直接失敗（實際發生過）。字體進版控之後建置完全離線可重現，
-CI 也不會因為第三方服務變動而掛掉。
-
 ## 專案結構
 
 ```
@@ -63,12 +56,9 @@ src/
 **改介面文字**：`src/i18n/ui.ts`。
 
 **改配色**：`src/styles/global.css` 的 `@theme` 區塊。
-注意 `--color-accent`（填色）與 `--color-accent-text`（文字色）是刻意分開的，
-因為黃色當底色好看，但直接當文字色在淺色背景上對比不足。
+`--color-accent`（填色）與 `--color-accent-text`（文字色）刻意分開，
+因為兩者的對比需求不同：作為背景色時觀感良好的黃色，直接當文字色在淺色背景上對比不足。
 
 ## 部署
 
 推送到 `main` 會觸發 `.github/workflows/deploy.yml` 自動建置並部署。
-Repo Settings → Pages → Source 需設為 **GitHub Actions**。
-
-重構前的舊版網站保存在 `v1-legacy` tag，可用 `git show v1-legacy` 查看。
