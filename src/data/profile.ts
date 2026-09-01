@@ -24,23 +24,29 @@ export const profile = {
  * （取代舊站無法驗證的自評進度條）。
  *
  * 資料來源：各專案 repo 的 package.json 與 GitHub 語言統計，非估計值。
- * 新增專案時請一併更新此處的對應關係。
+ * 新增專案或幫舊專案換技術棧時，請一併更新此處的對應關係。
  */
 export const techStack = [
-  { name: 'Vue 3', projects: ['maji-pos', 'weather', 'pet-cafe', 'todo-list'] },
-  { name: 'TypeScript', projects: ['weather'] },
-  { name: 'JavaScript', projects: ['maji-pos', 'pet-cafe', 'todo-list'] },
-  { name: 'Pinia', projects: ['maji-pos', 'weather', 'pet-cafe'] },
-  { name: 'Vue Router', projects: ['maji-pos', 'weather'] },
-  { name: 'Element Plus', projects: ['maji-pos', 'weather', 'pet-cafe'] },
-  { name: 'ECharts', projects: ['maji-pos', 'weather'] },
-  { name: 'Axios', projects: ['weather'] },
-  { name: 'Tailwind CSS', projects: ['maji-pos'] },
-  { name: 'Sass', projects: ['maji-pos', 'weather', 'pet-cafe'] },
-  { name: 'VueUse', projects: ['pet-cafe'] },
-  { name: 'Vite', projects: ['maji-pos', 'weather', 'pet-cafe', 'todo-list'] },
-  { name: 'RWD', projects: ['maji-pos', 'weather', 'pet-cafe', 'todo-list'] },
-  { name: 'Git', projects: ['maji-pos', 'weather', 'pet-cafe', 'todo-list'] },
+  { name: 'Vue 3', projects: ['maji-pos', 'todo-list', 'weather-tw', 'lohas-pets-cafe'] },
+  { name: 'TypeScript', projects: ['todo-list', 'weather-tw', 'lohas-pets-cafe'] },
+  { name: 'JavaScript', projects: ['maji-pos'] },
+  { name: 'Nuxt', projects: ['weather-tw', 'lohas-pets-cafe'] },
+  { name: 'Pinia', projects: ['maji-pos', 'todo-list'] },
+  { name: 'Vue Router', projects: ['maji-pos', 'todo-list'] },
+  { name: 'Element Plus', projects: ['maji-pos'] },
+  { name: 'ECharts', projects: ['maji-pos', 'weather-tw'] },
+  { name: 'MapLibre GL', projects: ['weather-tw'] },
+  { name: 'Cloudflare Workers', projects: ['weather-tw'] },
+  { name: 'IndexedDB', projects: ['todo-list'] },
+  { name: 'Supabase', projects: ['todo-list'] },
+  { name: 'shadcn-vue', projects: ['lohas-pets-cafe'] },
+  { name: 'Zod', projects: ['lohas-pets-cafe'] },
+  { name: 'VueUse', projects: ['weather-tw', 'lohas-pets-cafe'] },
+  { name: 'Tailwind CSS', projects: ['maji-pos', 'todo-list', 'weather-tw', 'lohas-pets-cafe'] },
+  { name: 'Sass', projects: ['maji-pos'] },
+  { name: 'Vite', projects: ['maji-pos', 'todo-list'] },
+  { name: 'Vitest', projects: ['todo-list', 'weather-tw'] },
+  { name: 'Playwright', projects: ['todo-list'] },
 ] as const;
 
 export type TechItem = (typeof techStack)[number];

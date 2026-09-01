@@ -1,80 +1,84 @@
 ---
 title: Todo List
-tagline: Doing one small thing completely, with as few dependencies as possible
-summary: A todo application covering CRUD, completion filtering, bulk actions and responsive layout. Vue is its only dependency — this was deliberate practice in getting the fundamentals right.
-year: 2024
+tagline: A zero-dependency exercise, rewritten into something that holds up under test
+summary: A local-first todo system with natural-language quick add, recurring tasks, a command palette, saveable filters and full undo support, plus optional cross-device sync. Unit tests, E2E and accessibility scans all run in CI.
+year: 2026
 role: Frontend developer (solo)
-type: Fundamentals practice
+type: Task management app
 stack:
   - Vue 3
+  - TypeScript
+  - IndexedDB
+  - Supabase
+  - Pinia
+  - Vue Router
+  - Tailwind CSS
   - Vite
-demo: https://lemoncat0817.github.io/Vue-TodoList/
-repo: https://github.com/lemoncat0817/Vue-TodoList
+  - Vitest
+  - Playwright
+demo: https://lemoncat0817.github.io/todo-list/
+repo: https://github.com/lemoncat0817/todo-list
 cover: ../../../assets/work/todo-list.png
-coverAlt: The Todo List app, showing the task list and the active/completed filter
-order: 4
+coverAlt: The Todo List app, showing the Today/Upcoming/Inbox sidebar with projects and tags, the task list, and the quick-add field
+order: 2
 featured: false
 stats:
-  - label: Dependencies
-    value: '0'
-  - label: Core features
-    value: '5'
-  - label: Focus
-    value: Fundamentals
+  - label: Test layers
+    value: Unit / E2E / A11y
+  - label: Persistence
+    value: IndexedDB
+  - label: Cross-device sync
+    value: Optional
 ---
 
 ## What it is
 
-A todo application. The features are not complex: create, delete, edit and read tasks; filter active and completed; clear all completed in one click; select or deselect all in one click; and a responsive layout.
+A todo list — but this time without the deliberate constraint. The previous version used exactly one dependency, Vue itself, to prove I understood the fundamentals. This rewrite is the opposite exercise: build everything a real task manager needs — data that survives, an interface fully operable from the keyboard, undo for every risky action, and quick add through to cross-device sync, all built from scratch.
 
-It is in this portfolio not because it is the hardest thing I have built — **but because it is the only one where I used nothing but Vue itself**.
+The interface borrows the shape of mature task tools like Todoist: a Today/Upcoming/Inbox sidebar, projects and tags, saveable filters, a command palette. But the data model and edge cases behind each feature were worked out from first principles, not copied from a template.
 
-## Why this one is worth including
+## The problem
 
-The other three projects stand on the shoulders of libraries: Element Plus gave me components, Pinia gave me state management, VueUse gave me composables.
+The previous version left three clear gaps: refreshing the page lost every task, there was no keyboard support, and deletion had no undo. Underneath, those three problems are really one problem — a todo list is a high-frequency, low-tolerance-for-error interface, and what it needs most is not more features but a sense of safety. Users need to be able to type, delete and refresh without hesitation.
 
-This project has none of that. Its `package.json` lists exactly one dependency: `vue`.
+So the goal of this rewrite was not to add features for their own sake — it was to make that sense of safety complete: persistence, undo, offline availability, cross-device consistency.
 
-So every decision had to be made from scratch:
-- Where does state live? (A component-local `ref` — the scale does not justify a store)
-- How do I render the list without key problems?
-- How do editing and display states swap?
-- How do I build a responsive layout by hand? (No Bootstrap grid to lean on)
+## What I did
 
-That constraint was **the point**. I wanted to know whether I actually understood Vue, or only understood the tools wrapped around it.
+The data layer came first; everything else was built on top of it.
+
+- **Local-first.** Everything is written to the browser's IndexedDB (wrapped with `idb`) before anything else happens. No login required, nothing is lost on refresh or offline.
+- **Quick add parses natural language.** Typing "tomorrow 3pm submit report p1 #work @office" fills in the due date, priority, project and tag in one line. If the whole string gets consumed by parsing (typing just "tomorrow", say), it falls back to using the raw text as the title rather than producing a nameless task.
+- **One command palette for everything.** `Ctrl/Cmd+K` puts views, projects, tags, filters, tasks and actions in a single list, so nothing has to be remembered by location.
+- **Undo as a first-class citizen.** Deleting, clearing completed, and bulk rescheduling can all be undone, and each batch counts as exactly one undo step — "postpone everything" is one decision, and `Ctrl/Cmd+Z` reverses it in one press, not twenty.
+- **Sync is optional, not required.** Without Supabase environment variables configured, the "account and sync" entry point does not appear at all, and behaviour is identical to the pure local version. Configuring it adds one-click Google/GitHub sign-in and background polling sync.
 
 ## Technical decisions
 
-### No state management library
+### Why IndexedDB instead of localStorage
 
-There is one list of state, used by a handful of components. Reaching for Pinia here would be over-engineering — another layer of abstraction that solves no real problem.
+localStorage is synchronous, size-limited, and string-only. Task data here has nested subtasks and tag associations, and needs to support a possible offline queue later — IndexedDB's async, structured storage was worth the extra wrapper code.
 
-**Knowing when *not* to use a tool matters as much as knowing how to use it.**
+### Last-write-wins sync instead of real-time collaboration
 
-### Bulk actions are all edge cases
+True real-time multi-user collaboration (CRDTs, operational transforms) would be disproportionate to what this app is — a personal todo list, not a team board. I chose background polling with a per-row `updatedAt` comparison instead. The trade-off is that two devices editing different fields at nearly the same moment can overwrite each other's row, but for single-user, cross-device use that trade-off is entirely acceptable, and it buys an order of magnitude less implementation complexity.
 
-"Select all / deselect all" sounds trivial until you ask: should the button currently say "select all" or "deselect all"? That depends on whether everything is already complete.
+### Three independent test layers
 
-"Clear all completed" raises the same question: if nothing is completed, should the button be disabled or hidden?
-
-**The edge cases are where the time actually goes.** The features themselves were quick.
-
-### Responsive layout by hand
-
-With no CSS framework, breakpoints and layout were mine to write. That gave me a much clearer picture of what Flexbox and media queries are actually doing, rather than memorising class names like `col-md-6`.
+Unit tests (Vitest) cover pure logic like the filter query language and date advancement for recurring tasks. E2E (Playwright) covers real user flows. `@axe-core/playwright` scans for accessibility violations during the same E2E run. Each layer catches a different class of bug; none of them substitutes for the others.
 
 ## What went wrong
 
-**Focus management when editing.** Clicking a task should move focus straight into the input, or the user has to click twice. But Vue updates the DOM asynchronously — calling `focus()` immediately fails, because that input does not exist yet. It has to wait for `nextTick()`.
+**Recurring tasks at month end.** A "monthly" task due on Jan 31 would overflow to March 3 if the next date were computed with a naive `setMonth` call, since February has no 31st. The fix is to compute the last day of the target month first, then take the smaller of the two.
 
-That was the first time I properly understood Vue's async update cycle, rather than just copying the pattern from the docs.
+**Undo granularity for batch actions.** Undo was originally recorded per row. Rescheduling 20 tasks at once meant pressing `Ctrl+Z` twenty times to fully undo it — a bad experience. Changing the unit of undo from "one data change" to "one user action" made batch operations actually usable.
 
 ## Outcome
 
-All five features shipped, with both desktop and mobile layouts handled.
+CI runs type checking, linting, unit tests, and E2E with accessibility scanning on every push, and all four have to pass. The full feature set works offline in the live demo; configuring Supabase adds cross-device sync on top.
 
 ## What I would change
 
-1. **Persist the data.** Refreshing the page currently loses everything. `localStorage` would fix it, and it is the most obvious gap.
-2. **Add keyboard support.** For a high-frequency input surface like a todo list, you should never need the mouse — Enter to add, Escape to cancel, arrows to move.
-3. **Make deletion undoable.** Right now deleting is immediate and final, with no confirmation and no recovery. An undo toast would make it feel much safer.
+1. **Move sync from polling to Realtime.** Cross-device sync currently takes up to 30 seconds or a manual trigger. Supabase already offers Realtime subscriptions, which would make sync close to instant.
+2. **Field-level merging instead of whole-row overwrite.** The current last-write-wins approach can, in rare cases, clobber a concurrent edit from another device. Merging at the field level would make that far less likely.
+3. **Make due-date reminders an actual push notification.** Reminders currently only fire while the tab is open. Making them work with the tab closed needs Web Push and a small backend.
