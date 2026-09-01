@@ -28,6 +28,8 @@ export const profile = {
  */
 export const techStack = [
   { name: 'Vue 3', projects: ['maji-pos', 'todo-list', 'weather-tw', 'lohas-pets-cafe'] },
+  { name: 'Angular', projects: [] },
+  { name: 'Spring Boot', projects: [] },
   { name: 'TypeScript', projects: ['todo-list', 'weather-tw', 'lohas-pets-cafe'] },
   { name: 'JavaScript', projects: ['maji-pos'] },
   { name: 'Nuxt', projects: ['weather-tw', 'lohas-pets-cafe'] },
