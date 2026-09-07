@@ -39,8 +39,8 @@ src/
 │  └─ en/
 ├─ data/profile.ts     個人資料與技術棧對應（單一來源）
 ├─ i18n/               翻譯字串與語言工具
-├─ layouts/
-├─ lib/
+├─ layouts/            共用頁面版型（BaseLayout 等）
+├─ lib/                作品資料處理與輔助函式
 ├─ pages/              路由（/ 為繁中，/en/ 為英文）
 └─ styles/global.css   設計 token 與基礎樣式
 ```
