@@ -15,6 +15,7 @@ export const ui = {
     'nav.work': '作品',
     'nav.stack': '技術',
     'nav.about': '關於',
+    'nav.contact': '聯絡',
     'nav.skipToContent': '跳至主要內容',
     'nav.toggleTheme': '切換深淺色主題',
     'nav.switchLang': 'Switch to English',
@@ -48,6 +49,7 @@ export const ui = {
     'stack.usedIn': '使用於',
     'stack.showAll': '顯示全部',
     'stack.filtered': '已篩選',
+    'stack.comingSoon': '尚無對應的上線作品',
 
     'about.eyebrow': '關於',
     'about.title': '關於我',
@@ -106,6 +108,7 @@ export const ui = {
     'nav.work': 'Work',
     'nav.stack': 'Stack',
     'nav.about': 'About',
+    'nav.contact': 'Contact',
     'nav.skipToContent': 'Skip to main content',
     'nav.toggleTheme': 'Toggle colour theme',
     'nav.switchLang': '切換為繁體中文',
@@ -141,6 +144,7 @@ export const ui = {
     'stack.usedIn': 'Used in',
     'stack.showAll': 'Show all',
     'stack.filtered': 'Filtered',
+    'stack.comingSoon': 'No shipped project yet',
 
     'about.eyebrow': 'About',
     'about.title': 'About me',
