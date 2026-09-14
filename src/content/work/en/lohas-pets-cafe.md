@@ -48,7 +48,7 @@ Content like a reservation form, a full menu, or FAQs is something people arrive
 
 ### Why shadcn-vue instead of a conventional component library
 
-A library like Element Plus ships components as an opaque npm package. shadcn-vue instead copies the source into the project. For something like a reservation form, where the validation logic and styling both need precise customisation, owning the source outright is less work than inheriting every default behaviour of a general-purpose component. That is the same judgment call from the MAJI POS project, applied again — tools should serve the problem, not the other way round.
+A conventional component library ships components as an opaque npm package. shadcn-vue instead copies the source into the project. For something like a reservation form, where the validation logic and styling both need precise customisation, owning the source outright is less work than inheriting every default behaviour of a general-purpose component — tools should serve the problem, not the other way round.
 
 ### Dark mode had to match native controls, not just CSS
 

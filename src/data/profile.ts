@@ -33,20 +33,27 @@ export const profile = {
  * 新增專案或幫舊專案換技術棧時，請一併更新此處的對應關係。
  */
 export const techStack = [
-  { name: 'Vue 3', projects: ['maji-pos', 'todo-list', 'weather-tw', 'lohas-pets-cafe'] },
+  { name: 'Vue 3', projects: ['pos-system', 'todo-list', 'weather-tw', 'lohas-pets-cafe'] },
   { name: 'Angular', projects: [] },
   { name: 'Spring Boot', projects: [] },
-  { name: 'TypeScript', projects: ['todo-list', 'weather-tw', 'lohas-pets-cafe'] },
+  {
+    name: 'TypeScript',
+    projects: ['pos-system', 'todo-list', 'weather-tw', 'lohas-pets-cafe'],
+  },
   { name: 'Nuxt', projects: ['weather-tw', 'lohas-pets-cafe'] },
-  { name: 'Tailwind CSS', projects: ['maji-pos', 'todo-list', 'weather-tw', 'lohas-pets-cafe'] },
+  {
+    name: 'Tailwind CSS',
+    projects: ['pos-system', 'todo-list', 'weather-tw', 'lohas-pets-cafe'],
+  },
   { name: 'shadcn-vue', projects: ['lohas-pets-cafe'] },
-  { name: 'Element Plus', projects: ['maji-pos'] },
-  { name: 'ECharts', projects: ['maji-pos', 'weather-tw'] },
+  { name: 'Pinia', projects: ['pos-system'] },
+  { name: 'Hono', projects: ['pos-system'] },
+  { name: 'ECharts', projects: ['pos-system', 'weather-tw'] },
   { name: 'MapLibre GL', projects: ['weather-tw'] },
-  { name: 'Cloudflare Workers', projects: ['weather-tw'] },
+  { name: 'Cloudflare Workers', projects: ['pos-system', 'weather-tw'] },
   { name: 'Supabase', projects: ['todo-list'] },
-  { name: 'Vitest', projects: ['todo-list', 'weather-tw'] },
-  { name: 'Playwright', projects: ['todo-list'] },
+  { name: 'Vitest', projects: ['pos-system', 'todo-list', 'weather-tw'] },
+  { name: 'Playwright', projects: ['pos-system', 'todo-list'] },
 ] as const;
 
 export type TechItem = (typeof techStack)[number];

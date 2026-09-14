@@ -7,8 +7,8 @@ import * as z from 'zod';
  * 作品案例研究。
  *
  * 檔案結構：src/content/work/<lang>/<slug>.md
- * 例如     src/content/work/zh-TW/maji-pos.md
- *          src/content/work/en/maji-pos.md
+ * 例如     src/content/work/zh-TW/pos-system.md
+ *          src/content/work/en/pos-system.md
  *
  * 新增一個作品 = 新增兩個 Markdown 檔，不需要改動任何元件。
  */

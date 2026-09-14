@@ -2,7 +2,7 @@ import { getCollection, type CollectionEntry } from 'astro:content';
 import type { Lang } from '../i18n/ui';
 
 /**
- * 作品集合的 id 形如 `zh-tw/maji-pos`。
+ * 作品集合的 id 形如 `zh-tw/pos-system`。
  * 這裡把語言前綴剝掉，得到跨語言共用的 slug。
  */
 export function entrySlug(entry: CollectionEntry<'work'>): string {
