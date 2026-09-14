@@ -24,19 +24,32 @@ const t = useTranslations(lang);
   <div class="reveal mt-10" data-stack>
     <ul class="flex flex-wrap gap-2" role="list">
       {
-        techStack.map((tech) => (
-          <li>
-            <button
-              type="button"
-              class="rounded-full border border-line bg-surface px-4 py-2 font-mono text-sm text-muted transition-colors duration-200 hover:border-line-hi hover:text-fg aria-pressed:border-accent-edge aria-pressed:bg-accent aria-pressed:text-accent-ink"
-              data-tech={tech.name}
-              data-projects={tech.projects.join(',')}
-              aria-pressed="false"
-            >
-              {tech.name}
-            </button>
-          </li>
-        ))
+        techStack.map((tech) =>
+          tech.projects.length > 0 ? (
+            <li>
+              <button
+                type="button"
+                class="rounded-full border border-line bg-surface px-4 py-2 font-mono text-sm text-muted transition-colors duration-200 hover:border-line-hi hover:text-fg aria-pressed:border-accent-edge aria-pressed:bg-accent aria-pressed:text-accent-ink"
+                data-tech={tech.name}
+                data-projects={tech.projects.join(',')}
+                aria-pressed="false"
+              >
+                {tech.name}
+              </button>
+            </li>
+          ) : (
+            // 還沒有對應上線作品：不做成可點的篩選鈕，虛線樣式如實標出「尚無作品佐證」，
+            // 而不是讓它偽裝成篩選功能、點下去卻走進沒有任何結果的死路。
+            <li>
+              <span
+                class="cursor-default rounded-full border border-dashed border-line px-4 py-2 font-mono text-sm text-faint"
+                title={t('stack.comingSoon')}
+              >
+                {tech.name}
+              </span>
+            </li>
+          ),
+        )
       }
     </ul>
 
