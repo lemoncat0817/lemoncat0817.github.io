@@ -86,8 +86,8 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
         }
       </ul>
 
-      {/* 行動按鈕列 */}
-      <div class="mt-8 flex flex-wrap items-center gap-3">
+      {/* 行動按鈕列：一顆實心主 CTA + 兩個純文字次要連結，主從分明 */}
+      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
         <a
           href={href}
           class="btn-accent rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
@@ -95,22 +95,35 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
           {t('work.readCase')}
         </a>
 
+        {/* 次要動作：純文字連結，跟主要 CTA 拉開視覺權重差距 */}
         <a
           href={data.demo}
           target="_blank"
           rel="noopener noreferrer"
-          class="rounded-full border border-line bg-surface px-4 py-2 font-mono text-xs text-muted transition-colors hover:border-line-hi hover:bg-surface-hi hover:text-fg"
+          class="group inline-flex items-center gap-1.5 font-mono text-xs text-muted transition-colors hover:text-accent-text"
         >
           {t('work.viewDemo')}
+          <span
+            class="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+            aria-hidden="true"
+          >
+            ↗
+          </span>
         </a>
 
         <a
           href={data.repo}
           target="_blank"
           rel="noopener noreferrer"
-          class="rounded-full border border-line bg-surface px-4 py-2 font-mono text-xs text-faint transition-colors hover:border-line-hi hover:bg-surface-hi hover:text-fg"
+          class="group inline-flex items-center gap-1.5 font-mono text-xs text-faint transition-colors hover:text-accent-text"
         >
           {t('work.viewSource')}
+          <span
+            class="transition-transform duration-300 ease-[var(--ease-spring)] group-hover:translate-x-0.5"
+            aria-hidden="true"
+          >
+            {'</>'}
+          </span>
         </a>
       </div>
     </div>
