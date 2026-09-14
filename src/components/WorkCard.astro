@@ -16,23 +16,21 @@ const { data } = entry;
 
 const href = localizePath(`/work/${slug}`, lang);
 const isReversed = index % 2 === 1;
+const indexLabel = String(index + 1).padStart(2, '0');
 
 // 放大檢視用的原尺寸圖，避免用縮圖版本的低解析度截圖
 const fullImage = await getImage({ src: data.cover, width: data.cover.width, format: 'webp' });
 ---
 
-<article
-  class="reveal group relative py-6 sm:py-8"
-  style={`--i: ${index}`}
->
+<article class="relative py-6 sm:py-8">
   <div
     class:list={[
       'flex flex-col gap-8 lg:gap-14 items-center',
       isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row',
     ]}
   >
-    {/* 專案影像視窗：點擊放大檢視原圖，不再是連結——旁邊已有專案詳情等按鈕可點 */}
-    <div class="w-full lg:w-[55%] shrink-0">
+    {/* 專案影像視窗：整塊（含邊框）隨捲動輕微漂移；圖片本身不縮放不裁切。點擊放大檢視原圖，不再是連結——旁邊已有專案詳情等按鈕可點 */}
+    <div class="reveal-parallax w-full lg:w-[55%] shrink-0">
       <button
         type="button"
         data-lightbox-src={fullImage.src}
@@ -52,12 +50,19 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
       </button>
     </div>
 
-    {/* 專案資訊 */}
-    <div class="flex w-full lg:w-[45%] flex-col justify-center">
-      <h3 class="text-2xl sm:text-3xl font-semibold tracking-tight text-fg">
+    {/* 專案資訊：比截圖晚一點進場，避免整卡像單一硬塊一起移動 */}
+    <div
+      class="reveal flex w-full lg:w-[45%] flex-col justify-center"
+      style="animation-range: entry 10% entry 65%;"
+    >
+      <span class="case-index block text-[3.5rem] font-semibold leading-none sm:text-[4.5rem]" aria-hidden="true">
+        {indexLabel}
+      </span>
+
+      <h3 class="-mt-2 text-2xl font-semibold tracking-tight text-fg sm:-mt-3 sm:text-3xl">
         <a
           href={href}
-          class="transition-colors hover:text-accent-text"
+          class="link-underline transition-colors hover:text-accent-text"
         >
           {data.title}
         </a>
@@ -67,11 +72,14 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
         {data.tagline}
       </p>
 
-      {/* 技術棧標籤 */}
+      {/* 技術棧標籤：逐一入場，避免整排同時彈出 */}
       <ul class="mt-6 flex flex-wrap gap-2" aria-label={t('case.stack')}>
         {
-          data.stack.map((tech) => (
-            <li class="rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted transition-colors hover:border-line-hi hover:text-fg">
+          data.stack.map((tech, i) => (
+            <li
+              class="reveal rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted transition-colors hover:border-line-hi hover:text-fg"
+              style={`animation-range: entry ${Math.min(i * 6, 40)}% entry ${Math.min(55 + i * 6, 95)}%;`}
+            >
               {tech}
             </li>
           ))

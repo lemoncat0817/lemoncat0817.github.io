@@ -176,6 +176,19 @@
            確保頁尾元素不會因為捲不到而卡在半透明狀態。 */
         animation-range: entry 0% entry 55%;
       }
+
+      /* 進場淡入 + 捲動視差：兩個動畫得寫在同一個 class 裡用逗號並列，
+         分開兩個 class 各自設 animation-name 會互相覆蓋、只剩後者生效。
+         漂移用 translate（獨立屬性）而非 transform，才不會跟 reveal-in 的
+         transform 打架。 */
+      .reveal-parallax {
+        animation-name: reveal-in, parallax-drift;
+        animation-duration: auto, auto;
+        animation-timing-function: linear, linear;
+        animation-fill-mode: both, both;
+        animation-timeline: view(), view();
+        animation-range: entry 0% entry 55%, cover 0% cover 100%;
+      }
     }
 
     .rise {
@@ -205,6 +218,37 @@
       opacity: 1;
       transform: none;
     }
+  }
+
+  /* 卡片穿越視窗全程的輕微上下漂移，幅度刻意壓在 1 rem 內，
+     避免蓋掉 object-cover 圖片邊緣（截圖本身不縮放，沒有裁切餘裕）。 */
+  @keyframes parallax-drift {
+    from {
+      translate: 0 -0.85rem;
+    }
+    to {
+      translate: 0 0.85rem;
+    }
+  }
+
+  /* 標題底線：hover／focus 時從左至右畫出，用 background-size 而非
+     border-bottom，才不會影響行高造成跳動。 */
+  .link-underline {
+    background-image: linear-gradient(var(--color-accent-text), var(--color-accent-text));
+    background-repeat: no-repeat;
+    background-position: left bottom;
+    background-size: 0% 2px;
+    transition: background-size 0.45s var(--ease-out-expo);
+  }
+  .link-underline:hover,
+  .link-underline:focus-visible {
+    background-size: 100% 2px;
+  }
+
+  /* 專案卡旁的裝飾性大型序號：只描邊不填色，份量夠但不會搶過標題。 */
+  .case-index {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--color-line-hi);
   }
 
   /* 主要行動按鈕。
