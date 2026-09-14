@@ -6,6 +6,7 @@ import { getLangFromUrl, useTranslations, htmlLang, alternateUrl } from '../i18n
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import ContactModal from '../components/ContactModal.astro';
+import ImageLightbox from '../components/ImageLightbox.astro';
 
 interface Props {
   title?: string;
@@ -112,5 +113,6 @@ const personSchema = {
     </main>
     <Footer />
     <ContactModal />
+    <ImageLightbox />
   </body>
 </html>

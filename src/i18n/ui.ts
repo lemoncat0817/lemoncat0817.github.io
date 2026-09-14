@@ -40,6 +40,7 @@ export const ui = {
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
     'work.allProjects': '全部作品',
+    'work.zoomImage': '放大檢視截圖',
 
     'stack.eyebrow': '技術棧',
     'stack.title': '我用什麼做出這些東西',
@@ -131,6 +132,7 @@ export const ui = {
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
     'work.allProjects': 'All work',
+    'work.zoomImage': 'View enlarged screenshot',
 
     'stack.eyebrow': 'Stack',
     'stack.title': 'What I build with',

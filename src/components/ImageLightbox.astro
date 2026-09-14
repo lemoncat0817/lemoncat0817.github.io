@@ -1,0 +1,80 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+{/* 全站共用的圖片放大檢視；觸發元素只需帶 data-lightbox-src / data-lightbox-alt */}
+<dialog
+  id="image-lightbox"
+  class="fixed inset-0 m-auto max-h-[92vh] max-w-[92vw] rounded-2xl border-0 bg-transparent p-0 backdrop:bg-bg/90 backdrop:backdrop-blur-md"
+>
+  <div class="relative">
+    <button
+      type="button"
+      id="lightbox-close-btn"
+      class="absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full bg-surface/90 text-fg backdrop-blur transition-colors hover:bg-surface-hi"
+      aria-label={t('modal.close')}
+    >
+      <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+
+    <img id="lightbox-image" src="" alt="" class="max-h-[92vh] max-w-[92vw] rounded-2xl object-contain" />
+  </div>
+</dialog>
+
+<script>
+  function initImageLightbox() {
+    const modal = document.getElementById('image-lightbox') as HTMLDialogElement | null;
+    if (!modal || modal.dataset.initialized === 'true') return;
+    modal.dataset.initialized = 'true';
+
+    const img = document.getElementById('lightbox-image') as HTMLImageElement | null;
+    const closeBtn = document.getElementById('lightbox-close-btn');
+    // 記住觸發元素，關閉時把焦點還回去，鍵盤／螢幕報讀器操作才不會迷失位置
+    let lastTrigger: HTMLElement | null = null;
+
+    const openLightbox = (trigger: HTMLElement) => {
+      const src = trigger.getAttribute('data-lightbox-src');
+      if (!src || !img) return;
+      img.src = src;
+      img.alt = trigger.getAttribute('data-lightbox-alt') ?? '';
+      lastTrigger = trigger;
+      modal.showModal();
+      document.body.style.overflow = 'hidden';
+    };
+
+    const closeLightbox = () => modal.close();
+
+    document.querySelectorAll('[data-lightbox-src]').forEach((trigger) => {
+      trigger.addEventListener('click', () => openLightbox(trigger as HTMLElement));
+    });
+
+    closeBtn?.addEventListener('click', closeLightbox);
+
+    // 點擊圖片以外的遮罩區域關閉（dialog 本身就是點擊目標，用座標判斷是否落在內容外）
+    modal.addEventListener('click', (e) => {
+      const rect = modal.getBoundingClientRect();
+      const isInDialog =
+        rect.top <= e.clientY &&
+        e.clientY <= rect.top + rect.height &&
+        rect.left <= e.clientX &&
+        e.clientX <= rect.left + rect.width;
+      if (!isInDialog) closeLightbox();
+    });
+
+    modal.addEventListener('close', () => {
+      document.body.style.overflow = '';
+      if (img) img.src = '';
+      lastTrigger?.focus();
+      lastTrigger = null;
+    });
+  }
+
+  initImageLightbox();
+  document.addEventListener('astro:page-load', initImageLightbox);
+</script>
