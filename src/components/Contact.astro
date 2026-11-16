@@ -2,7 +2,7 @@
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile } from '../data/profile';
 import GithubIcon from './GithubIcon.astro';
-import EmailButton from './EmailButton.astro';
+import EmailLink from './EmailLink.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -18,17 +18,18 @@ const t = useTranslations(lang);
       <p class="mx-auto mt-4 max-w-lg text-muted">{t('contact.intro')}</p>
 
       <div class="mt-9 flex flex-wrap items-center justify-center gap-3">
+        <EmailLink variant="button" />
         <a
           href={profile.github}
           rel="noopener"
-          class="inline-flex items-center gap-2.5 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+          class="inline-flex items-center gap-2.5 rounded-full border border-line-hi px-6 py-3 font-semibold transition-colors hover:bg-surface-hi"
         >
           <GithubIcon class="size-[18px]" />
           {t('contact.github')}
         </a>
-
-        <EmailButton />
       </div>
+
+      <EmailLink variant="address" class="mt-5 justify-center" />
     </div>
   </div>
 </section>

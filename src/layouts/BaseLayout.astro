@@ -5,7 +5,6 @@ import { profile } from '../data/profile';
 import { getLangFromUrl, useTranslations, htmlLang, alternateUrl } from '../i18n/utils';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ContactModal from '../components/ContactModal.astro';
 import ImageLightbox from '../components/ImageLightbox.astro';
 
 interface Props {
@@ -112,7 +111,6 @@ const personSchema = {
       <slot />
     </main>
     <Footer />
-    <ContactModal />
     <ImageLightbox />
 
     <script>

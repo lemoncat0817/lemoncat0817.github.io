@@ -2,7 +2,7 @@
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile } from '../data/profile';
 import GithubIcon from './GithubIcon.astro';
-import EmailButton from './EmailButton.astro';
+import EmailLink from './EmailLink.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -90,7 +90,8 @@ const facts = zh
           {t('contact.github')}
         </a>
 
-        <EmailButton class="px-5 py-3 text-sm" />
+        <EmailLink variant="button" class="text-sm" />
+        <EmailLink variant="address" class="justify-center" />
       </div>
     </aside>
   </div>
