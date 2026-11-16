@@ -56,8 +56,8 @@ export const ui = {
     'footer.rights': '版權所有',
     'footer.source': '本站原始碼',
 
-    '404.title': '找不到這個頁面',
-    '404.intro': '這個網址不存在，可能是連結過期或輸入有誤。',
+    '404.title': '這頁好像被貓踩掉了',
+    '404.intro': '網址可能打錯了，或這頁已經搬家。',
     '404.back': '返回首頁',
   },
 
@@ -111,8 +111,8 @@ export const ui = {
     'footer.rights': 'All rights reserved',
     'footer.source': 'Source of this site',
 
-    '404.title': 'Page not found',
-    '404.intro': 'This URL does not exist. The link may be outdated or mistyped.',
+    '404.title': 'Looks like the cat walked off with this page',
+    '404.intro': 'The link may be mistyped, or the page has moved.',
     '404.back': 'Back to home',
   },
 } as const;

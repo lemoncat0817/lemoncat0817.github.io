@@ -640,6 +640,23 @@
     }
   }
 
+  /* 404 的腳印逐一出現，最後幾步越來越淡，像走到一半就消失了 */
+  .lost-trail > svg {
+    opacity: calc(1 - var(--i) * 0.16);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lost-trail > svg {
+      animation: paw-step 0.5s var(--ease-out-expo) both;
+      animation-delay: calc(var(--i) * 180ms + 200ms);
+    }
+  }
+  @keyframes paw-step {
+    from {
+      opacity: 0;
+      translate: 0 0.5rem;
+    }
+  }
+
   .click-paw {
     position: fixed;
     z-index: 100;
