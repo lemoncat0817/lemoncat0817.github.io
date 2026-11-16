@@ -307,6 +307,21 @@
     background-size: 100% 2px;
   }
 
+  .cover-glow {
+    background: radial-gradient(closest-side, var(--color-accent), transparent);
+    opacity: 0.5;
+    transition: opacity 0.7s var(--ease-out-expo);
+  }
+  .cover-frame:hover .cover-glow {
+    opacity: 0.7;
+  }
+  :root[data-theme='light'] .cover-glow {
+    opacity: 0.55;
+  }
+  :root[data-theme='light'] .cover-frame:hover .cover-glow {
+    opacity: 0.8;
+  }
+
   /* 專案卡旁的裝飾性大型序號：只描邊不填色，份量夠但不會搶過標題。 */
   .case-index {
     color: transparent;

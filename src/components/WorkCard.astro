@@ -20,6 +20,9 @@ const indexLabel = String(index + 1).padStart(2, '0');
 
 // 放大檢視用的原尺寸圖，避免用縮圖版本的低解析度截圖
 const fullImage = await getImage({ src: data.cover, width: data.cover.width, format: 'webp' });
+
+const demoUrl = new URL(data.demo);
+const demoLabel = (demoUrl.host + demoUrl.pathname).replace(/\/$/, '');
 ---
 
 <article class="relative py-6 sm:py-8">
@@ -29,15 +32,26 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
       isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row',
     ]}
   >
-    {/* 專案影像視窗：整塊（含邊框）隨捲動輕微漂移；圖片本身不縮放不裁切。點擊放大檢視原圖，不再是連結——旁邊已有專案詳情等按鈕可點 */}
-    <div class="reveal-parallax w-full lg:w-[55%] shrink-0">
+    {/* 截圖本身就是 16:10，標題列必須加在比例區域外，否則會裁到圖 */}
+    <div class="cover-frame reveal-parallax relative isolate w-full lg:w-[55%] shrink-0">
+      <div
+        class="cover-glow pointer-events-none absolute inset-x-[8%] -bottom-12 top-[35%] -z-10 blur-3xl"
+        aria-hidden="true"
+      >
+      </div>
       <button
         type="button"
         data-lightbox-src={fullImage.src}
         data-lightbox-alt={data.coverAlt}
-        class="group/img relative block w-full appearance-none aspect-[16/10] cursor-zoom-in overflow-hidden rounded-2xl border border-line bg-surface-hi p-0 text-left shadow-xl transition-[transform,box-shadow,border-color] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:border-line-hi hover:shadow-2xl hover:shadow-black/25"
+        class="relative block w-full appearance-none cursor-zoom-in overflow-hidden rounded-2xl border border-line bg-surface p-0 text-left shadow-xl transition-[transform,box-shadow,border-color] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:border-line-hi hover:shadow-2xl hover:shadow-black/25"
         aria-label={`${data.title} — ${t('work.zoomImage')}`}
       >
+        <span class="flex h-8 items-center gap-1.5 border-b border-line px-3.5" aria-hidden="true">
+          <span class="size-2.5 rounded-full bg-line-hi"></span>
+          <span class="size-2.5 rounded-full bg-line-hi"></span>
+          <span class="size-2.5 rounded-full bg-line-hi"></span>
+          <span class="ml-3 truncate font-mono text-[11px] text-faint">{demoLabel}</span>
+        </span>
         <Image
           src={data.cover}
           alt={data.coverAlt}
@@ -45,7 +59,7 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
           sizes="(max-width: 640px) 92vw, (max-width: 1024px) 85vw, 680px"
           loading={index < 2 ? 'eager' : 'lazy'}
           fetchpriority={index === 0 ? 'high' : 'auto'}
-          class="size-full object-cover"
+          class="block aspect-[16/10] w-full object-cover"
         />
       </button>
     </div>
