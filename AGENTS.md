@@ -54,7 +54,7 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 
 **互動元件走原生 `<dialog>`，沒有 UI 元件庫、沒有 React/Vue 等前端框架**（純 Astro + Tailwind CSS 4，僅在需要互動的地方用 vanilla `<script>`）。`ContactModal.astro` 與 `ImageLightbox.astro` 是同一套慣例：`showModal()` / `close()`、點擊座標落在 dialog 外才視為點背景關閉、`modal.dataset.initialized` 防止重複綁定、監聽 `astro:page-load` 重新初始化（目前沒有用 `<ClientRouter>`，這個事件不會觸發；保留是為了日後改用時 DOM 重建不會漏綁）。新增彈窗類元件請照抄這個模式，不要另外引入 lightbox/modal 套件。
 
-**字體自架、建置不連外**：`src/assets/fonts/` 收了 woff2，透過 Astro Fonts API 的 `fontProviders.local()` 載入（見 `astro.config.mjs` 註解）。曾經用 `fontProviders.google()`，但 Google 會輪換 gstatic 檔名 hash，Astro 快取到舊網址會讓 build 直接 404——這是實際發生過的事故，別改回線上 provider。中文字體刻意不載 web font，用系統字型堆疊（`--font-sans`，見 `global.css`），因為 Noto Sans TC 完整字檔太大會拖累 LCP，台灣使用者系統本來就有 PingFang TC / 微軟正黑體可用。
+**字體自架、建置不連外**：`src/assets/fonts/` 收了 woff2，透過 Astro Fonts API 的 `fontProviders.local()` 載入（見 `astro.config.mjs` 註解）。曾經用 `fontProviders.google()`，但 Google 會輪換 gstatic 檔名 hash，Astro 快取到舊網址會讓 build 直接 404——這是實際發生過的事故，別改回線上 provider。中文字體刻意不載 web font，用系統字型堆疊（`--font-sans`，見 `global.css`），因為 Noto Sans TC 完整字檔太大會拖累 LCP，台灣使用者系統本來就有 PingFang TC / 微軟正黑體可用。Linux 上的字型名稱是 `Noto Sans CJK TC`，字型堆疊裡要寫這個名字才對得到。中文頁面（`:lang(zh)`）刻意允許模擬粗體：Brave 會限制網頁能用的系統字型，挑到只有一種字重的中文字型時，標題才不會掉回細體。
 
 **部署**：push 到 `main` 觸發 `.github/workflows/deploy.yml` → GitHub Actions build → GitHub Pages。這是 User Page（根網域即站台根目錄），`astro.config.mjs` 絕對不可設定 `base`，設了會讓所有資源路徑多一層、全站 404。
 

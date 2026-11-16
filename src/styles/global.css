@@ -37,7 +37,7 @@
      Latin 用 Space Grotesk（由 Astro 字體 API 自架）。 */
   --font-sans:
     var(--font-display), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang TC',
-    'Microsoft JhengHei', 'Noto Sans TC', 'Helvetica Neue', sans-serif;
+    'Microsoft JhengHei', 'Noto Sans TC', 'Noto Sans CJK TC', 'Source Han Sans TC', 'Helvetica Neue', sans-serif;
   --font-mono: var(--font-mono-web), ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
 
   /* 流體字級：以 clamp() 取代舊站那 6 段 media query */
@@ -121,6 +121,10 @@
     /* 中文行距需要比西文寬鬆才好讀 */
     line-height: 1.7;
     overflow-x: clip;
+  }
+  /* 中文字型若沒有粗體檔（例如 Brave 限制可用的系統字型時），允許模擬粗體，標題才不會掉回細體 */
+  :lang(zh) {
+    font-synthesis-weight: auto;
   }
 
   /* 標題在中文語境用較緊的行距 */
