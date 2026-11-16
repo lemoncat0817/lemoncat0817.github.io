@@ -98,6 +98,40 @@ const personSchema = {
       })();
     </script>
 
+    {/* 封面只在首頁 ↔ 案例頁之間、被點的那一張且在畫面內時才命名；pagereveal 在首次繪製前觸發，必須行內同步註冊 */}
+    <script is:inline>
+      (() => {
+        const path = (url) => (url ? new URL(url).pathname : '');
+        const isHome = (url) => /^\/(en\/)?$/.test(path(url));
+        const caseSlug = (url) => path(url).match(/\/work\/([^/]+)\/$/)?.[1];
+        const pairedSlug = (a, b) => (isHome(a) && caseSlug(b)) || (isHome(b) && caseSlug(a)) || null;
+        const nameOnly = (slug) => {
+          for (const el of document.querySelectorAll('.vt-cover')) {
+            const r = el.getBoundingClientRect();
+            const keep =
+              slug &&
+              el.style.getPropertyValue('--vt-name').trim() === `cover-${slug}` &&
+              r.bottom > 0 &&
+              r.top < innerHeight;
+            el.style.viewTransitionName = keep ? '' : 'none';
+          }
+        };
+        addEventListener('pageswap', (e) => {
+          if (e.viewTransition && e.activation) nameOnly(pairedSlug(location.href, e.activation.entry?.url));
+        });
+        addEventListener('pagereveal', (e) => {
+          for (const el of document.querySelectorAll('.vt-cover')) el.style.viewTransitionName = '';
+          const activation = window.navigation?.activation;
+          const from = activation?.from?.url;
+          if (!e.viewTransition || !from) return;
+          // 錨點捲動發生在 pagereveal 之後，先捲過去才判斷得出封面是否在畫面內；上一頁與重新整理要留給瀏覽器還原位置
+          const isNewEntry = activation.navigationType === 'push' || activation.navigationType === 'replace';
+          if (location.hash && isNewEntry) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: 'instant' });
+          nameOnly(pairedSlug(from, location.href));
+        });
+      })();
+    </script>
+
     <script
       type="application/ld+json"
       is:inline
@@ -114,5 +148,21 @@ const personSchema = {
     <Footer />
     <ContactModal />
     <ImageLightbox />
+
+    <script>
+      if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.addEventListener(
+          'pointermove',
+          (e) => {
+            const el = (e.target as Element).closest<HTMLElement>('.spotlight');
+            if (!el) return;
+            const r = el.getBoundingClientRect();
+            el.style.setProperty('--spot-x', `${e.clientX - r.left}px`);
+            el.style.setProperty('--spot-y', `${e.clientY - r.top}px`);
+          },
+          { passive: true },
+        );
+      }
+    </script>
   </body>
 </html>
