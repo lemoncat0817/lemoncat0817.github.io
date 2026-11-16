@@ -553,8 +553,32 @@
   [data-on] > .route-paw-hit {
     pointer-events: all;
   }
-  [data-pop] > .route-paw {
-    animation: paw-pop 0.45s var(--ease-spring);
+  /* 還沒被點過時，最前端腳印外圈會一直泛出波紋，暗示可以互動 */
+  [data-route]:not([data-paw-found]) [data-lead] > .route-paw-hit {
+    stroke: var(--color-accent-text);
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-route]:not([data-paw-found]) [data-lead] > .route-paw-hit {
+      animation: paw-ring 2.2s var(--ease-out-expo) infinite;
+    }
+  }
+  @keyframes paw-ring {
+    from {
+      scale: 0.5;
+      opacity: 0.9;
+    }
+    to {
+      scale: 1.5;
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-pop] > .route-paw {
+      animation: paw-pop 0.45s var(--ease-spring);
+    }
   }
   @keyframes paw-pop {
     40% {
@@ -579,9 +603,13 @@
     opacity: 0;
     scale: 0.9;
     transform-origin: 50% 100%;
-    transition:
-      opacity 0.2s,
-      scale 0.35s var(--ease-spring);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .paw-bubble {
+      transition:
+        opacity 0.2s,
+        scale 0.35s var(--ease-spring);
+    }
   }
   .paw-bubble.is-open {
     opacity: 1;

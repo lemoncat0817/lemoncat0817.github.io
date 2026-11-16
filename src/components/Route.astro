@@ -1,7 +1,10 @@
 ---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(getLangFromUrl(Astro.url));
 ---
 
-<div class="relative pt-14 pb-20 lg:pt-24 lg:pb-28" data-route>
+<div class="relative pt-14 pb-20 lg:pt-24 lg:pb-28" data-route data-paw-hint={t('work.pawHint')}>
   <svg class="route-svg" aria-hidden="true" data-route-svg>
     <defs>
       <symbol id="route-paw" overflow="visible">
@@ -47,6 +50,23 @@
     let paws: { l: number; x: number; y: number; el: SVGGElement; on: boolean; old: boolean }[] = [];
     let bubbleTimer = 0;
     let lastFact = -1;
+    let lead: SVGGElement | null = null;
+
+    // 彩蛋只提示一次：第一次走到路線時冒一次泡泡，最前端腳印的波紋持續到訪客真的點過為止
+    const remember = (key: string) => {
+      try {
+        localStorage.setItem(key, '1');
+      } catch {}
+    };
+    const recalls = (key: string) => {
+      try {
+        return localStorage.getItem(key) === '1';
+      } catch {
+        return false;
+      }
+    };
+    let hinted = recalls('lemoncat:paw-hinted');
+    root.toggleAttribute('data-paw-found', recalls('lemoncat:paw-found'));
     let total = 0;
     let current = 0;
     let target = 0;
@@ -74,6 +94,19 @@
         const old = paw.l < current - trail;
         if (on !== paw.on) paw.el.toggleAttribute('data-on', (paw.on = on));
         if (old !== paw.old) paw.el.toggleAttribute('data-old', (paw.old = old));
+      }
+      const newest = paws.findLast((p) => p.on)?.el ?? null;
+      if (newest !== lead) {
+        lead?.removeAttribute('data-lead');
+        newest?.setAttribute('data-lead', '');
+        lead = newest;
+      }
+      if (!hinted && lead && paws.filter((p) => p.on).length >= 3) {
+        hinted = true;
+        remember('lemoncat:paw-hinted');
+        window.setTimeout(() => {
+          if (!root.hasAttribute('data-paw-found') && lead) showBubble(lead, root.dataset.pawHint ?? '', 3500);
+        }, 900);
       }
       let at = -1;
       stations.forEach((l, i) => {
@@ -168,6 +201,7 @@
       }
       pawsGroup.innerHTML = markup;
       paws = [...pawsGroup.querySelectorAll<SVGGElement>('g')].map((el, i) => ({ ...spots[i]!, el, on: false, old: false }));
+      lead = null;
       hideBubble();
 
       update(true);
@@ -178,27 +212,34 @@
       clearTimeout(bubbleTimer);
     }
 
-    // 走過的腳印可以點，點了冒出一則貓咪冷知識；腳印會隨 resize 重建，所以監聽掛在容器上
-    root.addEventListener('click', (e) => {
-      const hit = (e.target as Element).closest<SVGGElement>('.route-paw-group[data-on]');
-      if (!hit) return hideBubble();
-      const paw = paws[Number(hit.dataset.paw)];
+    function showBubble(el: SVGGElement, text: string, ms: number) {
+      const paw = paws[Number(el.dataset.paw)];
       if (!paw) return;
-      let n = Math.floor(Math.random() * facts.length);
-      if (n === lastFact) n = (n + 1) % facts.length;
-      lastFact = n;
-      bubble.textContent = facts[n]!;
-      const half = Math.min(bubble.offsetWidth || 240, root.clientWidth) / 2;
-      bubble.style.left = `${Math.min(Math.max(paw.x, half), root.clientWidth - half)}px`;
+      bubble.textContent = text;
+      const width = bubble.parentElement!.clientWidth;
+      const half = Math.min(bubble.offsetWidth || 240, width) / 2;
+      bubble.style.left = `${Math.min(Math.max(paw.x, half), width - half)}px`;
       bubble.style.top = `${paw.y - 18}px`;
       bubble.classList.remove('is-open');
       void bubble.offsetWidth;
       bubble.classList.add('is-open');
+      clearTimeout(bubbleTimer);
+      bubbleTimer = window.setTimeout(hideBubble, ms);
+    }
+
+    // 走過的腳印可以點，點了冒出一則貓咪冷知識；腳印會隨 resize 重建，所以監聽掛在容器上
+    root.addEventListener('click', (e) => {
+      const hit = (e.target as Element).closest<SVGGElement>('.route-paw-group[data-on]');
+      if (!hit) return hideBubble();
+      let n = Math.floor(Math.random() * facts.length);
+      if (n === lastFact) n = (n + 1) % facts.length;
+      lastFact = n;
+      showBubble(hit, facts[n]!, 5000);
       hit.removeAttribute('data-pop');
       void hit.getBoundingClientRect();
       hit.setAttribute('data-pop', '');
-      clearTimeout(bubbleTimer);
-      bubbleTimer = window.setTimeout(hideBubble, 5000);
+      root.setAttribute('data-paw-found', '');
+      remember('lemoncat:paw-found');
     });
 
     addEventListener('scroll', () => update(false), { passive: true });

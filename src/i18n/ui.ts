@@ -31,7 +31,7 @@ export const ui = {
 
     'work.eyebrow': '作品',
     'work.stop': '第 {n} 站',
-    'work.pawHint': '走過的腳印點一下，會告訴你一件貓的事',
+    'work.pawHint': '喵？點我看看',
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
     'work.allProjects': '全部作品',
@@ -85,7 +85,7 @@ export const ui = {
 
     'work.eyebrow': 'Work',
     'work.stop': 'Stop {n}',
-    'work.pawHint': 'Click a paw print you have passed for a cat fact',
+    'work.pawHint': 'Meow? Click me',
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
     'work.allProjects': 'All work',
