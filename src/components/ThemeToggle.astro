@@ -43,6 +43,7 @@ const { label } = Astro.props;
 <script>
   const root = document.documentElement;
   const toggle = document.getElementById('theme-toggle');
+  let current: ViewTransition | null = null;
 
   toggle?.addEventListener('click', () => {
     const next = root.dataset.theme === 'light' ? 'dark' : 'light';
@@ -63,8 +64,11 @@ const { label } = Astro.props;
     root.style.setProperty('--reveal-y', `${y}px`);
     root.style.setProperty('--reveal-r', `${Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))}px`);
     root.classList.add('theme-switching', 'vt-no-cover');
-    document.startViewTransition(apply).finished.finally(() => {
-      root.classList.remove('theme-switching', 'vt-no-cover');
+    const transition = document.startViewTransition(apply);
+    current = transition;
+    // 連點時前一次會被跳過並提早結束，只能由最新一次移除 class
+    transition.finished.finally(() => {
+      if (current === transition) root.classList.remove('theme-switching', 'vt-no-cover');
     });
   });
 </script>
