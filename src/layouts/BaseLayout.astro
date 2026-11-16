@@ -121,10 +121,12 @@ const personSchema = {
         });
         addEventListener('pagereveal', (e) => {
           for (const el of document.querySelectorAll('.vt-cover')) el.style.viewTransitionName = '';
-          const from = window.navigation?.activation?.from?.url;
+          const activation = window.navigation?.activation;
+          const from = activation?.from?.url;
           if (!e.viewTransition || !from) return;
-          // 錨點捲動發生在 pagereveal 之後、擷取畫面之前，先捲過去才判斷得出封面是否在畫面內
-          if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: 'instant' });
+          // 錨點捲動發生在 pagereveal 之後，先捲過去才判斷得出封面是否在畫面內；上一頁與重新整理要留給瀏覽器還原位置
+          const isNewEntry = activation.navigationType === 'push' || activation.navigationType === 'replace';
+          if (location.hash && isNewEntry) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: 'instant' });
           nameOnly(pairedSlug(from, location.href));
         });
       })();
