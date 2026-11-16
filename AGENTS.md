@@ -35,7 +35,16 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 - `.rise`：時間軸動畫，用 `--i` custom property 控制逐項延遲，只用在 Hero 這種一開頁就在可視範圍內的內容（`.reveal` 的 scroll-timeline 對已經在畫面裡的元素不會觸發）。
 - `.reveal-parallax`：一個元素要同時跑「進場淡入」與「捲動視差」兩個 scroll-driven 動畫時，**不能拆成兩個各自宣告 `animation-name` 的 class 疊加**——CSS 會讓後宣告的整組 `animation-*` longhand 直接覆蓋前者，不會合併。必須在同一個 class 裡用逗號把兩組 `animation-*` 值並列。漂移用獨立的 `translate` 屬性而非 `transform`，才能跟其他用 `transform` 的動畫（含 Tailwind v4 的 `translate-*` utility，同樣走獨立屬性）共存不打架。
 
-**互動元件走原生 `<dialog>`，沒有 UI 元件庫、沒有 React/Vue 等前端框架**（純 Astro + Tailwind CSS 4，僅在需要互動的地方用 vanilla `<script>`）。`ContactModal.astro` 與 `ImageLightbox.astro` 是同一套慣例：`showModal()` / `close()`、點擊座標落在 dialog 外才視為點背景關閉、`modal.dataset.initialized` 防止重複綁定、監聽 `astro:page-load` 重新初始化（View Transitions 換頁後 DOM 會重建）。新增彈窗類元件請照抄這個模式，不要另外引入 lightbox/modal 套件。
+**跨頁轉場用原生 cross-document View Transitions**（`global.css` 的 `@view-transition`，沒有用 Astro 的 `<ClientRouter>`，每次換頁都是完整載入）：
+- 封面共享轉場：作品卡與案例頁主圖都掛 `.vt-cover`，並以 `style="--vt-name: cover-<slug>"` 命名，slug 一律取自 `entrySlug()`。`BaseLayout.astro` 的行內 script 在 `pageswap`／`pagereveal` 只替「首頁 ↔ 案例頁、被點的那一張、且在畫面內」的封面保留命名，其餘設為 `none`。少了這層過濾，切語言或去其他頁時封面會各自飛動或蓋過導覽列。這段 script 必須行內同步，module script 會錯過 `pagereveal`。
+- 案例頁的返回連結指向 `#work-<slug>`（`WorkCard` 的 `article` id），讓封面飛回畫面內的卡片。
+- 主題切換用同文件 View Transition 做圓形揭露（`ThemeToggle.astro`），期間在 `<html>` 加上 `theme-switching` 與 `vt-no-cover`，避免封面自成一組浮在遮罩上方。
+
+**彈窗與游標效果慣例**：
+- 新的 `<dialog>` 加上 `.dialog-motion` 就有進出場動畫（`@starting-style` + `allow-discrete`）。關閉時若要清空內容，要等動畫播完再清，參考 `ImageLightbox.astro`。
+- 游標追光：元素加上 `.spotlight` 即可，`BaseLayout.astro` 有一段委派的 `pointermove` 負責寫入座標。元素本身要是 `relative`（或其他定位），且只在 `(hover: hover) and (pointer: fine)` 啟用。
+
+**互動元件走原生 `<dialog>`，沒有 UI 元件庫、沒有 React/Vue 等前端框架**（純 Astro + Tailwind CSS 4，僅在需要互動的地方用 vanilla `<script>`）。`ContactModal.astro` 與 `ImageLightbox.astro` 是同一套慣例：`showModal()` / `close()`、點擊座標落在 dialog 外才視為點背景關閉、`modal.dataset.initialized` 防止重複綁定、監聽 `astro:page-load` 重新初始化（目前沒有用 `<ClientRouter>`，這個事件不會觸發；保留是為了日後改用時 DOM 重建不會漏綁）。新增彈窗類元件請照抄這個模式，不要另外引入 lightbox/modal 套件。
 
 **字體自架、建置不連外**：`src/assets/fonts/` 收了 woff2，透過 Astro Fonts API 的 `fontProviders.local()` 載入（見 `astro.config.mjs` 註解）。曾經用 `fontProviders.google()`，但 Google 會輪換 gstatic 檔名 hash，Astro 快取到舊網址會讓 build 直接 404——這是實際發生過的事故，別改回線上 provider。中文字體刻意不載 web font，用系統字型堆疊（`--font-sans`，見 `global.css`），因為 Noto Sans TC 完整字檔太大會拖累 LCP，台灣使用者系統本來就有 PingFang TC / 微軟正黑體可用。
 
