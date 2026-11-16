@@ -1,15 +1,16 @@
 /**
- * 產生社群分享圖（Open Graph）、favicon 與 apple-touch-icon。
+ * 產生社群分享圖（Open Graph）、favicon、apple-touch-icon 與貓掌游標。
  *
  * 執行：npm run og
  * 產物：public/og-default.png、public/og-default-en.png（1200×630）、
- *       public/favicon.svg、public/apple-touch-icon.png（180×180）
+ *       public/favicon.svg、public/apple-touch-icon.png（180×180）、
+ *       public/cursors/paw*.png（一般與指到連結兩種，各有 1x／2x）
  *
  * 產物會進版控，改了文案或配色再執行一次即可。
  * 中文分享圖需要本機有中文黑體（Noto Sans CJK TC／微軟正黑體／蘋方擇一）；sharp 讀不了 repo 裡的 woff2，英文版用系統字型。
  */
 import sharp from 'sharp';
-import { writeFile } from 'node:fs/promises';
+import { mkdir, writeFile } from 'node:fs/promises';
 
 const BG = '#0e1015';
 const ROAD = '#1b1e26';
@@ -115,7 +116,21 @@ for (const v of variants) {
     .toFile(v.file);
 }
 
+// 游標：貓掌往左傾，熱點落在左二趾尖，global.css 的 cursor 座標（10 8）要跟著這裡改
+const cursor = (fill, stroke) => `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <g transform="translate(16 16) scale(0.9) rotate(-20) translate(-16 -16)" fill="${fill}" stroke="${stroke}" stroke-width="1.8" stroke-linejoin="round" paint-order="stroke">${PAW}
+  </g>
+</svg>`;
+await mkdir('public/cursors', { recursive: true });
+for (const [name, svg] of [
+  ['paw', cursor(ACCENT, ACCENT_INK)],
+  ['paw-pointer', cursor(ACCENT_INK, ACCENT)],
+]) {
+  await sharp(Buffer.from(svg), { density: 288 }).resize(32, 32).png().toFile(`public/cursors/${name}.png`);
+  await sharp(Buffer.from(svg), { density: 288 }).resize(64, 64).png().toFile(`public/cursors/${name}@2x.png`);
+}
+
 await writeFile('public/favicon.svg', icon);
 await sharp(Buffer.from(icon)).resize(180, 180).png({ compressionLevel: 9 }).toFile('public/apple-touch-icon.png');
 
-console.log('✓ public/og-default.png、og-default-en.png、favicon.svg、apple-touch-icon.png');
+console.log('✓ public/og-default.png、og-default-en.png、favicon.svg、apple-touch-icon.png、cursors/');

@@ -156,6 +156,27 @@
     height: auto;
   }
 
+  /* 貓掌游標：熱點（10 8）對齊 scripts/generate-og.mjs 產生的左二趾尖；觸控裝置不會顯示 cursor，不必另外限制 */
+  html {
+    cursor: url('/cursors/paw.png') 10 8, auto;
+    cursor: image-set(url('/cursors/paw.png') 1x, url('/cursors/paw@2x.png') 2x) 10 8, auto;
+  }
+  a[href],
+  button:not(:disabled),
+  summary,
+  label[for],
+  select,
+  [role='button'],
+  [data-on] > .route-paw-hit {
+    cursor: url('/cursors/paw-pointer.png') 10 8, pointer;
+    cursor: image-set(url('/cursors/paw-pointer.png') 1x, url('/cursors/paw-pointer@2x.png') 2x) 10 8, pointer;
+  }
+  input:not([type='button'], [type='submit'], [type='checkbox'], [type='radio']),
+  textarea,
+  [contenteditable] {
+    cursor: text;
+  }
+
   ::selection {
     background: var(--color-accent);
     color: var(--color-accent-ink);
@@ -526,7 +547,6 @@
   }
   [data-on] > .route-paw-hit {
     pointer-events: all;
-    cursor: var(--cursor-pointer, pointer);
   }
   [data-pop] > .route-paw {
     animation: paw-pop 0.45s var(--ease-spring);
