@@ -18,7 +18,6 @@ export const ui = {
     'nav.skipToContent': '跳至主要內容',
     'nav.toggleTheme': '切換深淺色主題',
     'nav.switchLang': 'Switch to English',
-    'nav.home': '回首頁',
     'nav.menu': '選單',
 
     'hero.role': '網頁工程師',
@@ -102,7 +101,6 @@ export const ui = {
     'nav.skipToContent': 'Skip to main content',
     'nav.toggleTheme': 'Toggle colour theme',
     'nav.switchLang': '切換為繁體中文',
-    'nav.home': 'Back to home',
     'nav.menu': 'Menu',
 
     'hero.role': 'Web Engineer',

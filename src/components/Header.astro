@@ -1,6 +1,5 @@
 ---
 import { getLangFromUrl, useTranslations, localizePath, alternateUrl } from '../i18n/utils';
-import { profile } from '../data/profile';
 import ThemeToggle from './ThemeToggle.astro';
 
 const lang = getLangFromUrl(Astro.url);
@@ -17,19 +16,7 @@ const links = [
 <header
   class="sticky top-0 z-50 border-b border-line/60 bg-bg/70 backdrop-blur-xl backdrop-saturate-150"
 >
-  <div class="shell flex h-16 items-center justify-between gap-4">
-    <a
-      href={home}
-      class="group flex items-center gap-2.5 font-mono text-sm font-semibold tracking-tight"
-      aria-label={t('nav.home')}
-    >
-      <span
-        class="grid size-7 place-items-center btn-accent rounded-md transition-transform duration-300 ease-[var(--ease-spring)] group-hover:rotate-12"
-        aria-hidden="true">L</span
-      >
-      <span>{profile.name}</span>
-    </a>
-
+  <div class="shell flex h-16 items-center justify-end gap-4">
     <nav class="flex items-center gap-1 sm:gap-2" aria-label={t('nav.work')}>
       <ul class="hidden items-center gap-1 sm:flex">
         {
