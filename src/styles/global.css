@@ -322,6 +322,44 @@
     opacity: 0.8;
   }
 
+  /* 游標追光：::before 是跟著游標亮起的邊框，::after 是表面的柔光 */
+  @media (hover: hover) and (pointer: fine) {
+    .spotlight::before,
+    .spotlight::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.5s var(--ease-out-expo);
+    }
+    .spotlight::before {
+      z-index: 1;
+      padding: 1px;
+      background: radial-gradient(
+        16rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
+        var(--color-accent-text),
+        transparent 70%
+      );
+      mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      mask-composite: exclude;
+    }
+    .spotlight::after {
+      background: radial-gradient(
+        24rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
+        color-mix(in oklch, var(--color-accent) 10%, transparent),
+        transparent 70%
+      );
+    }
+    .spotlight:hover::before,
+    .spotlight:hover::after {
+      opacity: 1;
+    }
+  }
+
   /* 專案卡旁的裝飾性大型序號：只描邊不填色，份量夠但不會搶過標題。 */
   .case-index {
     color: transparent;
