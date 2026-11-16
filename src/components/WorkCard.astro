@@ -2,6 +2,7 @@
 import { Image, getImage } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { repoAbout } from '../lib/repoAbout';
 
 interface Props {
   entry: CollectionEntry<'work'>;
@@ -16,6 +17,8 @@ const { data } = entry;
 
 const isReversed = index % 2 === 1;
 const stopLabel = t('work.stop').replace('{n}', String(index + 1));
+// GitHub 的 About 只有一個欄位且寫的是中文，所以只有中文版跟著同步，英文版用 frontmatter
+const tagline = (lang === 'zh-TW' && (await repoAbout(data.repo))) || data.tagline;
 
 // 放大檢視用的原尺寸圖，避免用縮圖版本的低解析度截圖
 const fullImage = await getImage({ src: data.cover, width: data.cover.width, format: 'webp' });
@@ -73,7 +76,7 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
       </h3>
 
       <p class="mt-3 text-base sm:text-lg leading-relaxed text-muted">
-        {data.tagline}
+        {tagline}
       </p>
 
       <ul class="mt-6 flex flex-wrap gap-2" aria-label={t('case.stack')}>

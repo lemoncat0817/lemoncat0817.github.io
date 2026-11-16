@@ -1,6 +1,6 @@
 ---
 title: 樂活寵物咖啡廳
-tagline: 從「讓人想去」到「讓人訂得到位」，補上形象網站少的臨門一腳
+tagline: 寵物友善咖啡廳形象網站
 keyword: 寵物咖啡廳
 stack:
   - Nuxt

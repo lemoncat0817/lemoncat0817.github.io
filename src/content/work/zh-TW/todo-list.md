@@ -1,6 +1,6 @@
 ---
 title: Todo List
-tagline: 本地優先、鍵盤優先，資料留得住的待辦系統
+tagline: 一個待辦事項工具：免安裝、免註冊，打開網頁就能用
 keyword: 待辦
 stack:
   - Vue 3

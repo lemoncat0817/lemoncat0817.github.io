@@ -1,6 +1,6 @@
 ---
 title: POS 收銀系統
-tagline: 支援餐飲／飲料店的多租戶 POS 系統，從點餐結帳到後台管理與數據分析
+tagline: 多租戶餐飲與飲料店 POS 系統：點餐結帳、桌況管理、會員行銷與數據分析
 keyword: 點餐
 stack:
   - Vue 3

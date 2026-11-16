@@ -14,7 +14,7 @@ const work = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      /** 一句話定位：這是什麼、為誰做 */
+      /** 一句話定位。中文版會優先用 GitHub repo 的 About（見 lib/repoAbout.ts），這裡是抓不到時的備援 */
       tagline: z.string(),
       /** Hero「最近做的」那行裡代表這個作品的詞，滑過會顯示封面 */
       keyword: z.string().min(1),
