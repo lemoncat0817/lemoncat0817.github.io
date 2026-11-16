@@ -23,13 +23,13 @@ featured: false
 
 ## What it is
 
-Lohas Pet Cafe is a nine-page brand site for a pet-friendly cafe, statically generated with Nuxt 4 — each page does one job, carrying someone from discovering the brand, to browsing the menu, to actually booking a table.
+Lohas Pet Cafe is a nine-page brand site for a pet-friendly cafe, statically generated with Nuxt 4. Discovering the brand, browsing the menu and booking a table all happen on the same site.
 
 ## The problem
 
 Brand sites commonly leave a gap between making people want to visit and letting them actually go: unoptimised images drag down load time, content baked into images can't be searched, and the site never says how to get there, when it's open, or whether a table is available.
 
-This site closes that gap — every step from browsing to booking has a page and clear feedback behind it.
+This site closes that gap: every step from browsing to booking has its own page and clear feedback.
 
 ## What I did
 
@@ -37,23 +37,23 @@ The site is split into nine purpose-built pages:
 
 - **`/reservation` for online booking.** Built with `vee-validate` and `zod`, the form automatically disables closed days and outside-hours slots, so nobody can select a time that would never be accepted.
 - **`/contact` carries a full address, map, and opening hours.**
-- **`/menu` uses real data, not images.** Prices live as structured HTML, not baked into a picture — searchable by search engines, and eligible for Menu structured data.
-- **Images go entirely through `@nuxt/image`,** emitting multi-size WebP automatically — fast to load without sacrificing quality.
-- **The component library is shadcn-vue,** built on Reka UI, with the component source copied straight into `app/components/ui` rather than pulled in as an opaque dependency — for something like a reservation form that needs precisely customised validation and styling, owning the code outright beats inheriting a generic component's defaults.
+- **`/menu` uses real data.** Prices live in structured HTML, so search engines can read them and they qualify for Menu structured data.
+- **Images go entirely through `@nuxt/image`,** emitting multi-size WebP automatically, so pages load fast without losing quality.
+- **The component library is shadcn-vue,** built on Reka UI, with the component source copied straight into `app/components/ui`, so customising behaviour or styling means editing code that lives in the project.
 
 ## Technical decisions
 
 ### Why multi-page instead of a single page
 
-Content like a reservation form, a full menu, or FAQs is something people arrive looking for with clear intent — a single scrolling page is a worse fit than a dedicated URL that can be bookmarked or shared directly. Nuxt lets "multi-page" and "statically generated" coexist: `nuxi generate` emits every route as a static file, so deployment stays simple while the architecture is a proper multi-page app.
+Content like a reservation form, a full menu, or FAQs is something people arrive looking for with clear intent. A dedicated URL that can be bookmarked or shared works better for that than scrolling through a single page. Nuxt lets "multi-page" and "statically generated" coexist: `nuxi generate` emits every route as a static file, so deployment stays simple while the architecture is a proper multi-page app.
 
 ### Why shadcn-vue instead of a conventional component library
 
-A conventional component library ships components as an opaque npm package. shadcn-vue instead copies the source into the project. For something like a reservation form, where the validation logic and styling both need precise customisation, owning the source outright is less work than inheriting every default behaviour of a general-purpose component — tools should serve the problem, not the other way round.
+A conventional component library ships components as an opaque npm package. shadcn-vue instead copies the source into the project. For something like a reservation form, where the validation logic and styling both need precise customisation, owning the source outright is less work than inheriting every default behaviour of a general-purpose component.
 
-### Dark mode had to match native controls, not just CSS
+### Dark mode has to reach native controls
 
-`@nuxtjs/color-mode` doesn't just toggle a class — it keeps `color-scheme` in sync too, so native browser UI that CSS can't reach (form controls, scrollbars) switches along with everything else. Without that, a dark site can end up with a jarringly white input box.
+Besides toggling a class, `@nuxtjs/color-mode` keeps `color-scheme` in sync, so native browser UI that CSS can't reach (form controls, scrollbars) switches along with everything else. Without that, a dark site can end up with a jarringly white input box.
 
 ## Outcome
 

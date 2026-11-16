@@ -25,11 +25,11 @@ featured: true
 
 ## What it is
 
-Weather, Explained turns Taiwan's Central Weather Administration open data into a platform built for the moments people actually reach for it — animated radar, typhoon tracks with an uncertainty cone, earthquake intensity maps, and warnings for every county, all in one place, built on Nuxt 4 and deployed on Cloudflare's edge network.
+Weather, Explained turns Taiwan's Central Weather Administration open data into a platform built for the moments people actually reach for it. Animated radar, typhoon tracks with an uncertainty cone, earthquake intensity maps and warnings for every county are all in one place, built on Nuxt 4 and deployed on Cloudflare's edge network.
 
 ## The problem
 
-A pure frontend can't solve two problems that come with the territory: an API key is visible the moment it's bundled, and without a server there's nowhere to do real caching — every city switch means refetching from the agency's API.
+A pure frontend can't solve two problems that come with the territory: an API key is visible the moment it's bundled, and without a server there's nowhere to do real caching, so every city switch means refetching from the agency's API.
 
 Taiwan's Central Weather Administration (CWA) open data brings its own familiar problem too: forecasts, observations, typhoons and earthquakes are four differently-shaped datasets, each with its own field naming, nesting and casing conventions.
 
@@ -38,19 +38,19 @@ Taiwan's Central Weather Administration (CWA) open data brings its own familiar 
 Nuxt 4 gives the same project both the frontend and server API routes (via Nitro), deployed to Cloudflare Workers:
 
 - **The key lives only on the server.** The CWA key is read at request time through `useRuntimeConfig()`, and never enters the frontend bundle or any API response.
-- **An anti-corruption layer normalises everything.** `server/utils/normalize/**` converts four differently-shaped CWA responses — forecast, observation, typhoon, earthquake — into the domain model defined in `shared/types`. Components only ever see their own types; they never need to know what CWA's raw JSON looks like.
-- **Caching is tiered by how fast the data actually changes.** Fast-moving radar frames cache for 5 minutes, forecasts for 30, and climate normals — which barely change — for 6 hours. Each API sets its own TTL via `defineCachedEventHandler`, backed by KV on Workers, so the same data is never re-fetched from upstream more than necessary.
+- **An anti-corruption layer normalises everything.** `server/utils/normalize/**` converts the four differently-shaped CWA responses (forecast, observation, typhoon, earthquake) into the domain model defined in `shared/types`. Components only ever see their own types; they never need to know what CWA's raw JSON looks like.
+- **Caching is tiered by how fast the data actually changes.** Fast-moving radar frames cache for 5 minutes, forecasts for 30, and climate normals, which barely change, for 6 hours. Each API sets its own TTL via `defineCachedEventHandler`, backed by KV on Workers, so the same data is never re-fetched from upstream more than necessary.
 - **Maps and charts each do one job.** MapLibre GL handles the radar animation, station observations, and a 368-township temperature choropleth; ECharts handles time series like the 24-hour meteogram and typhoon intensity over time.
 
 ## Technical decisions
 
 ### Why Nuxt instead of a pure frontend SPA
 
-A pure frontend can't solve the "hide the key" problem — hiding a key needs a server that executes code, not just static files. Nuxt's Nitro means I don't have to stand up and maintain a separate backend project; one repo and one deploy gives me both pages and API routes.
+Hiding the key needs a server that runs code; static files alone can't do it. Nuxt's Nitro means I don't have to stand up and maintain a separate backend project; one repo and one deploy gives me both pages and API routes.
 
 ### Why Cloudflare Workers instead of conventional serverless
 
-Weather data is read-heavy with low real-time demands — most users are checking their own city, so cache hit rates are naturally high. Cloudflare's edge network serves responses from the node closest to the user, and KV gives a cache layer shared across those nodes. That combination fits a read-heavy workload like this particularly well.
+Weather data is read-heavy with low real-time demands. Most users are checking their own city, so cache hit rates are naturally high. Cloudflare's edge network serves responses from the node closest to the user, and KV gives a cache layer shared across those nodes. That combination fits a read-heavy workload like this particularly well.
 
 ### The anti-corruption layer earns its cost
 

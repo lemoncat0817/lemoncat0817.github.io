@@ -162,7 +162,7 @@ export const ui = {
     'footer.source': 'Source of this site',
 
     '404.title': 'Page not found',
-    '404.intro': 'This URL does not exist — the link may be outdated or mistyped.',
+    '404.intro': 'This URL does not exist. The link may be outdated or mistyped.',
     '404.back': 'Back to home',
   },
 } as const;
