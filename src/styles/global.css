@@ -418,15 +418,15 @@
   }
   .hero-shot {
     position: absolute;
-    width: 76%;
-    top: calc(var(--n) * 14%);
-    right: calc(var(--n) * 12%);
+    width: 80%;
+    top: calc(var(--n) * 15%);
+    right: calc(var(--n) * 20%);
     overflow: hidden;
     border: 1px solid var(--color-line-hi);
-    border-radius: 0.75rem;
+    border-radius: 0.875rem;
     background: var(--color-surface);
-    box-shadow: 0 24px 48px -16px oklch(0 0 0 / 0.45);
-    rotate: calc(4deg - var(--n) * 3deg);
+    box-shadow: 0 28px 56px -18px oklch(0 0 0 / 0.5);
+    rotate: calc(3deg - var(--n) * 4deg);
   }
 
   @media (prefers-reduced-motion: no-preference) {

@@ -9,7 +9,7 @@ const t = useTranslations(lang);
 
 const years = new Date().getFullYear() - profile.codingSince;
 const entries = await getWorkEntries(lang);
-const stackShots = entries.slice(0, 3).reverse();
+const stackShots = entries.slice(0, 2).reverse();
 
 /** 逐字（中文）／逐詞（英文）拆解，供標題動畫使用 */
 function splitHeadline(text: string): string[] {
@@ -21,7 +21,7 @@ const line2 = splitHeadline(t('hero.headline.2'));
 let charIndex = 0;
 ---
 
-<section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28 xl:pb-44" data-hero>
+<section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28" data-hero>
   <div class="hero-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
     <div class="hero-blob hero-blob-1"></div>
     <div class="hero-blob hero-blob-2"></div>
@@ -68,45 +68,16 @@ let charIndex = 0;
       </span>
     </h1>
 
-    <div class="relative">
-      {/* 堆疊只放在簡介列右側：標題最寬可到版心約七成，再往上會撞字 */}
-      <div
-        class="rise pointer-events-none absolute -top-8 right-0 hidden w-[min(30vw,30rem)] xl:block"
-        style={`--i: ${charIndex + 3}`}
-        aria-hidden="true"
-      >
-        <div class="hero-tilt relative aspect-[5/4]" data-hero-tilt>
-          {
-            stackShots.map((entry, i) => (
-              <div class="hero-shot" style={`--n: ${i}`}>
-                <span class="flex h-5 items-center gap-1 border-b border-line px-2.5">
-                  <span class="size-1.5 rounded-full bg-line-hi" />
-                  <span class="size-1.5 rounded-full bg-line-hi" />
-                  <span class="size-1.5 rounded-full bg-line-hi" />
-                </span>
-                <Image
-                  src={entry.data.cover}
-                  alt=""
-                  widths={[480, 800]}
-                  sizes="24rem"
-                  loading="lazy"
-                  class="block aspect-[16/10] w-full object-cover"
-                />
-              </div>
-            ))
-          }
-        </div>
-      </div>
-
+    <div class="mt-8 xl:grid xl:grid-cols-[minmax(0,42rem)_minmax(0,1fr)] xl:grid-rows-[auto_1fr] xl:gap-x-12">
       <p
-        class="rise mt-8 max-w-2xl text-lg text-muted sm:text-xl"
+        class="rise max-w-2xl text-lg text-muted sm:text-xl"
         style={`--i: ${charIndex + 1}`}
       >
         {t('hero.intro')}
       </p>
 
       <div
-        class="rise mt-10 flex flex-wrap items-center gap-x-8 gap-y-5"
+        class="rise mt-10 flex flex-wrap items-center gap-x-8 gap-y-5 xl:self-start"
         style={`--i: ${charIndex + 2}`}
       >
         <a
@@ -132,6 +103,36 @@ let charIndex = 0;
             <p class="text-xs text-faint">{t('hero.yearsLabel')}</p>
           </div>
         </dl>
+      </div>
+
+      {/* 堆疊放在版面流內，區塊高度才會跟著它長，寬螢幕不會被 overflow 切掉 */}
+      <div
+        class="rise pointer-events-none relative isolate hidden xl:col-start-2 xl:row-span-2 xl:row-start-1 xl:mt-2 xl:block"
+        style={`--i: ${charIndex + 3}`}
+        aria-hidden="true"
+      >
+        <div class="cover-glow absolute inset-x-[10%] -bottom-6 top-1/3 -z-10 blur-3xl"></div>
+        <div class="hero-tilt relative aspect-[3/2]" data-hero-tilt>
+          {
+            stackShots.map((entry, i) => (
+              <div class="hero-shot" style={`--n: ${i}`}>
+                <span class="flex h-6 items-center gap-1.5 border-b border-line px-3">
+                  <span class="size-2 rounded-full bg-line-hi" />
+                  <span class="size-2 rounded-full bg-line-hi" />
+                  <span class="size-2 rounded-full bg-line-hi" />
+                </span>
+                <Image
+                  src={entry.data.cover}
+                  alt=""
+                  widths={[480, 800, 1200]}
+                  sizes="28rem"
+                  loading="lazy"
+                  class="block aspect-[16/10] w-full object-cover"
+                />
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   </div>
