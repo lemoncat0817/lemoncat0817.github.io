@@ -23,9 +23,6 @@ export const ui = {
     'hero.role': '網頁工程師',
     'hero.headline.1': '我把想法',
     'hero.headline.2': '變成能用的介面',
-    'hero.intro':
-      '從點餐流程到氣象資料視覺化，我用 Vue 生態系打造真正跑得動、而且好用的網頁應用。',
-    'hero.location': '高雄，台灣',
     'hero.available': '開放合作機會',
     'hero.projectCount': '個上線專案',
     'hero.yearsLabel': '年開發經驗',
@@ -106,9 +103,6 @@ export const ui = {
     'hero.role': 'Web Engineer',
     'hero.headline.1': 'I turn ideas',
     'hero.headline.2': 'into interfaces that work',
-    'hero.intro':
-      'From ordering flows to weather data visualisation, I build web apps with the Vue ecosystem that actually ship — and that people can actually use.',
-    'hero.location': 'Kaohsiung, Taiwan',
     'hero.available': 'Open to opportunities',
     'hero.projectCount': 'shipped projects',
     'hero.yearsLabel': 'years building',

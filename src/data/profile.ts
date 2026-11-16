@@ -12,7 +12,7 @@ export const profile = {
   /** 留空字串就不會顯示 email 連結，只保留 GitHub。 */
   email: 'jimdeng0817@gmail.com',
 
-  /** 是否在 Hero 顯示「開放合作機會」狀態燈。 */
+  /** 是否在關於頁頭像旁顯示「開放合作機會」狀態燈。 */
   available: true,
 
   /** 用來自動算年資，不必每年手動改。 */
