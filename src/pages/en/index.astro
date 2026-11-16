@@ -21,10 +21,8 @@ const entries = await getWorkEntries(lang);
         {t('work.eyebrow')}
       </p>
       <h2 class="reveal text-display mt-3 font-semibold">{t('work.title')}</h2>
-      <p class="reveal mt-4 text-muted">{t('work.intro')}</p>
     </header>
 
-    {/* Flagship Work Split Alternating Showcase */}
     <div class="mt-14 flex flex-col gap-12 sm:gap-20 lg:gap-28">
       {
         entries.map((entry, i) => (

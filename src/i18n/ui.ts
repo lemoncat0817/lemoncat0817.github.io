@@ -31,7 +31,6 @@ export const ui = {
 
     'work.eyebrow': '精選作品',
     'work.title': '四個從零做到上線的專案',
-    'work.intro': '每個專案都有完整的問題背景與技術決策，不只是截圖。',
     'work.readCase': '專案詳情',
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
@@ -111,8 +110,6 @@ export const ui = {
 
     'work.eyebrow': 'Selected work',
     'work.title': 'Four projects taken from zero to production',
-    'work.intro':
-      'Each one comes with the problem behind it and the technical decisions made along the way — not just screenshots.',
     'work.readCase': 'Project Details',
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
