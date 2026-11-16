@@ -1,6 +1,7 @@
 ---
 title: Weather, Explained
 tagline: Turning raw meteorological data into a site people actually open during a typhoon
+keyword: typhoons
 summary: A weather platform built on Nuxt 4 and deployed to Cloudflare Workers, covering forecasts, animated radar, typhoon tracks, earthquake reports and warnings for all of Taiwan. The API key and data normalisation both live on the server, with caching tiered by how fast each dataset changes.
 year: 2026
 role: Frontend developer (solo)

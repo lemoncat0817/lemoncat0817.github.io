@@ -1,6 +1,7 @@
 ---
 title: Todo List
 tagline: Local-first, keyboard-first, and it doesn't lose your data
+keyword: to-dos
 summary: A local-first todo system with natural-language quick add, recurring tasks, a command palette, saveable filters and full undo support, plus optional cross-device sync. Unit tests, E2E and accessibility scans all run in CI.
 year: 2026
 role: Frontend developer (solo)

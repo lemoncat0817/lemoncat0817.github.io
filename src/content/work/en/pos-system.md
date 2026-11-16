@@ -1,6 +1,7 @@
 ---
 title: POS System
 tagline: A multi-tenant POS system for restaurants and drink shops — ordering, back office and analytics
+keyword: ordering
 summary: A full-stack POS system built with Vue 3 and Hono/Cloudflare Workers/D1, with multi-tenant data isolation, offline-first ordering, a three-tier auth model and OAuth admin login. My largest project to date, spanning both frontend and backend.
 year: 2026
 role: Full-stack developer (solo)

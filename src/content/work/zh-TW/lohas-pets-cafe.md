@@ -1,6 +1,7 @@
 ---
 title: 樂活寵物咖啡廳
 tagline: 從「讓人想去」到「讓人訂得到位」，補上形象網站少的臨門一腳
+keyword: 寵物咖啡廳
 summary: 用 Nuxt 4 靜態產生的九頁面品牌網站，內建會擋公休日的線上訂位表單、以 shadcn-vue 建立的元件系統、自動最佳化的圖片與 Restaurant／Menu／Review 結構化資料，並支援亮／深色主題即時切換。
 year: 2026
 role: 前端開發（獨立完成）

@@ -1,6 +1,7 @@
 ---
 title: POS 收銀系統
 tagline: 支援餐飲／飲料店的多租戶 POS 系統，從點餐結帳到後台管理與數據分析
+keyword: 點餐
 summary: 用 Vue 3 與 Hono／Cloudflare Workers／D1 打造的全端 POS 系統，支援多租戶資料隔離、離線優先點餐、三層式權限模型與 OAuth 後台登入，是我目前規模最大、橫跨前後端的完整專案。
 year: 2026
 role: 全端開發（獨立完成）

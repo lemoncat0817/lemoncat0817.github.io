@@ -1,6 +1,7 @@
 ---
 title: Lohas Pet Cafe
 tagline: From making people want to visit to letting them actually book the table
+keyword: a pet café
 summary: A nine-page brand site statically generated with Nuxt 4, with a reservation form that blocks closed days automatically, a component system built on shadcn-vue, fully optimised images, Restaurant/Menu/Review structured data, and live light/dark theme switching.
 year: 2026
 role: Frontend developer (solo)
