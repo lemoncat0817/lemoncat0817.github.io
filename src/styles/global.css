@@ -360,6 +360,114 @@
     }
   }
 
+  /* Hero 光場：三團徑向漸層各自緩慢漂移，疊一層靜態顆粒打散漸層色帶 */
+  .hero-field {
+    mask-image: linear-gradient(to bottom, #000 55%, transparent);
+  }
+  .hero-blob {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, var(--blob-color), transparent);
+    opacity: var(--blob-opacity);
+  }
+  .hero-blob-1 {
+    --blob-color: var(--color-accent);
+    --blob-opacity: 0.2;
+    width: min(120vw, 62rem);
+    top: -45%;
+    left: 22%;
+  }
+  .hero-blob-2 {
+    --blob-color: oklch(0.74 0.17 55);
+    --blob-opacity: 0.14;
+    width: min(90vw, 44rem);
+    top: 5%;
+    right: -12%;
+  }
+  .hero-blob-3 {
+    --blob-color: oklch(0.82 0.14 135);
+    --blob-opacity: 0.08;
+    width: min(80vw, 38rem);
+    bottom: -35%;
+    left: -12%;
+  }
+  :root[data-theme='light'] .hero-blob-1 {
+    --blob-opacity: 0.32;
+  }
+  :root[data-theme='light'] .hero-blob-2 {
+    --blob-opacity: 0.16;
+  }
+  :root[data-theme='light'] .hero-blob-3 {
+    --blob-opacity: 0.12;
+  }
+  .hero-grain {
+    position: absolute;
+    inset: 0;
+    opacity: 0.07;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  :root[data-theme='light'] .hero-grain {
+    opacity: 0.05;
+  }
+
+  .hero-tilt {
+    transform: perspective(1400px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg));
+    transform-style: preserve-3d;
+    transition: transform 0.9s var(--ease-out-expo);
+  }
+  .hero-shot {
+    position: absolute;
+    width: 76%;
+    top: calc(var(--n) * 14%);
+    right: calc(var(--n) * 12%);
+    overflow: hidden;
+    border: 1px solid var(--color-line-hi);
+    border-radius: 0.75rem;
+    background: var(--color-surface);
+    box-shadow: 0 24px 48px -16px oklch(0 0 0 / 0.45);
+    rotate: calc(4deg - var(--n) * 3deg);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-blob-1 {
+      animation: blob-drift-a 26s ease-in-out infinite alternate;
+    }
+    .hero-blob-2 {
+      animation: blob-drift-b 32s ease-in-out infinite alternate;
+    }
+    .hero-blob-3 {
+      animation: blob-drift-c 38s ease-in-out infinite alternate;
+    }
+    .hero-shot {
+      animation: shot-float 7s ease-in-out infinite alternate;
+      animation-delay: calc(var(--n) * -2.3s);
+    }
+  }
+  @keyframes blob-drift-a {
+    to {
+      transform: translate3d(-14%, 10%, 0) scale(1.12);
+    }
+  }
+  @keyframes blob-drift-b {
+    to {
+      transform: translate3d(-22%, 18%, 0) scale(0.9);
+    }
+  }
+  @keyframes blob-drift-c {
+    to {
+      transform: translate3d(26%, -16%, 0) scale(1.15);
+    }
+  }
+  @keyframes shot-float {
+    from {
+      translate: 0 -0.5rem;
+    }
+    to {
+      translate: 0 0.5rem;
+    }
+  }
+
   /* 專案卡旁的裝飾性大型序號：只描邊不填色，份量夠但不會搶過標題。 */
   .case-index {
     color: transparent;

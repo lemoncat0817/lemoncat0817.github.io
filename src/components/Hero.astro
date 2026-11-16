@@ -1,11 +1,15 @@
 ---
+import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile } from '../data/profile';
+import { getWorkEntries } from '../lib/work';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const years = new Date().getFullYear() - profile.codingSince;
+const entries = await getWorkEntries(lang);
+const stackShots = entries.slice(0, 3).reverse();
 
 /** 逐字（中文）／逐詞（英文）拆解，供標題動畫使用 */
 function splitHeadline(text: string): string[] {
@@ -17,13 +21,12 @@ const line2 = splitHeadline(t('hero.headline.2'));
 let charIndex = 0;
 ---
 
-<section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28">
-  {/* 背景光暈：純 CSS 漸層，取代舊站 540 KB 的背景圖 */}
-  <div
-    class="pointer-events-none absolute -top-1/3 left-1/2 -z-10 aspect-square w-[min(120vw,60rem)] -translate-x-1/2 rounded-full opacity-[0.14] blur-3xl"
-    style="background: radial-gradient(circle, var(--color-accent), transparent 62%)"
-    aria-hidden="true"
-  >
+<section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28 xl:pb-44" data-hero>
+  <div class="hero-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-blob hero-blob-3"></div>
+    <div class="hero-grain"></div>
   </div>
 
   <div class="shell">
@@ -65,40 +68,96 @@ let charIndex = 0;
       </span>
     </h1>
 
-    <p
-      class="rise mt-8 max-w-2xl text-lg text-muted sm:text-xl"
-      style={`--i: ${charIndex + 1}`}
-    >
-      {t('hero.intro')}
-    </p>
-
-    <div
-      class="rise mt-10 flex flex-wrap items-center gap-x-8 gap-y-5"
-      style={`--i: ${charIndex + 2}`}
-    >
-      <a
-        href="#work"
-        class="group inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+    <div class="relative">
+      {/* 堆疊只放在簡介列右側：標題最寬可到版心約七成，再往上會撞字 */}
+      <div
+        class="rise pointer-events-none absolute -top-8 right-0 hidden w-[min(30vw,30rem)] xl:block"
+        style={`--i: ${charIndex + 3}`}
+        aria-hidden="true"
       >
-        {t('hero.viewWork')}
-        <span
-          class="transition-transform duration-300 group-hover:translate-y-0.5"
-          aria-hidden="true">↓</span
-        >
-      </a>
+        <div class="hero-tilt relative aspect-[5/4]" data-hero-tilt>
+          {
+            stackShots.map((entry, i) => (
+              <div class="hero-shot" style={`--n: ${i}`}>
+                <span class="flex h-5 items-center gap-1 border-b border-line px-2.5">
+                  <span class="size-1.5 rounded-full bg-line-hi" />
+                  <span class="size-1.5 rounded-full bg-line-hi" />
+                  <span class="size-1.5 rounded-full bg-line-hi" />
+                </span>
+                <Image
+                  src={entry.data.cover}
+                  alt=""
+                  widths={[480, 800]}
+                  sizes="24rem"
+                  loading="lazy"
+                  class="block aspect-[16/10] w-full object-cover"
+                />
+              </div>
+            ))
+          }
+        </div>
+      </div>
 
-      <dl class="flex items-center gap-8">
-        <div>
-          <dt class="sr-only">{t('hero.projectCount')}</dt>
-          <dd class="font-mono text-2xl font-semibold">4</dd>
-          <p class="text-xs text-faint">{t('hero.projectCount')}</p>
-        </div>
-        <div>
-          <dt class="sr-only">{t('hero.yearsLabel')}</dt>
-          <dd class="font-mono text-2xl font-semibold">{years}+</dd>
-          <p class="text-xs text-faint">{t('hero.yearsLabel')}</p>
-        </div>
-      </dl>
+      <p
+        class="rise mt-8 max-w-2xl text-lg text-muted sm:text-xl"
+        style={`--i: ${charIndex + 1}`}
+      >
+        {t('hero.intro')}
+      </p>
+
+      <div
+        class="rise mt-10 flex flex-wrap items-center gap-x-8 gap-y-5"
+        style={`--i: ${charIndex + 2}`}
+      >
+        <a
+          href="#work"
+          class="group inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+        >
+          {t('hero.viewWork')}
+          <span
+            class="transition-transform duration-300 group-hover:translate-y-0.5"
+            aria-hidden="true">↓</span
+          >
+        </a>
+
+        <dl class="flex items-center gap-8">
+          <div>
+            <dt class="sr-only">{t('hero.projectCount')}</dt>
+            <dd class="font-mono text-2xl font-semibold">{entries.length}</dd>
+            <p class="text-xs text-faint">{t('hero.projectCount')}</p>
+          </div>
+          <div>
+            <dt class="sr-only">{t('hero.yearsLabel')}</dt>
+            <dd class="font-mono text-2xl font-semibold">{years}+</dd>
+            <p class="text-xs text-faint">{t('hero.yearsLabel')}</p>
+          </div>
+        </dl>
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  const hero = document.querySelector<HTMLElement>('[data-hero]');
+  const tilt = hero?.querySelector<HTMLElement>('[data-hero-tilt]');
+
+  if (
+    hero &&
+    tilt &&
+    matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches
+  ) {
+    hero.addEventListener(
+      'pointermove',
+      (e) => {
+        const r = hero.getBoundingClientRect();
+        tilt.style.setProperty('--tilt-x', `${((e.clientX - r.left) / r.width - 0.5) * 12}deg`);
+        tilt.style.setProperty('--tilt-y', `${((e.clientY - r.top) / r.height - 0.5) * -10}deg`);
+      },
+      { passive: true },
+    );
+    hero.addEventListener('pointerleave', () => {
+      tilt.style.removeProperty('--tilt-x');
+      tilt.style.removeProperty('--tilt-y');
+    });
+  }
+</script>
