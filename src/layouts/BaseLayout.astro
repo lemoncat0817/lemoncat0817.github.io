@@ -26,7 +26,7 @@ const pageTitle = title ? `${title} — ${profile.name}` : t('meta.title');
 const pageDescription = description ?? t('meta.description');
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImageUrl = new URL(ogImage ?? '/og-default.png', Astro.site).href;
+const ogImageUrl = new URL(ogImage ?? (lang === 'en' ? '/og-default-en.png' : '/og-default.png'), Astro.site).href;
 
 // hreflang：兩個語言互指 + x-default 指向繁中
 const zhHref = new URL(alternateUrl(Astro.url, 'en'), Astro.site).href;

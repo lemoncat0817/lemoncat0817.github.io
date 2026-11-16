@@ -63,3 +63,4 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 - **改個人資料**（是否顯示 email、求職狀態等）：`src/data/profile.ts`
 - **改介面文字**：`src/i18n/ui.ts`
 - **改配色**：`src/styles/global.css` 的 `@theme` 區塊
+- **改 Hero 文案**：`src/i18n/ui.ts` 之外，分享圖（`public/og-default*.png`）裡也有同一句標題，改完要跑 `npm run og`；favicon 的貓掌也由同一支腳本產生
