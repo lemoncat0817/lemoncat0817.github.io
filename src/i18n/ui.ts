@@ -10,7 +10,7 @@ export const ui = {
   'zh-TW': {
     'meta.title': 'Lemoncat — 網頁工程師',
     'meta.description':
-      '專注 Vue 生態系的網頁工程師，來自高雄。作品包含 POS 點餐系統、氣象資訊站、寵物咖啡廳形象網站與待辦事項應用。',
+      '來自高雄的網頁工程師，前端用 Vue／Angular，後端用 Spring Boot。作品包含 POS 點餐系統、氣象資訊站、寵物咖啡廳形象網站與待辦事項應用。',
 
     'nav.work': '作品',
     'nav.about': '關於',
@@ -64,7 +64,7 @@ export const ui = {
   en: {
     'meta.title': 'Lemoncat — Web Engineer',
     'meta.description':
-      'Web engineer from Kaohsiung, Taiwan, focused on the Vue ecosystem. Projects include a POS ordering system, a weather data app, a pet cafe site, and a todo app.',
+      'Full-stack web engineer from Kaohsiung, Taiwan, working with Vue and Angular on the front end and Spring Boot on the back end. Projects include a POS ordering system, a weather data app, a pet cafe site, and a todo app.',
 
     'nav.work': 'Work',
     'nav.about': 'About',

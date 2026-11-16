@@ -12,24 +12,24 @@ const zh = lang === 'zh-TW';
 
 const paragraphs = zh
   ? [
-      `我是 ${profile.nameZh}，一位在高雄的網頁工程師，主要用 Vue/Angular 開發網頁應用。`,
+      `我是${profile.nameZh}，一位前後端都寫的網頁工程師。`,
     ]
   : [
-      `I'm ${profile.name}, a web engineer based in Kaohsiung, Taiwan, building web applications mainly with Vue / Angular.`,
+      `I'm ${profile.name}, a full-stack web engineer.`,
     ];
 
 const facts = zh
   ? [
       { label: '所在地', value: '高雄，台灣' },
       { label: '開發年資', value: `${years}+ 年` },
-      { label: '主力技術', value: 'Vue · Angular · Spring Boot' },
-      { label: '上線專案', value: '4 個' },
+      { label: '前端', value: 'Vue · Angular' },
+      { label: '後端', value: 'Spring Boot' },
     ]
   : [
       { label: 'Based in', value: 'Kaohsiung, Taiwan' },
       { label: 'Building for', value: `${years}+ years` },
-      { label: 'Main stack', value: 'Vue · Angular · Spring Boot' },
-      { label: 'Shipped', value: '4 projects' },
+      { label: 'Front end', value: 'Vue · Angular' },
+      { label: 'Back end', value: 'Spring Boot' },
     ];
 ---
 
