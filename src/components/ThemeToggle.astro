@@ -63,12 +63,12 @@ const { label } = Astro.props;
     root.style.setProperty('--reveal-x', `${x}px`);
     root.style.setProperty('--reveal-y', `${y}px`);
     root.style.setProperty('--reveal-r', `${Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y))}px`);
-    root.classList.add('theme-switching', 'vt-no-cover');
+    root.classList.add('theme-switching');
     const transition = document.startViewTransition(apply);
     current = transition;
     // 連點時前一次會被跳過並提早結束，只能由最新一次移除 class
     transition.finished.finally(() => {
-      if (current === transition) root.classList.remove('theme-switching', 'vt-no-cover');
+      if (current === transition) root.classList.remove('theme-switching');
     });
   });
 </script>

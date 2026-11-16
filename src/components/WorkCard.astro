@@ -1,7 +1,7 @@
 ---
 import { Image, getImage } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { getLangFromUrl, useTranslations, localizePath } from '../i18n/utils';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 
 interface Props {
   entry: CollectionEntry<'work'>;
@@ -14,7 +14,6 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const { data } = entry;
 
-const href = localizePath(`/work/${slug}`, lang);
 const isReversed = index % 2 === 1;
 const stopLabel = t('work.stop').replace('{n}', String(index + 1));
 
@@ -50,8 +49,7 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
           sizes="(max-width: 640px) 85vw, (max-width: 1024px) 80vw, 520px"
           loading={index < 2 ? 'eager' : 'lazy'}
           fetchpriority={index === 0 ? 'high' : 'auto'}
-          class="vt-cover block aspect-[16/10] w-full rounded-[calc(1rem-1px)] object-cover"
-          style={`--vt-name: cover-${slug}`}
+          class="block aspect-[16/10] w-full rounded-[calc(1rem-1px)] object-cover"
         />
       </button>
     </div>
@@ -65,7 +63,9 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
 
       <h3 class="mt-2 text-2xl font-semibold tracking-tight text-fg sm:text-3xl">
         <a
-          href={href}
+          href={data.demo}
+          target="_blank"
+          rel="noopener noreferrer"
           class="link-underline transition-colors hover:text-accent-text"
         >
           {data.title}
@@ -88,21 +88,12 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
         }
       </ul>
 
-      {/* 行動按鈕列：一顆實心主 CTA + 兩個純文字次要連結，主從分明 */}
       <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-        <a
-          href={href}
-          class="btn-accent rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
-        >
-          {t('work.readCase')}
-        </a>
-
-        {/* 次要動作：純文字連結，跟主要 CTA 拉開視覺權重差距 */}
         <a
           href={data.demo}
           target="_blank"
           rel="noopener noreferrer"
-          class="group inline-flex items-center gap-1.5 font-mono text-xs text-muted transition-colors hover:text-accent-text"
+          class="group inline-flex items-center gap-1.5 btn-accent rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
         >
           {t('work.viewDemo')}
           <span

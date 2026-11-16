@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { getLangFromUrl, useTranslations, localizePath } from '../i18n/utils';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile } from '../data/profile';
 import { getWorkEntries, entrySlug } from '../lib/work';
 
@@ -51,7 +51,7 @@ const peekCss = words
         recent.map((part) =>
           'slug' in part ? (
             <a
-              href={localizePath(`/work/${part.slug}`, lang)}
+              href={`#work-${part.slug}`}
               class="peek-word whitespace-nowrap text-fg hover:text-accent-text focus-visible:text-accent-text"
               data-peek={part.slug}
               style={`anchor-name: --peek-${part.slug}`}

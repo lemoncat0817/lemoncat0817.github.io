@@ -2,6 +2,16 @@
 import { defineConfig, fontProviders } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import { readdirSync } from 'node:fs';
+
+// 案例頁已移除，舊網址可能已被分享或收錄，導回首頁對應的作品卡
+const workSlugs = readdirSync('./src/content/work/zh-TW').map((f) => f.replace(/\.md$/, ''));
+const caseRedirects = Object.fromEntries(
+  workSlugs.flatMap((slug) => [
+    [`/work/${slug}`, `/#work-${slug}`],
+    [`/en/work/${slug}`, `/en/#work-${slug}`],
+  ]),
+);
 
 // https://astro.build/config
 export default defineConfig({
@@ -9,6 +19,7 @@ export default defineConfig({
   // 本 repo 是 User Page（<username>.github.io），網站根目錄就是 /。
   // 這裡「不可」設定 base — 設了會讓所有資源多一層路徑而全站 404。
   trailingSlash: 'always',
+  redirects: caseRedirects,
 
   i18n: {
     locales: ['zh-TW', 'en'],

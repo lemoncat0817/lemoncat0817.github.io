@@ -31,7 +31,6 @@ export const ui = {
 
     'work.eyebrow': '作品',
     'work.stop': '第 {n} 站',
-    'work.readCase': '專案詳情',
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
     'work.allProjects': '全部作品',
@@ -66,17 +65,7 @@ export const ui = {
     'modal.errorTitle': '暫時無法直接傳送',
     'modal.errorDesc': '您可以點擊下方按鈕以 Gmail 寄信，或直接複製 Email 地址。',
 
-    'case.overview': '專案概要',
-    'case.role': '擔任角色',
-    'case.year': '年份',
     'case.stack': '技術棧',
-    'case.type': '專案類型',
-    'case.backToWork': '返回作品列表',
-    'case.nextProject': '下一個專案',
-    'case.liveDemo': '線上 Demo',
-    'case.sourceCode': '原始碼',
-    'case.videoTitle': '功能展示影片',
-    'case.toc': '本頁內容',
 
     'footer.rights': '版權所有',
     'footer.source': '本站原始碼',
@@ -110,7 +99,6 @@ export const ui = {
 
     'work.eyebrow': 'Work',
     'work.stop': 'Stop {n}',
-    'work.readCase': 'Project Details',
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
     'work.allProjects': 'All work',
@@ -146,17 +134,7 @@ export const ui = {
     'modal.errorTitle': 'Unable to send directly',
     'modal.errorDesc': 'You can open Gmail directly or copy my email address below.',
 
-    'case.overview': 'Overview',
-    'case.role': 'Role',
-    'case.year': 'Year',
     'case.stack': 'Stack',
-    'case.type': 'Type',
-    'case.backToWork': 'Back to work',
-    'case.nextProject': 'Next project',
-    'case.liveDemo': 'Live demo',
-    'case.sourceCode': 'Source code',
-    'case.videoTitle': 'Feature walkthrough',
-    'case.toc': 'On this page',
 
     'footer.rights': 'All rights reserved',
     'footer.source': 'Source of this site',

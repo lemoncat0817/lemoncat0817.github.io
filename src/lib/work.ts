@@ -22,12 +22,3 @@ export async function getWorkEntries(lang: Lang): Promise<CollectionEntry<'work'
   const entries = await getCollection('work', ({ id }) => id.toLowerCase().startsWith(prefix));
   return entries.sort((a, b) => a.data.order - b.data.order);
 }
-
-/** 案例頁底部「下一個專案」用的循環導覽。 */
-export function nextEntry(
-  entries: CollectionEntry<'work'>[],
-  current: CollectionEntry<'work'>,
-): CollectionEntry<'work'> {
-  const i = entries.findIndex((e) => e.id === current.id);
-  return entries[(i + 1) % entries.length]!;
-}
