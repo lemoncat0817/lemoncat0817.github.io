@@ -8,7 +8,7 @@ const t = useTranslations(lang);
 {/* 全站共用的圖片放大檢視；觸發元素只需帶 data-lightbox-src / data-lightbox-alt */}
 <dialog
   id="image-lightbox"
-  class="fixed inset-0 m-auto max-h-[92vh] max-w-[92vw] rounded-2xl border-0 bg-transparent p-0 backdrop:bg-bg/90 backdrop:backdrop-blur-md"
+  class="dialog-motion fixed inset-0 m-auto max-h-[92vh] max-w-[92vw] rounded-2xl border-0 bg-transparent p-0 backdrop:bg-bg/90 backdrop:backdrop-blur-md"
 >
   <div class="relative">
     <button
@@ -69,7 +69,10 @@ const t = useTranslations(lang);
 
     modal.addEventListener('close', () => {
       document.body.style.overflow = '';
-      if (img) img.src = '';
+      // 等離場動畫播完才清圖，否則圖片會先消失
+      setTimeout(() => {
+        if (!modal.open && img) img.src = '';
+      }, 400);
       lastTrigger?.focus();
       lastTrigger = null;
     });

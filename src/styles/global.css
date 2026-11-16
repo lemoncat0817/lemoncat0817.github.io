@@ -231,6 +231,34 @@
     }
   }
 
+  /* 原生 <dialog> 進出場：allow-discrete 讓 display／overlay 等到淡出播完才切換，關閉時才看得到反向動畫 */
+  @media (prefers-reduced-motion: no-preference) {
+    .dialog-motion,
+    .dialog-motion::backdrop {
+      opacity: 0;
+      transition:
+        opacity 0.3s var(--ease-out-expo),
+        scale 0.4s var(--ease-out-expo),
+        display 0.4s allow-discrete,
+        overlay 0.4s allow-discrete;
+    }
+    .dialog-motion {
+      scale: 0.96;
+    }
+    .dialog-motion[open],
+    .dialog-motion[open]::backdrop {
+      opacity: 1;
+      scale: 1;
+    }
+    @starting-style {
+      .dialog-motion[open],
+      .dialog-motion[open]::backdrop {
+        opacity: 0;
+        scale: 0.96;
+      }
+    }
+  }
+
   /* 標題底線：hover／focus 時從左至右畫出，用 background-size 而非
      border-bottom，才不會影響行高造成跳動。 */
   .link-underline {
