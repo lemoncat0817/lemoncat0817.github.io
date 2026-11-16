@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { useTranslations, localizePath } from '../i18n/utils';
+import PawIcon from '../components/PawIcon.astro';
 
 // GitHub Pages 的 404 是全站共用的單一頁面，無法依語言分流，
 // 因此這頁同時呈現中英文，兩種訪客都看得懂。
@@ -10,9 +11,22 @@ const en = useTranslations('en');
 
 <BaseLayout title="404">
   <section class="shell flex min-h-[60vh] flex-col items-center justify-center py-20 text-center">
-    <p class="font-mono text-6xl font-semibold text-accent-text sm:text-8xl">404</p>
+    <p class="flex items-center font-mono text-6xl font-semibold text-accent-text sm:text-8xl" aria-label="404">
+      <span aria-hidden="true">4</span>
+      <PawIcon class="mx-1 size-[0.85em]" />
+      <span aria-hidden="true">4</span>
+    </p>
 
-    <h1 class="text-title mt-6 font-semibold">{zh('404.title')}</h1>
+    {/* 一串腳印走到一半就斷了：這頁被貓踩不見了 */}
+    <div class="lost-trail mt-8 flex items-end gap-3 text-accent-text" aria-hidden="true">
+      {
+        Array.from({ length: 6 }, (_, i) => (
+          <PawIcon class="size-4 rotate-90 sm:size-5" style={`--i: ${i}; margin-bottom: ${i % 2 ? 0 : 10}px`} />
+        ))
+      }
+    </div>
+
+    <h1 class="text-title mt-8 font-semibold">{zh('404.title')}</h1>
     <p class="mt-2 max-w-md text-muted">{zh('404.intro')}</p>
 
     <p class="text-title mt-8 font-semibold" lang="en">{en('404.title')}</p>

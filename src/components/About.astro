@@ -1,8 +1,8 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
-import { profile, techStack } from '../data/profile';
+import { profile } from '../data/profile';
 import GithubIcon from './GithubIcon.astro';
-import EmailButton from './EmailButton.astro';
+import EmailLink from './EmailLink.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -12,26 +12,24 @@ const zh = lang === 'zh-TW';
 
 const paragraphs = zh
   ? [
-      `我是 ${profile.nameZh}，一位在高雄的網頁工程師，主要用 Vue/Angular 開發網頁應用。`,
-      `比起條列式的經歷，我更想讓作品說話——每個案例頁都寫了完整的問題背景、技術決策與取捨，那些內容比這裡的自我介紹更能說明我怎麼想事情。`,
+      `我是${profile.nameZh}，一位前後端都寫的網頁工程師。`,
     ]
   : [
-      `I'm ${profile.name}, a web engineer based in Kaohsiung, Taiwan, building web applications mainly with Vue / Angular.`,
-      `Rather than a bullet-point resume, I'd rather let the work speak — each case study covers the actual problem, the technical decisions, and the trade-offs behind them. That says more about how I think than a bio could.`,
+      `I'm ${profile.name}, a full-stack web engineer.`,
     ];
 
 const facts = zh
   ? [
       { label: '所在地', value: '高雄，台灣' },
       { label: '開發年資', value: `${years}+ 年` },
-      { label: '主力技術', value: 'Vue · Angular · Spring Boot' },
-      { label: '上線專案', value: '4 個' },
+      { label: '前端', value: 'Vue · Angular' },
+      { label: '後端', value: 'Spring Boot' },
     ]
   : [
       { label: 'Based in', value: 'Kaohsiung, Taiwan' },
       { label: 'Building for', value: `${years}+ years` },
-      { label: 'Main stack', value: 'Vue · Angular · Spring Boot' },
-      { label: 'Shipped', value: '4 projects' },
+      { label: 'Front end', value: 'Vue · Angular' },
+      { label: 'Back end', value: 'Spring Boot' },
     ];
 ---
 
@@ -82,19 +80,6 @@ const facts = zh
         }
       </dl>
 
-      <div>
-        <p class="font-mono text-[11px] tracking-widest text-faint uppercase">{t('stack.eyebrow')}</p>
-        <ul class="mt-3 flex flex-wrap gap-1.5">
-          {
-            techStack.map((tech) => (
-              <li class="rounded-md border border-line px-2 py-1 font-mono text-[11px] text-muted">
-                {tech.name}
-              </li>
-            ))
-          }
-        </ul>
-      </div>
-
       <div class="flex flex-col gap-3">
         <a
           href={profile.github}
@@ -105,7 +90,8 @@ const facts = zh
           {t('contact.github')}
         </a>
 
-        <EmailButton class="px-5 py-3 text-sm" />
+        <EmailLink variant="button" class="text-sm" />
+        <EmailLink variant="address" class="justify-center" />
       </div>
     </aside>
   </div>

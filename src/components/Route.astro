@@ -1,0 +1,250 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+
+const t = useTranslations(getLangFromUrl(Astro.url));
+---
+
+<div class="relative pt-14 pb-20 lg:pt-24 lg:pb-28" data-route data-paw-hint={t('work.pawHint')}>
+  <svg class="route-svg" aria-hidden="true" data-route-svg>
+    <defs>
+      <symbol id="route-paw" overflow="visible">
+        <path d="M-1.6 -3.6 C2 -3.4 2.6 -1.4 2.6 0 C2.6 1.4 2 3.4 -1.6 3.6 C-4.4 3.8 -5.4 1.8 -5.4 0 C-5.4 -1.8 -4.4 -3.8 -1.6 -3.6 Z"></path>
+        <ellipse cx="3.4" cy="-5" rx="1.5" ry="1.7"></ellipse>
+        <ellipse cx="5.6" cy="-1.8" rx="1.6" ry="1.8"></ellipse>
+        <ellipse cx="5.6" cy="1.8" rx="1.6" ry="1.8"></ellipse>
+        <ellipse cx="3.4" cy="5" rx="1.5" ry="1.7"></ellipse>
+      </symbol>
+    </defs>
+    <path class="route-road" data-route-road></path>
+    <path class="route-lane" data-route-lane></path>
+    <g data-route-paws></g>
+    <g data-route-stops></g>
+  </svg>
+
+  <p class="paw-bubble" aria-hidden="true" data-paw-bubble></p>
+
+  <div class="flex flex-col gap-20 lg:gap-36">
+    <slot />
+  </div>
+</div>
+
+<script>
+  import { catFacts } from '../data/catFacts';
+
+  const root = document.querySelector<HTMLElement>('[data-route]');
+
+  if (root) {
+    const svg = root.querySelector<SVGSVGElement>('[data-route-svg]')!;
+    const road = svg.querySelector<SVGPathElement>('[data-route-road]')!;
+    const lane = svg.querySelector<SVGPathElement>('[data-route-lane]')!;
+    const pawsGroup = svg.querySelector<SVGGElement>('[data-route-paws]')!;
+    const stopsGroup = svg.querySelector<SVGGElement>('[data-route-stops]')!;
+    const stops = [...root.querySelectorAll<HTMLElement>('[data-route-stop]')];
+    const wide = matchMedia('(min-width: 64rem)');
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+    let samples: { y: number; l: number }[] = [];
+    let stations: number[] = [];
+    const bubble = root.querySelector<HTMLElement>('[data-paw-bubble]')!;
+    const facts = catFacts[document.documentElement.lang.startsWith('zh') ? 'zh-TW' : 'en'];
+    let paws: { l: number; x: number; y: number; el: SVGGElement; on: boolean; old: boolean }[] = [];
+    let bubbleTimer = 0;
+    let lastFact = -1;
+    let lead: SVGGElement | null = null;
+
+    // 彩蛋只提示一次：第一次走到路線時冒一次泡泡，最前端腳印的波紋持續到訪客真的點過為止
+    const remember = (key: string) => {
+      try {
+        localStorage.setItem(key, '1');
+      } catch {}
+    };
+    const recalls = (key: string) => {
+      try {
+        return localStorage.getItem(key) === '1';
+      } catch {
+        return false;
+      }
+    };
+    let hinted = recalls('lemoncat:paw-hinted');
+    root.toggleAttribute('data-paw-found', recalls('lemoncat:paw-found'));
+    let total = 0;
+    let current = 0;
+    let target = 0;
+    let frame = 0;
+
+    const lengthAt = (y: number) => {
+      if (!samples.length || y <= samples[0]!.y) return 0;
+      let lo = 0;
+      let hi = samples.length - 1;
+      if (y >= samples[hi]!.y) return total;
+      while (hi - lo > 1) {
+        const mid = (lo + hi) >> 1;
+        if (samples[mid]!.y < y) lo = mid;
+        else hi = mid;
+      }
+      const a = samples[lo]!;
+      const b = samples[hi]!;
+      return a.l + ((y - a.y) / Math.max(b.y - a.y, 0.001)) * (b.l - a.l);
+    };
+
+    const paint = () => {
+      const trail = wide.matches ? 900 : 600;
+      for (const paw of paws) {
+        const on = paw.l <= current;
+        const old = paw.l < current - trail;
+        if (on !== paw.on) paw.el.toggleAttribute('data-on', (paw.on = on));
+        if (old !== paw.old) paw.el.toggleAttribute('data-old', (paw.old = old));
+      }
+      const newest = paws.findLast((p) => p.on)?.el ?? null;
+      if (newest !== lead) {
+        lead?.removeAttribute('data-lead');
+        newest?.setAttribute('data-lead', '');
+        lead = newest;
+      }
+      if (!hinted && lead && paws.filter((p) => p.on).length >= 3) {
+        hinted = true;
+        remember('lemoncat:paw-hinted');
+        window.setTimeout(() => {
+          if (!root.hasAttribute('data-paw-found') && lead) showBubble(lead, root.dataset.pawHint ?? '', 3500);
+        }, 900);
+      }
+      let at = -1;
+      stations.forEach((l, i) => {
+        if (current >= l - 4) at = i;
+      });
+      stops.forEach((el, i) => el.toggleAttribute('data-current', i === at));
+      [...stopsGroup.children].forEach((dot, i) => dot.toggleAttribute('data-passed', i <= at));
+    };
+
+    const tick = () => {
+      frame = 0;
+      current += (target - current) * 0.08;
+      if (Math.abs(target - current) < 0.5) current = target;
+      paint();
+      if (current !== target) frame = requestAnimationFrame(tick);
+    };
+
+    const update = (jump: boolean) => {
+      target = lengthAt(innerHeight * 0.55 - root.getBoundingClientRect().top);
+      if (jump || reduced.matches) {
+        current = target;
+        paint();
+      } else if (!frame) {
+        frame = requestAnimationFrame(tick);
+      }
+    };
+
+    const build = () => {
+      const w = root.clientWidth;
+      const h = root.clientHeight;
+      svg.setAttribute('width', String(w));
+      svg.setAttribute('height', String(h));
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+
+      // offset* 只看版面位置、不受進場與視差的 transform 影響，路線才不會跟著動畫抖
+      const lanes = stops.map((el) => {
+        if (!wide.matches) return el.offsetLeft / 2;
+        const right = el.offsetLeft + el.offsetWidth;
+        return el.dataset.side === 'left' ? (right + w) / 2 : el.offsetLeft / 2;
+      });
+      const startX = wide.matches ? w / 2 : lanes[0]!;
+      const endX = wide.matches ? w / 2 : lanes[lanes.length - 1]!;
+
+      let d = `M ${startX} 0`;
+      let prevX = startX;
+      let prevY = 0;
+      const stationYs: number[] = [];
+      stops.forEach((el, i) => {
+        const top = el.offsetTop - 16;
+        const bottom = el.offsetTop + el.offsetHeight + 16;
+        const gap = top - prevY;
+        d += ` C ${prevX} ${prevY + gap * 0.62}, ${lanes[i]} ${top - gap * 0.62}, ${lanes[i]} ${top}`;
+        d += ` L ${lanes[i]} ${bottom}`;
+        stationYs.push(el.offsetTop + el.offsetHeight / 2);
+        prevX = lanes[i]!;
+        prevY = bottom;
+      });
+      const gap = h - prevY;
+      d += ` C ${prevX} ${prevY + gap * 0.62}, ${endX} ${h - gap * 0.62}, ${endX} ${h}`;
+
+      road.setAttribute('d', d);
+      lane.setAttribute('d', d);
+      total = road.getTotalLength();
+
+      samples = [];
+      let maxY = -Infinity;
+      for (let k = 0; k <= 600; k++) {
+        const l = (total * k) / 600;
+        maxY = Math.max(maxY, road.getPointAtLength(l).y);
+        samples.push({ y: maxY, l });
+      }
+      stations = stationYs.map(lengthAt);
+      stopsGroup.innerHTML = stationYs
+        .map((y, i) => `<circle class="route-stop" cx="${lanes[i]}" cy="${y}" r="${wide.matches ? 6 : 4.5}"></circle>`)
+        .join('');
+
+      // 左右腳交錯踩在中線兩側，腳尖朝前進方向
+      const step = wide.matches ? 52 : 40;
+      const side = wide.matches ? 6 : 4;
+      const scale = wide.matches ? 1.2 : 0.9;
+      let markup = '';
+      const spots: { l: number; x: number; y: number }[] = [];
+      for (let l = step / 2, i = 0; l < total - 4; l += step, i++) {
+        const p = road.getPointAtLength(l);
+        const q = road.getPointAtLength(Math.min(l + 1, total));
+        const angle = Math.atan2(q.y - p.y, q.x - p.x);
+        const offset = i % 2 ? side : -side;
+        const x = p.x - Math.sin(angle) * offset;
+        const y = p.y + Math.cos(angle) * offset;
+        markup += `<g class="route-paw-group" data-paw="${i}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((angle * 180) / Math.PI).toFixed(1)}) scale(${scale})"><circle class="route-paw-hit" r="14"></circle><use class="route-paw" href="#route-paw"></use></g>`;
+        spots.push({ l, x, y });
+      }
+      pawsGroup.innerHTML = markup;
+      paws = [...pawsGroup.querySelectorAll<SVGGElement>('g')].map((el, i) => ({ ...spots[i]!, el, on: false, old: false }));
+      lead = null;
+      hideBubble();
+
+      update(true);
+    };
+
+    function hideBubble() {
+      bubble.classList.remove('is-open');
+      clearTimeout(bubbleTimer);
+    }
+
+    function showBubble(el: SVGGElement, text: string, ms: number) {
+      const paw = paws[Number(el.dataset.paw)];
+      if (!paw) return;
+      bubble.textContent = text;
+      const width = bubble.parentElement!.clientWidth;
+      const half = Math.min(bubble.offsetWidth || 240, width) / 2;
+      bubble.style.left = `${Math.min(Math.max(paw.x, half), width - half)}px`;
+      bubble.style.top = `${paw.y - 18}px`;
+      bubble.classList.remove('is-open');
+      void bubble.offsetWidth;
+      bubble.classList.add('is-open');
+      clearTimeout(bubbleTimer);
+      bubbleTimer = window.setTimeout(hideBubble, ms);
+    }
+
+    // 走過的腳印可以點，點了冒出一則貓咪冷知識；腳印會隨 resize 重建，所以監聽掛在容器上
+    root.addEventListener('click', (e) => {
+      const hit = (e.target as Element).closest<SVGGElement>('.route-paw-group[data-on]');
+      if (!hit) return hideBubble();
+      let n = Math.floor(Math.random() * facts.length);
+      if (n === lastFact) n = (n + 1) % facts.length;
+      lastFact = n;
+      showBubble(hit, facts[n]!, 5000);
+      hit.removeAttribute('data-pop');
+      void hit.getBoundingClientRect();
+      hit.setAttribute('data-pop', '');
+      root.setAttribute('data-paw-found', '');
+      remember('lemoncat:paw-found');
+    });
+
+    addEventListener('scroll', () => update(false), { passive: true });
+    new ResizeObserver(build).observe(root);
+    wide.addEventListener('change', build);
+    reduced.addEventListener('change', build);
+  }
+</script>

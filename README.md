@@ -17,15 +17,15 @@
 
 ## 開發
 
-需要 Node.js >= 22.12。
+需要 Node.js >= 22.12 與 pnpm（版本見 `package.json` 的 `packageManager`）。
 
 ```bash
-npm install
-npm run dev       # 開發伺服器 http://localhost:4321
-npm run build     # 型別檢查 + 建置到 dist/
-npm run preview   # 預覽建置結果
-npm run og        # 重新產生社群分享圖與 icon
-npm run fonts     # 重新下載字體檔（只有要換字體時才需要）
+pnpm install
+pnpm dev          # 開發伺服器 http://localhost:4321
+pnpm build        # 型別檢查 + 建置到 dist/
+pnpm preview      # 預覽建置結果
+pnpm og           # 重新產生社群分享圖與 icon
+pnpm fonts        # 重新下載字體檔（只有要換字體時才需要）
 ```
 
 ## 專案結構
@@ -34,10 +34,10 @@ npm run fonts     # 重新下載字體檔（只有要換字體時才需要）
 src/
 ├─ assets/work/        作品封面圖（由 astro:assets 最佳化）
 ├─ components/         UI 元件
-├─ content/work/       案例研究內容
+├─ content/work/       作品卡資料（只有 frontmatter）
 │  ├─ zh-TW/
 │  └─ en/
-├─ data/profile.ts     個人資料與技術棧對應（單一來源）
+├─ data/profile.ts     個人資料（單一來源）
 ├─ i18n/               翻譯字串與語言工具
 ├─ layouts/            共用頁面版型（BaseLayout 等）
 ├─ lib/                作品資料處理與輔助函式
@@ -48,8 +48,7 @@ src/
 ## 常見維護作業
 
 **新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個 `.md`，
-封面圖放進 `src/assets/work/`。首頁與案例頁會自動帶出，不需要改任何元件。
-記得同步更新 `src/data/profile.ts` 裡技術與專案的對應關係。
+封面圖放進 `src/assets/work/`。首頁作品卡會自動帶出，不需要改任何元件。
 
 **改個人資料**：`src/data/profile.ts`（是否顯示 email、求職狀態等）。
 

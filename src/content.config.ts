@@ -4,12 +4,9 @@ import { glob } from 'astro/loaders';
 import * as z from 'zod';
 
 /**
- * 作品案例研究。
+ * 首頁作品卡的資料，只用 frontmatter，沒有內文（詳細說明在各專案 repo 的 README）。
  *
  * 檔案結構：src/content/work/<lang>/<slug>.md
- * 例如     src/content/work/zh-TW/pos-system.md
- *          src/content/work/en/pos-system.md
- *
  * 新增一個作品 = 新增兩個 Markdown 檔，不需要改動任何元件。
  */
 const work = defineCollection({
@@ -17,29 +14,22 @@ const work = defineCollection({
   schema: ({ image }) =>
     z.object({
       title: z.string(),
-      /** 一句話定位：這是什麼、為誰做 */
+      /** 一句話定位。中文版會優先用 GitHub repo 的 About（見 lib/repoAbout.ts），這裡是抓不到時的備援 */
       tagline: z.string(),
-      /** 卡片與 SEO description 用的摘要 */
-      summary: z.string(),
-
-      year: z.number().int().min(2020).max(2100),
-      role: z.string(),
-      type: z.string(),
-      stack: z.array(z.string()).min(1),
+      /** Hero「最近做的」那行裡代表這個作品的詞，滑過會顯示封面 */
+      keyword: z.string().min(1),
+      /** 只放最能代表這個專案的技術，完整清單在 repo 的 README */
+      stack: z.array(z.string()).min(1).max(5),
 
       demo: z.url(),
       repo: z.url(),
-      /** YouTube 影片 ID（可選）。有值時案例頁會嵌入播放器。 */
-      video: z.string().optional(),
 
       cover: image(),
-      /** 封面替代文字 — 無障礙必填，不接受空字串 */
+      /** 封面替代文字，無障礙必填，不接受空字串 */
       coverAlt: z.string().min(1),
 
-      /** 首頁 Bento 排序，數字小的在前 */
+      /** 首頁排序，數字小的在前 */
       order: z.number().int(),
-      /** 是否為主打作品（在 Bento 網格佔較大版位） */
-      featured: z.boolean().default(false),
     }),
 });
 

@@ -5,7 +5,6 @@ import { profile } from '../data/profile';
 import { getLangFromUrl, useTranslations, htmlLang, alternateUrl } from '../i18n/utils';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import ContactModal from '../components/ContactModal.astro';
 import ImageLightbox from '../components/ImageLightbox.astro';
 
 interface Props {
@@ -26,7 +25,7 @@ const pageTitle = title ? `${title} — ${profile.name}` : t('meta.title');
 const pageDescription = description ?? t('meta.description');
 
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
-const ogImageUrl = new URL(ogImage ?? '/og-default.png', Astro.site).href;
+const ogImageUrl = new URL(ogImage ?? (lang === 'en' ? '/og-default-en.png' : '/og-default.png'), Astro.site).href;
 
 // hreflang：兩個語言互指 + x-default 指向繁中
 const zhHref = new URL(alternateUrl(Astro.url, 'en'), Astro.site).href;
@@ -98,40 +97,6 @@ const personSchema = {
       })();
     </script>
 
-    {/* 封面只在首頁 ↔ 案例頁之間、被點的那一張且在畫面內時才命名；pagereveal 在首次繪製前觸發，必須行內同步註冊 */}
-    <script is:inline>
-      (() => {
-        const path = (url) => (url ? new URL(url).pathname : '');
-        const isHome = (url) => /^\/(en\/)?$/.test(path(url));
-        const caseSlug = (url) => path(url).match(/\/work\/([^/]+)\/$/)?.[1];
-        const pairedSlug = (a, b) => (isHome(a) && caseSlug(b)) || (isHome(b) && caseSlug(a)) || null;
-        const nameOnly = (slug) => {
-          for (const el of document.querySelectorAll('.vt-cover')) {
-            const r = el.getBoundingClientRect();
-            const keep =
-              slug &&
-              el.style.getPropertyValue('--vt-name').trim() === `cover-${slug}` &&
-              r.bottom > 0 &&
-              r.top < innerHeight;
-            el.style.viewTransitionName = keep ? '' : 'none';
-          }
-        };
-        addEventListener('pageswap', (e) => {
-          if (e.viewTransition && e.activation) nameOnly(pairedSlug(location.href, e.activation.entry?.url));
-        });
-        addEventListener('pagereveal', (e) => {
-          for (const el of document.querySelectorAll('.vt-cover')) el.style.viewTransitionName = '';
-          const activation = window.navigation?.activation;
-          const from = activation?.from?.url;
-          if (!e.viewTransition || !from) return;
-          // 錨點捲動發生在 pagereveal 之後，先捲過去才判斷得出封面是否在畫面內；上一頁與重新整理要留給瀏覽器還原位置
-          const isNewEntry = activation.navigationType === 'push' || activation.navigationType === 'replace';
-          if (location.hash && isNewEntry) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: 'instant' });
-          nameOnly(pairedSlug(from, location.href));
-        });
-      })();
-    </script>
-
     <script
       type="application/ld+json"
       is:inline
@@ -146,7 +111,6 @@ const personSchema = {
       <slot />
     </main>
     <Footer />
-    <ContactModal />
     <ImageLightbox />
 
     <script>
@@ -163,6 +127,26 @@ const personSchema = {
           { passive: true },
         );
       }
+
+      // 左鍵或觸控點下去的位置留一個會淡掉的貓掌；右鍵會跳出瀏覽器選單，刻意不處理
+      const pawSvg =
+        '<svg viewBox="0 0 32 32" fill="currentColor"><path d="M16 15.2c3.7 0 6.6 3 6.6 5.8 0 2.7-2.1 3.8-3.7 3.8-1.3 0-1.9-.7-2.9-.7s-1.6.7-2.9.7c-1.6 0-3.7-1.1-3.7-3.8 0-2.8 2.9-5.8 6.6-5.8z"/><ellipse cx="8.9" cy="13.4" rx="2.2" ry="2.7" transform="rotate(-22 8.9 13.4)"/><ellipse cx="13.2" cy="9.2" rx="2.3" ry="2.9" transform="rotate(-6 13.2 9.2)"/><ellipse cx="18.8" cy="9.2" rx="2.3" ry="2.9" transform="rotate(6 18.8 9.2)"/><ellipse cx="23.1" cy="13.4" rx="2.2" ry="2.7" transform="rotate(22 23.1 13.4)"/></svg>';
+      const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+      document.addEventListener(
+        'pointerdown',
+        (e) => {
+          if (e.button !== 0 || reducedMotion.matches) return;
+          const stamp = document.createElement('span');
+          stamp.className = 'click-paw';
+          stamp.style.left = `${e.clientX}px`;
+          stamp.style.top = `${e.clientY}px`;
+          stamp.style.rotate = `${Math.round(Math.random() * 50 - 25)}deg`;
+          stamp.innerHTML = pawSvg;
+          stamp.addEventListener('animationend', () => stamp.remove(), { once: true });
+          document.body.append(stamp);
+        },
+        { passive: true },
+      );
     </script>
   </body>
 </html>

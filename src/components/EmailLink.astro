@@ -1,0 +1,115 @@
+---
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { profile } from '../data/profile';
+
+interface Props {
+  /** button：mailto 主按鈕；address：小字信箱加複製鈕，給沒有設定郵件軟體的訪客 */
+  variant: 'button' | 'address';
+  class?: string;
+}
+
+const { variant, class: className = '' } = Astro.props;
+const t = useTranslations(getLangFromUrl(Astro.url));
+---
+
+{
+  profile.email && variant === 'button' && (
+    <a
+      href={`mailto:${profile.email}`}
+      class:list={[
+        'inline-flex items-center justify-center gap-2.5 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]',
+        className,
+      ]}
+    >
+      <svg
+        class="size-[18px] shrink-0"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+      </svg>
+      {t('contact.email')}
+    </a>
+  )
+}
+
+{
+  profile.email && variant === 'address' && (
+    <div class:list={['flex items-center gap-1', className]}>
+      <span class="font-mono text-xs text-faint select-all sm:text-sm" data-email-address>
+        {profile.email}
+      </span>
+      <span class="relative">
+        <button
+          type="button"
+          class="group grid size-8 place-items-center rounded-lg text-faint transition-colors hover:bg-surface-hi hover:text-fg"
+          aria-label={t('contact.copy')}
+          title={t('contact.copy')}
+          data-copy-email={profile.email}
+          data-copied-text={t('contact.copied')}
+          data-failed-text={t('contact.copyFailed')}
+        >
+          <svg
+            class="size-3.5 group-data-copied:hidden"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.8"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+            <path d="M5 15V5a2 2 0 0 1 2-2h10"></path>
+          </svg>
+          <svg
+            class="hidden size-3.5 text-accent-text group-data-copied:block"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M5 12.5l4.5 4.5L19 7"></path>
+          </svg>
+        </button>
+        <span
+          class="absolute top-full left-1/2 -translate-x-1/2 font-mono text-xs whitespace-nowrap text-accent-text"
+          aria-live="polite"
+          data-copy-status
+        ></span>
+      </span>
+    </div>
+  )
+}
+
+<script>
+  document.addEventListener('click', async (e) => {
+    const button = (e.target as Element).closest<HTMLButtonElement>('[data-copy-email]');
+    if (!button) return;
+    const status = button.parentElement?.querySelector<HTMLElement>('[data-copy-status]');
+    let message = button.dataset.copiedText ?? '';
+    try {
+      await navigator.clipboard.writeText(button.dataset.copyEmail ?? '');
+      button.toggleAttribute('data-copied', true);
+    } catch {
+      // 剪貼簿被拒（權限或非安全來源）時，改成選取信箱文字讓訪客自己複製
+      const address = button.closest('div')?.querySelector('[data-email-address]');
+      if (address) getSelection()?.selectAllChildren(address);
+      message = button.dataset.failedText ?? '';
+    }
+    if (status) status.textContent = message;
+    window.setTimeout(() => {
+      button.removeAttribute('data-copied');
+      if (status) status.textContent = '';
+    }, 2000);
+  });
+</script>

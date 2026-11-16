@@ -1,7 +1,8 @@
 ---
 import { Image, getImage } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
-import { getLangFromUrl, useTranslations, localizePath } from '../i18n/utils';
+import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { repoAbout } from '../lib/repoAbout';
 
 interface Props {
   entry: CollectionEntry<'work'>;
@@ -14,69 +15,60 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const { data } = entry;
 
-const href = localizePath(`/work/${slug}`, lang);
 const isReversed = index % 2 === 1;
-const indexLabel = String(index + 1).padStart(2, '0');
+const stopLabel = t('work.stop').replace('{n}', String(index + 1));
+// GitHub 的 About 只有一個欄位且寫的是中文，所以只有中文版跟著同步，英文版用 frontmatter
+const tagline = (lang === 'zh-TW' && (await repoAbout(data.repo))) || data.tagline;
 
 // 放大檢視用的原尺寸圖，避免用縮圖版本的低解析度截圖
 const fullImage = await getImage({ src: data.cover, width: data.cover.width, format: 'webp' });
-
-const demoUrl = new URL(data.demo);
-const demoLabel = (demoUrl.host + demoUrl.pathname).replace(/\/$/, '');
 ---
 
-<article id={`work-${slug}`} class="relative scroll-mt-20 py-6 sm:py-8">
+{/* 卡片比版心窄、左右交錯，空出來的那側是 Route.astro 的車道 */}
+<article
+  id={`work-${slug}`}
+  class:list={['group/stop relative scroll-mt-20 ml-10 sm:ml-12 lg:w-[78%]', isReversed ? 'lg:ml-auto' : 'lg:ml-0']}
+  data-route-stop
+  data-side={isReversed ? 'right' : 'left'}
+>
   <div
     class:list={[
-      'flex flex-col gap-8 lg:gap-14 items-center',
+      'flex flex-col gap-6 lg:gap-10 items-center',
       isReversed ? 'lg:flex-row-reverse' : 'lg:flex-row',
     ]}
   >
-    {/* 截圖本身就是 16:10，標題列必須加在比例區域外，否則會裁到圖 */}
-    <div class="cover-frame reveal-parallax relative isolate w-full lg:w-[55%] shrink-0">
-      <div
-        class="cover-glow pointer-events-none absolute inset-x-[8%] -bottom-12 top-[35%] -z-10 blur-3xl"
-        aria-hidden="true"
-      >
-      </div>
+    <div class="reveal-parallax relative w-full lg:w-[56%] shrink-0">
       <button
         type="button"
         data-lightbox-src={fullImage.src}
         data-lightbox-alt={data.coverAlt}
-        class="spotlight relative block w-full appearance-none cursor-zoom-in overflow-hidden rounded-2xl border border-line bg-surface p-0 text-left shadow-xl transition-[transform,box-shadow,border-color] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:border-line-hi hover:shadow-2xl hover:shadow-black/25"
+        class="relative block w-full appearance-none cursor-zoom-in overflow-hidden rounded-2xl border border-line bg-surface p-0 text-left shadow-xl transition-[translate,box-shadow,border-color] duration-500 ease-[var(--ease-out-expo)] group-data-current/stop:border-accent-text hover:-translate-y-1 hover:shadow-2xl hover:shadow-black/25"
         aria-label={`${data.title} — ${t('work.zoomImage')}`}
       >
-        <span class="flex h-8 items-center gap-1.5 border-b border-line px-3.5" aria-hidden="true">
-          <span class="size-2.5 rounded-full bg-line-hi"></span>
-          <span class="size-2.5 rounded-full bg-line-hi"></span>
-          <span class="size-2.5 rounded-full bg-line-hi"></span>
-          <span class="ml-3 truncate font-mono text-[11px] text-faint">{demoLabel}</span>
-        </span>
         <Image
           src={data.cover}
           alt={data.coverAlt}
           widths={[480, 800, 1200, 1600]}
-          sizes="(max-width: 640px) 92vw, (max-width: 1024px) 85vw, 680px"
+          sizes="(max-width: 640px) 85vw, (max-width: 1024px) 80vw, 520px"
           loading={index < 2 ? 'eager' : 'lazy'}
           fetchpriority={index === 0 ? 'high' : 'auto'}
-          class="vt-cover block aspect-[16/10] w-full rounded-b-[calc(1rem-1px)] object-cover"
-          style={`--vt-name: cover-${slug}`}
+          class="block aspect-[16/10] w-full rounded-[calc(1rem-1px)] object-cover"
         />
       </button>
     </div>
 
     {/* 專案資訊：比截圖晚一點進場，避免整卡像單一硬塊一起移動 */}
     <div
-      class="reveal flex w-full lg:w-[45%] flex-col justify-center"
+      class="reveal flex w-full lg:w-[44%] flex-col justify-center"
       style="animation-range: entry 10% entry 65%;"
     >
-      <span class="case-index block text-[3.5rem] font-semibold leading-none sm:text-[4.5rem]" aria-hidden="true">
-        {indexLabel}
-      </span>
+      <span class="font-mono text-xs tracking-wide text-faint transition-colors duration-300 group-data-current/stop:text-accent-text">{stopLabel}</span>
 
-      <h3 class="-mt-2 text-2xl font-semibold tracking-tight text-fg sm:-mt-3 sm:text-3xl">
+      <h3 class="mt-2 text-2xl font-semibold tracking-tight text-fg sm:text-3xl">
         <a
-          href={href}
+          href={data.demo}
+          target="_blank"
+          rel="noopener noreferrer"
           class="link-underline transition-colors hover:text-accent-text"
         >
           {data.title}
@@ -84,38 +76,20 @@ const demoLabel = (demoUrl.host + demoUrl.pathname).replace(/\/$/, '');
       </h3>
 
       <p class="mt-3 text-base sm:text-lg leading-relaxed text-muted">
-        {data.tagline}
+        {tagline}
       </p>
 
-      {/* 技術棧標籤：逐一入場，避免整排同時彈出 */}
-      <ul class="mt-6 flex flex-wrap gap-2" aria-label={t('case.stack')}>
-        {
-          data.stack.map((tech, i) => (
-            <li
-              class="reveal rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted transition-colors hover:border-line-hi hover:text-fg"
-              style={`animation-range: entry ${Math.min(i * 6, 40)}% entry ${Math.min(55 + i * 6, 95)}%;`}
-            >
-              {tech}
-            </li>
-          ))
-        }
-      </ul>
+      <dl class="mt-5 flex gap-4 text-sm">
+        <dt class="shrink-0 pt-px font-mono text-xs leading-6 text-faint">{t('work.stackLabel')}</dt>
+        <dd class="leading-6 text-muted">{data.stack.join(lang === 'zh-TW' ? '、' : ', ')}</dd>
+      </dl>
 
-      {/* 行動按鈕列：一顆實心主 CTA + 兩個純文字次要連結，主從分明 */}
       <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
-        <a
-          href={href}
-          class="btn-accent rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
-        >
-          {t('work.readCase')}
-        </a>
-
-        {/* 次要動作：純文字連結，跟主要 CTA 拉開視覺權重差距 */}
         <a
           href={data.demo}
           target="_blank"
           rel="noopener noreferrer"
-          class="group inline-flex items-center gap-1.5 font-mono text-xs text-muted transition-colors hover:text-accent-text"
+          class="group inline-flex items-center gap-1.5 btn-accent rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
         >
           {t('work.viewDemo')}
           <span

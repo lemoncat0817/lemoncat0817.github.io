@@ -37,7 +37,7 @@
      Latin 用 Space Grotesk（由 Astro 字體 API 自架）。 */
   --font-sans:
     var(--font-display), ui-sans-serif, system-ui, -apple-system, 'Segoe UI', 'PingFang TC',
-    'Microsoft JhengHei', 'Noto Sans TC', 'Helvetica Neue', sans-serif;
+    'Microsoft JhengHei', 'Noto Sans TC', 'Noto Sans CJK TC', 'Source Han Sans TC', 'Helvetica Neue', sans-serif;
   --font-mono: var(--font-mono-web), ui-monospace, 'Cascadia Code', 'Source Code Pro', monospace;
 
   /* 流體字級：以 clamp() 取代舊站那 6 段 media query */
@@ -92,6 +92,14 @@
   :root[data-theme='light'] {
     color-scheme: light;
   }
+  :root {
+    --hero-pt: 4rem;
+  }
+  @media (min-width: 40rem) {
+    :root {
+      --hero-pt: 6rem;
+    }
+  }
 
   html {
     -webkit-text-size-adjust: 100%;
@@ -113,6 +121,10 @@
     /* 中文行距需要比西文寬鬆才好讀 */
     line-height: 1.7;
     overflow-x: clip;
+  }
+  /* 中文字型若沒有粗體檔（例如 Brave 限制可用的系統字型時），允許模擬粗體，標題才不會掉回細體 */
+  :lang(zh) {
+    font-synthesis-weight: auto;
   }
 
   /* 標題在中文語境用較緊的行距 */
@@ -142,6 +154,32 @@
   iframe {
     max-width: 100%;
     height: auto;
+  }
+
+  /* 貓掌游標：熱點（10 8）對齊 scripts/generate-og.mjs 產生的左二趾尖；觸控裝置不會顯示 cursor，不必另外限制 */
+  html {
+    cursor: url('/cursors/paw.png') 10 8, auto;
+    cursor: image-set(url('/cursors/paw.png') 1x, url('/cursors/paw@2x.png') 2x) 10 8, auto;
+  }
+  a[href],
+  button:not(:disabled),
+  summary,
+  label[for],
+  select,
+  [role='button'],
+  [data-on] > .route-paw-hit {
+    cursor: url('/cursors/paw-pointer.png') 10 8, pointer;
+    cursor: image-set(url('/cursors/paw-pointer.png') 1x, url('/cursors/paw-pointer@2x.png') 2x) 10 8, pointer;
+  }
+  :root:active,
+  :root :active:not(input, textarea, [contenteditable]) {
+    cursor: url('/cursors/paw-pressed.png') 11 10, auto;
+    cursor: image-set(url('/cursors/paw-pressed.png') 1x, url('/cursors/paw-pressed@2x.png') 2x) 11 10, auto;
+  }
+  input:not([type='button'], [type='submit'], [type='checkbox'], [type='radio']),
+  textarea,
+  [contenteditable] {
+    cursor: text;
   }
 
   ::selection {
@@ -259,40 +297,6 @@
     }
   }
 
-  .read-progress {
-    display: none;
-  }
-  @media (prefers-reduced-motion: no-preference) {
-    @supports (animation-timeline: scroll()) {
-      .read-progress {
-        display: block;
-        position: fixed;
-        inset-inline: 0;
-        top: 0;
-        z-index: 60;
-        height: 2px;
-        background: var(--color-accent);
-        transform-origin: 0 50%;
-        animation-name: read-progress;
-        animation-duration: auto;
-        animation-timing-function: linear;
-        animation-fill-mode: both;
-        animation-timeline: scroll(root block);
-      }
-      :root[data-theme='light'] .read-progress {
-        background: var(--color-accent-text);
-      }
-    }
-  }
-  @keyframes read-progress {
-    from {
-      transform: scaleX(0);
-    }
-    to {
-      transform: scaleX(1);
-    }
-  }
-
   /* 標題底線：hover／focus 時從左至右畫出，用 background-size 而非
      border-bottom，才不會影響行高造成跳動。 */
   .link-underline {
@@ -305,21 +309,6 @@
   .link-underline:hover,
   .link-underline:focus-visible {
     background-size: 100% 2px;
-  }
-
-  .cover-glow {
-    background: radial-gradient(closest-side, var(--color-accent), transparent);
-    opacity: 0.5;
-    transition: opacity 0.7s var(--ease-out-expo);
-  }
-  .cover-frame:hover .cover-glow {
-    opacity: 0.7;
-  }
-  :root[data-theme='light'] .cover-glow {
-    opacity: 0.55;
-  }
-  :root[data-theme='light'] .cover-frame:hover .cover-glow {
-    opacity: 0.8;
   }
 
   /* 游標追光：::before 是跟著游標亮起的邊框，::after 是表面的柔光 */
@@ -360,118 +349,335 @@
     }
   }
 
-  /* Hero 光場：三團徑向漸層各自緩慢漂移，疊一層靜態顆粒打散漸層色帶 */
-  .hero-field {
-    mask-image: linear-gradient(to bottom, #000 55%, transparent);
-  }
-  .hero-blob {
+  /* 名字停靠：首頁的導覽列名字從 Hero 大標位置縮進左上角，起點位移 = 半個導覽列高 + Hero 上方留白 */
+  .brand {
     position: absolute;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, var(--blob-color), transparent);
-    opacity: var(--blob-opacity);
+    left: var(--spacing-gutter);
+    top: 50%;
+    translate: 0 -50%;
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    view-transition-name: brand;
   }
-  .hero-blob-1 {
-    --blob-color: var(--color-accent);
-    --blob-opacity: 0.2;
-    width: min(120vw, 62rem);
-    top: -45%;
-    left: 22%;
+  .theme-switching .brand {
+    view-transition-name: none;
   }
-  .hero-blob-2 {
-    --blob-color: oklch(0.74 0.17 55);
-    --blob-opacity: 0.14;
-    width: min(90vw, 44rem);
-    top: 5%;
-    right: -12%;
+  .hero-name {
+    line-height: 1;
+    font-weight: 700;
   }
-  .hero-blob-3 {
-    --blob-color: oklch(0.82 0.14 135);
-    --blob-opacity: 0.08;
-    width: min(80vw, 38rem);
-    bottom: -35%;
-    left: -12%;
-  }
-  :root[data-theme='light'] .hero-blob-1 {
-    --blob-opacity: 0.32;
-  }
-  :root[data-theme='light'] .hero-blob-2 {
-    --blob-opacity: 0.16;
-  }
-  :root[data-theme='light'] .hero-blob-3 {
-    --blob-opacity: 0.12;
-  }
-  .hero-grain {
-    position: absolute;
-    inset: 0;
-    opacity: 0.07;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  :root[data-theme='light'] .hero-grain {
-    opacity: 0.05;
-  }
-
-  .hero-tilt {
-    transform: perspective(1400px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg));
-    transform-style: preserve-3d;
-    transition: transform 0.9s var(--ease-out-expo);
-  }
-  .hero-shot {
-    position: absolute;
-    width: 80%;
-    top: calc(var(--n) * 15%);
-    right: calc(var(--n) * 20%);
-    overflow: hidden;
-    border: 1px solid var(--color-line-hi);
-    border-radius: 0.875rem;
-    background: var(--color-surface);
-    box-shadow: 0 28px 56px -18px oklch(0 0 0 / 0.5);
-    rotate: calc(3deg - var(--n) * 4deg);
-  }
-
   @media (prefers-reduced-motion: no-preference) {
-    .hero-blob-1 {
-      animation: blob-drift-a 26s ease-in-out infinite alternate;
-    }
-    .hero-blob-2 {
-      animation: blob-drift-b 32s ease-in-out infinite alternate;
-    }
-    .hero-blob-3 {
-      animation: blob-drift-c 38s ease-in-out infinite alternate;
-    }
-    .hero-shot {
-      animation: shot-float 7s ease-in-out infinite alternate;
-      animation-delay: calc(var(--n) * -2.3s);
-    }
-  }
-  @keyframes blob-drift-a {
-    to {
-      transform: translate3d(-14%, 10%, 0) scale(1.12);
+    @supports (animation-timeline: scroll()) {
+      .brand-dock {
+        animation-name: brand-dock;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root);
+        animation-range: 0px calc(2rem + var(--hero-pt));
+      }
+      .hero-name {
+        visibility: hidden;
+      }
     }
   }
-  @keyframes blob-drift-b {
-    to {
-      transform: translate3d(-22%, 18%, 0) scale(0.9);
-    }
-  }
-  @keyframes blob-drift-c {
-    to {
-      transform: translate3d(26%, -16%, 0) scale(1.15);
-    }
-  }
-  @keyframes shot-float {
+  @keyframes brand-dock {
     from {
-      translate: 0 -0.5rem;
+      font-size: var(--text-hero);
+      letter-spacing: var(--text-hero--letter-spacing);
+      translate: 0 calc(2rem + var(--hero-pt));
+    }
+  }
+
+  /* Hero 標題：整行從遮罩下推上來，接著螢光筆劃過重點 */
+  .line-reveal {
+    display: block;
+    overflow: clip;
+    padding-bottom: 0.1em;
+  }
+  .line-reveal > span {
+    display: inline-block;
+  }
+  .marker {
+    white-space: nowrap;
+    padding-inline: 0.08em;
+    margin-inline: -0.08em;
+    background-image: linear-gradient(var(--color-accent), var(--color-accent));
+    background-repeat: no-repeat;
+    background-position: 0 60%;
+    background-size: 100% 88%;
+    color: var(--color-accent-ink);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .line-reveal > span {
+      animation: line-up 1s var(--ease-out-expo) both;
+      animation-delay: calc(var(--i, 0) * 130ms + 100ms);
+    }
+    .marker {
+      animation:
+        marker-sweep 0.9s var(--ease-out-expo) 0.75s both,
+        marker-ink 0.2s linear 0.95s both;
+    }
+  }
+  @keyframes line-up {
+    from {
+      translate: 0 105%;
+    }
+  }
+  @keyframes marker-sweep {
+    from {
+      background-size: 0% 88%;
+    }
+  }
+  @keyframes marker-ink {
+    from {
+      color: var(--color-fg);
+    }
+  }
+
+  .type-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.15em;
+    margin-left: 0.15em;
+    vertical-align: -0.2em;
+    background: var(--color-accent-text);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .type-caret {
+      animation: caret-blink 1.05s steps(1) infinite;
+    }
+  }
+  @keyframes caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
+  /* 滑過作品關鍵字時，截圖以 anchor positioning 貼在字旁，靠近視窗邊緣會自動翻面 */
+  .peek {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    @supports (anchor-name: --a) {
+      .peek {
+        display: block;
+        position: absolute;
+        position-area: block-end span-inline-end;
+        position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
+        margin: 0.75rem;
+        width: 16rem;
+        pointer-events: none;
+        overflow: hidden;
+        border: 1px solid var(--color-line-hi);
+        border-radius: 0.75rem;
+        background: var(--color-surface);
+        box-shadow: 0 24px 48px -16px oklch(0 0 0 / 0.5);
+        opacity: 0;
+        scale: 0.94;
+        rotate: -2deg;
+        transition:
+          opacity 0.25s,
+          scale 0.4s var(--ease-out-expo),
+          rotate 0.4s var(--ease-out-expo);
+      }
+    }
+  }
+  .peek-word {
+    text-decoration: underline dotted;
+    text-decoration-color: var(--color-faint);
+    text-underline-offset: 0.3em;
+    transition:
+      color 0.2s,
+      text-decoration-color 0.2s;
+  }
+  .peek-word:hover,
+  .peek-word:focus-visible {
+    text-decoration-color: currentColor;
+  }
+
+  /* 作品路線：道路與貓腳印都由 Route.astro 依卡片版面位置算出 */
+  .route-svg {
+    position: absolute;
+    inset: 0 auto auto 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .route-road {
+    fill: none;
+    stroke: color-mix(in oklch, var(--color-fg) 7%, var(--color-bg));
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .route-lane {
+    fill: none;
+    stroke: var(--color-line-hi);
+    stroke-width: 1.5;
+    stroke-dasharray: 7 11;
+  }
+  .route-paw {
+    fill: var(--color-accent);
+    opacity: 0;
+    scale: 0.3;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  :root[data-theme='light'] .route-paw {
+    fill: var(--color-accent-text);
+  }
+  [data-on] > .route-paw {
+    opacity: 1;
+    scale: 1;
+  }
+  [data-on][data-old] > .route-paw {
+    opacity: 0.35;
+  }
+  .route-paw-hit {
+    fill: transparent;
+    pointer-events: none;
+  }
+  [data-on] > .route-paw-hit {
+    pointer-events: all;
+  }
+  /* 還沒被點過時，最前端腳印外圈會一直泛出波紋，暗示可以互動 */
+  [data-route]:not([data-paw-found]) [data-lead] > .route-paw-hit {
+    stroke: var(--color-accent-text);
+    stroke-width: 1.5;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-route]:not([data-paw-found]) [data-lead] > .route-paw-hit {
+      animation: paw-ring 2.2s var(--ease-out-expo) infinite;
+    }
+  }
+  @keyframes paw-ring {
+    from {
+      scale: 0.5;
+      opacity: 0.9;
     }
     to {
+      scale: 1.5;
+      opacity: 0;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    [data-pop] > .route-paw {
+      animation: paw-pop 0.45s var(--ease-spring);
+    }
+  }
+  @keyframes paw-pop {
+    40% {
+      scale: 1.6;
+    }
+  }
+  .paw-bubble {
+    position: absolute;
+    z-index: 20;
+    max-width: min(16rem, 100%);
+    width: max-content;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--color-line-hi);
+    border-radius: 0.9rem;
+    background: var(--color-surface);
+    box-shadow: 0 18px 40px -16px oklch(0 0 0 / 0.5);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-fg);
+    pointer-events: none;
+    translate: -50% -100%;
+    opacity: 0;
+    scale: 0.9;
+    transform-origin: 50% 100%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .paw-bubble {
+      transition:
+        opacity 0.2s,
+        scale 0.35s var(--ease-spring);
+    }
+  }
+  .paw-bubble.is-open {
+    opacity: 1;
+    scale: 1;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .route-paw {
+      transition:
+        opacity 0.6s var(--ease-out-expo),
+        scale 0.5s var(--ease-spring);
+    }
+  }
+  .route-stop {
+    fill: var(--color-bg);
+    stroke: var(--color-faint);
+    stroke-width: 2;
+    transition:
+      fill 0.3s,
+      stroke 0.3s;
+  }
+  .route-stop[data-passed] {
+    fill: var(--color-accent);
+    stroke: var(--color-accent);
+  }
+  @media (min-width: 64rem) {
+    .route-road {
+      stroke-width: 20;
+    }
+  }
+
+  /* 404 的腳印逐一出現，最後幾步越來越淡，像走到一半就消失了 */
+  .lost-trail > svg {
+    opacity: calc(1 - var(--i) * 0.16);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lost-trail > svg {
+      animation: paw-step 0.5s var(--ease-out-expo) both;
+      animation-delay: calc(var(--i) * 180ms + 200ms);
+    }
+  }
+  @keyframes paw-step {
+    from {
+      opacity: 0;
       translate: 0 0.5rem;
     }
   }
 
-  /* 專案卡旁的裝飾性大型序號：只描邊不填色，份量夠但不會搶過標題。 */
-  .case-index {
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--color-line-hi);
+  .click-paw {
+    position: fixed;
+    z-index: 100;
+    width: 1.5rem;
+    height: 1.5rem;
+    translate: -50% -50%;
+    pointer-events: none;
+    color: var(--color-accent-text);
+    animation: click-paw 0.65s var(--ease-out-expo) forwards;
+  }
+  .click-paw svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  @keyframes click-paw {
+    from {
+      scale: 0.3;
+      opacity: 0.9;
+    }
+    35% {
+      scale: 1;
+      opacity: 0.85;
+    }
+    to {
+      scale: 1.05;
+      opacity: 0;
+    }
   }
 
   /* 主要行動按鈕。
@@ -632,24 +838,6 @@
   }
   ::view-transition-new(root) {
     animation: vt-in 0.35s var(--ease-out-expo) both;
-  }
-  /* 作品卡與案例頁的封面以同一個 slug 命名，跨頁時直接飛到新位置 */
-  .vt-cover {
-    view-transition-name: var(--vt-name);
-    view-transition-class: work-cover;
-  }
-  .vt-no-cover .vt-cover {
-    view-transition-name: none;
-  }
-  ::view-transition-group(.work-cover) {
-    animation-duration: 0.55s;
-    animation-timing-function: var(--ease-out-expo);
-  }
-  /* 卡片 16:10、案例頁 16:9，不裁切的話快照會被拉伸 */
-  ::view-transition-old(.work-cover),
-  ::view-transition-new(.work-cover) {
-    height: 100%;
-    object-fit: cover;
   }
   .theme-switching::view-transition-old(root),
   .theme-switching::view-transition-new(root) {

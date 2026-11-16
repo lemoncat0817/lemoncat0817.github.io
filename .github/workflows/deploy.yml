@@ -3,6 +3,9 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # 每天重建一次，讓作品卡同步各專案 repo 的 About，頁尾的最後更新日期也跟著刷新（台灣時間 02:00）
+  schedule:
+    - cron: '0 18 * * *'
   workflow_dispatch:
 
 # 允許 GITHUB_TOKEN 部署到 Pages
@@ -34,6 +37,9 @@ jobs:
 
       - name: Build with Astro
         uses: withastro/action@v6
+        # 讀取各專案 repo 的 About 用；沒有 token 也能 build，只是 API 額度較低
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           # Astro 7 需要 Node >= 22.12；固定用 22 的最新版本
           node-version: 22
