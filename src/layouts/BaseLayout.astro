@@ -98,6 +98,30 @@ const personSchema = {
       })();
     </script>
 
+    {/* 封面共享轉場只在首頁 ↔ 案例頁之間成立；其餘導覽拿掉命名，否則封面會各自飛動或殘留。pagereveal 在首次繪製前觸發，必須行內同步註冊 */}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        const path = (url) => (url ? new URL(url).pathname : '');
+        const isHome = (url) => /^\/(en\/)?$/.test(path(url));
+        const isCase = (url) => /\/work\/[^/]+\/$/.test(path(url));
+        const paired = (a, b) => (isHome(a) && isCase(b)) || (isCase(a) && isHome(b));
+        addEventListener('pageswap', (e) => {
+          if (e.viewTransition && e.activation && !paired(location.href, e.activation.entry?.url)) {
+            root.classList.add('vt-no-cover');
+          }
+        });
+        addEventListener('pagereveal', (e) => {
+          root.classList.remove('vt-no-cover');
+          const from = window.navigation?.activation?.from?.url;
+          if (e.viewTransition && from && !paired(from, location.href)) {
+            root.classList.add('vt-no-cover');
+            e.viewTransition.finished.finally(() => root.classList.remove('vt-no-cover'));
+          }
+        });
+      })();
+    </script>
+
     <script
       type="application/ld+json"
       is:inline

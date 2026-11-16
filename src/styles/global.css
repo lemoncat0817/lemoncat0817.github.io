@@ -487,6 +487,24 @@
   ::view-transition-new(root) {
     animation: vt-in 0.35s var(--ease-out-expo) both;
   }
+  /* 作品卡與案例頁的封面以同一個 slug 命名，跨頁時直接飛到新位置 */
+  .vt-cover {
+    view-transition-name: var(--vt-name);
+    view-transition-class: work-cover;
+  }
+  .vt-no-cover .vt-cover {
+    view-transition-name: none;
+  }
+  ::view-transition-group(.work-cover) {
+    animation-duration: 0.55s;
+    animation-timing-function: var(--ease-out-expo);
+  }
+  /* 卡片 16:10、案例頁 16:9，不裁切的話快照會被拉伸 */
+  ::view-transition-old(.work-cover),
+  ::view-transition-new(.work-cover) {
+    height: 100%;
+    object-fit: cover;
+  }
   @keyframes vt-out {
     to {
       opacity: 0;
