@@ -1,10 +1,12 @@
 ---
 import { getLangFromUrl, useTranslations, localizePath, alternateUrl } from '../i18n/utils';
+import { profile } from '../data/profile';
 import ThemeToggle from './ThemeToggle.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 const home = localizePath('/', lang);
+const isHome = Astro.url.pathname === home;
 
 const links = [
   { href: `${home}#work`, label: t('nav.work') },
@@ -16,7 +18,11 @@ const links = [
 <header
   class="sticky top-0 z-50 border-b border-line/60 bg-bg/70 backdrop-blur-xl backdrop-saturate-150"
 >
-  <div class="shell flex h-16 items-center justify-end gap-4">
+  <div class="shell relative flex h-16 items-center justify-end gap-4">
+    <a href={home} class:list={['brand', isHome && 'brand-dock']} aria-current={isHome ? 'page' : undefined}>
+      {lang === 'zh-TW' ? profile.nameZh : profile.name}
+    </a>
+
     <nav class="flex items-center gap-1 sm:gap-2" aria-label={t('nav.work')}>
       <ul class="hidden items-center gap-1 sm:flex">
         {
@@ -46,7 +52,6 @@ const links = [
 
       <ThemeToggle label={t('nav.toggleTheme')} />
 
-      {/* 手機版導覽：桌機用不到，>=640px 直接不渲染這顆按鈕的用途 */}
       <button
         type="button"
         id="nav-toggle"
@@ -81,7 +86,7 @@ const links = [
     </nav>
   </div>
 
-  <ul id="mobile-nav" hidden class="shell border-t border-line/60 py-2 sm:hidden">
+  <ul id="mobile-nav" hidden class="shell relative z-10 border-t border-line/60 bg-bg py-2 sm:hidden">
     {
       links.map((link) => (
         <li>

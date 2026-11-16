@@ -21,11 +21,11 @@ export const ui = {
     'nav.menu': '選單',
 
     'hero.role': '網頁工程師',
-    'hero.headline.1': '我把想法',
-    'hero.headline.2': '變成能用的介面',
+    'hero.headline.1': '好用的網頁，',
+    'hero.headline.2': '是一個一個決定堆出來的。',
+    'hero.mark': '一個一個決定',
+    'hero.recent': '最近做的：',
     'hero.available': '開放合作機會',
-    'hero.projectCount': '個上線專案',
-    'hero.yearsLabel': '年開發經驗',
     'hero.viewWork': '看看我的作品',
     'hero.scrollHint': '向下捲動',
 
@@ -100,11 +100,11 @@ export const ui = {
     'nav.menu': 'Menu',
 
     'hero.role': 'Web Engineer',
-    'hero.headline.1': 'I turn ideas',
-    'hero.headline.2': 'into interfaces that work',
+    'hero.headline.1': 'Good interfaces',
+    'hero.headline.2': 'are a pile of small decisions.',
+    'hero.mark': 'small decisions',
+    'hero.recent': 'Recently: ',
     'hero.available': 'Open to opportunities',
-    'hero.projectCount': 'shipped projects',
-    'hero.yearsLabel': 'years building',
     'hero.viewWork': 'See my work',
     'hero.scrollHint': 'Scroll',
 

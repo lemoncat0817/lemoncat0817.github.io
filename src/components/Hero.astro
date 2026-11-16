@@ -1,141 +1,93 @@
 ---
 import { Image } from 'astro:assets';
-import { getLangFromUrl, useTranslations } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, localizePath } from '../i18n/utils';
 import { profile } from '../data/profile';
-import { getWorkEntries } from '../lib/work';
+import { getWorkEntries, entrySlug } from '../lib/work';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-
-const years = new Date().getFullYear() - profile.codingSince;
 const entries = await getWorkEntries(lang);
-const stackShots = entries.slice(0, 2).reverse();
 
-function splitHeadline(text: string): string[] {
-  return lang === 'zh-TW' ? [...text] : text.split(' ');
-}
+const line2 = t('hero.headline.2');
+const mark = t('hero.mark');
+const [beforeMark, afterMark] = line2.split(mark) as [string, string?];
 
-const line1 = splitHeadline(t('hero.headline.1'));
-const line2 = splitHeadline(t('hero.headline.2'));
-let charIndex = 0;
+// formatToParts 讓連接詞（「、」「和」、", and"）跟著語言走，關鍵字本身換成連結
+const words = entries.map((e) => ({ slug: entrySlug(e), word: e.data.keyword, entry: e }));
+const parts = new Intl.ListFormat(lang, { type: 'conjunction' }).formatToParts(words.map((w) => w.word));
+let wordIndex = 0;
+const recent = parts.map((p) => (p.type === 'element' ? { ...words[wordIndex++]!, text: p.value } : { text: p.value }));
+
+const peekCss = words
+  .map(
+    ({ slug }) =>
+      `.hero-recent:has([data-peek="${slug}"]:is(:hover,:focus-visible))~[data-peek-for="${slug}"]{opacity:1;scale:1;rotate:-1deg}`,
+  )
+  .join('');
 ---
 
-<section class="relative overflow-hidden pt-16 pb-20 sm:pt-24 sm:pb-28" data-hero>
-  <div class="hero-field pointer-events-none absolute inset-0 -z-10" aria-hidden="true">
-    <div class="hero-blob hero-blob-1"></div>
-    <div class="hero-blob hero-blob-2"></div>
-    <div class="hero-blob hero-blob-3"></div>
-    <div class="hero-grain"></div>
-  </div>
-
+<section class="relative pb-20 sm:pb-28" style="padding-top: var(--hero-pt)">
   <div class="shell">
-    <h1 class="text-hero font-semibold">
-      <span class="block">
-        {
-          line1.map((unit) => (
-            <span class="rise inline-block whitespace-pre" style={`--i: ${++charIndex}`}>
-              {unit}
-              {lang === 'en' ? ' ' : ''}
-            </span>
-          ))
-        }
-      </span>
-      <span class="block text-accent-text">
-        {
-          line2.map((unit) => (
-            <span class="rise inline-block whitespace-pre" style={`--i: ${++charIndex}`}>
-              {unit}
-              {lang === 'en' ? ' ' : ''}
-            </span>
-          ))
-        }
+    <p class="hero-name text-hero font-sans" aria-hidden="true">
+      {lang === 'zh-TW' ? profile.nameZh : profile.name}
+    </p>
+
+    <h1 class="text-display mt-8 font-semibold sm:mt-10">
+      <span class="line-reveal"><span style="--i: 0">{t('hero.headline.1')}</span></span>
+      <span class="line-reveal">
+        <span style="--i: 1">
+          {afterMark === undefined ? line2 : (
+            <>
+              {beforeMark}<span class="marker">{mark}</span>{afterMark}
+            </>
+          )}
+        </span>
       </span>
     </h1>
 
-    <div class="mt-10 xl:grid xl:grid-cols-[minmax(0,42rem)_minmax(0,1fr)] xl:gap-x-12">
-      <div
-        class="rise flex flex-wrap items-center gap-x-8 gap-y-5 xl:self-start"
-        style={`--i: ${charIndex + 1}`}
-      >
-        <a
-          href="#work"
-          class="group inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
-        >
-          {t('hero.viewWork')}
-          <span
-            class="transition-transform duration-300 group-hover:translate-y-0.5"
-            aria-hidden="true">↓</span
-          >
-        </a>
+    <p class="hero-recent rise mt-8 max-w-3xl text-lg text-muted sm:text-xl" style="--i: 6">
+      {t('hero.recent')}
+      {
+        recent.map((part) =>
+          'slug' in part ? (
+            <a
+              href={localizePath(`/work/${part.slug}`, lang)}
+              class="peek-word whitespace-nowrap text-fg hover:text-accent-text focus-visible:text-accent-text"
+              data-peek={part.slug}
+              style={`anchor-name: --peek-${part.slug}`}
+            >
+              {part.text}
+            </a>
+          ) : (
+            part.text
+          ),
+        )
+      }
+    </p>
 
-        <dl class="flex items-center gap-8">
-          <div>
-            <dt class="sr-only">{t('hero.projectCount')}</dt>
-            <dd class="font-mono text-2xl font-semibold">{entries.length}</dd>
-            <p class="text-xs text-faint">{t('hero.projectCount')}</p>
-          </div>
-          <div>
-            <dt class="sr-only">{t('hero.yearsLabel')}</dt>
-            <dd class="font-mono text-2xl font-semibold">{years}+</dd>
-            <p class="text-xs text-faint">{t('hero.yearsLabel')}</p>
-          </div>
-        </dl>
-      </div>
+    {
+      words.map(({ slug, entry }) => (
+        <span class="peek" data-peek-for={slug} style={`position-anchor: --peek-${slug}`} aria-hidden="true">
+          <Image
+            src={entry.data.cover}
+            alt=""
+            widths={[480, 800]}
+            sizes="16rem"
+            loading="lazy"
+            class="block aspect-[16/10] w-full object-cover"
+          />
+        </span>
+      ))
+    }
+    <style is:inline set:html={peekCss}></style>
 
-      {/* 堆疊放在版面流內，區塊高度才會跟著它長，寬螢幕不會被 overflow 切掉 */}
-      <div
-        class="rise pointer-events-none relative isolate hidden xl:col-start-2 xl:row-start-1 xl:block"
-        style={`--i: ${charIndex + 2}`}
-        aria-hidden="true"
-      >
-        <div class="cover-glow absolute inset-x-[10%] -bottom-6 top-1/3 -z-10 blur-3xl"></div>
-        <div class="hero-tilt relative aspect-[3/2]" data-hero-tilt>
-          {
-            stackShots.map((entry, i) => (
-              <div class="hero-shot" style={`--n: ${i}`}>
-                <span class="flex h-6 items-center gap-1.5 border-b border-line px-3">
-                  <span class="size-2 rounded-full bg-line-hi" />
-                  <span class="size-2 rounded-full bg-line-hi" />
-                  <span class="size-2 rounded-full bg-line-hi" />
-                </span>
-                <Image
-                  src={entry.data.cover}
-                  alt=""
-                  widths={[480, 800, 1200]}
-                  sizes="28rem"
-                  loading="lazy"
-                  class="block aspect-[16/10] w-full object-cover"
-                />
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </div>
+    <a
+      href="#work"
+      class="rise group mt-10 inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+      style="--i: 8"
+    >
+      {t('hero.viewWork')}
+      <span class="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">↓</span>
+    </a>
   </div>
 </section>
-
-<script>
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  const tilt = hero?.querySelector<HTMLElement>('[data-hero-tilt]');
-
-  if (
-    hero &&
-    tilt &&
-    matchMedia('(hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference)').matches
-  ) {
-    hero.addEventListener(
-      'pointermove',
-      (e) => {
-        const r = hero.getBoundingClientRect();
-        tilt.style.setProperty('--tilt-x', `${((e.clientX - r.left) / r.width - 0.5) * 12}deg`);
-        tilt.style.setProperty('--tilt-y', `${((e.clientY - r.top) / r.height - 0.5) * -10}deg`);
-      },
-      { passive: true },
-    );
-    hero.addEventListener('pointerleave', () => {
-      tilt.style.removeProperty('--tilt-x');
-      tilt.style.removeProperty('--tilt-y');
-    });
-  }
-</script>

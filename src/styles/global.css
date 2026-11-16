@@ -92,6 +92,14 @@
   :root[data-theme='light'] {
     color-scheme: light;
   }
+  :root {
+    --hero-pt: 4rem;
+  }
+  @media (min-width: 40rem) {
+    :root {
+      --hero-pt: 6rem;
+    }
+  }
 
   html {
     -webkit-text-size-adjust: 100%;
@@ -360,118 +368,144 @@
     }
   }
 
-  /* Hero 光場：三團徑向漸層各自緩慢漂移，疊一層靜態顆粒打散漸層色帶 */
-  .hero-field {
-    mask-image: linear-gradient(to bottom, #000 55%, transparent);
-  }
-  .hero-blob {
-    position: absolute;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background: radial-gradient(closest-side, var(--blob-color), transparent);
-    opacity: var(--blob-opacity);
-  }
-  .hero-blob-1 {
-    --blob-color: var(--color-accent);
-    --blob-opacity: 0.2;
-    width: min(120vw, 62rem);
-    top: -45%;
-    left: 22%;
-  }
-  .hero-blob-2 {
-    --blob-color: oklch(0.74 0.17 55);
-    --blob-opacity: 0.14;
-    width: min(90vw, 44rem);
-    top: 5%;
-    right: -12%;
-  }
-  .hero-blob-3 {
-    --blob-color: oklch(0.82 0.14 135);
-    --blob-opacity: 0.08;
-    width: min(80vw, 38rem);
-    bottom: -35%;
-    left: -12%;
-  }
-  :root[data-theme='light'] .hero-blob-1 {
-    --blob-opacity: 0.32;
-  }
-  :root[data-theme='light'] .hero-blob-2 {
-    --blob-opacity: 0.16;
-  }
-  :root[data-theme='light'] .hero-blob-3 {
-    --blob-opacity: 0.12;
-  }
-  .hero-grain {
-    position: absolute;
-    inset: 0;
-    opacity: 0.07;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  }
-  :root[data-theme='light'] .hero-grain {
-    opacity: 0.05;
-  }
-
-  .hero-tilt {
-    transform: perspective(1400px) rotateX(var(--tilt-y, 0deg)) rotateY(var(--tilt-x, 0deg));
-    transform-style: preserve-3d;
-    transition: transform 0.9s var(--ease-out-expo);
-  }
-  .hero-shot {
-    position: absolute;
-    width: 80%;
-    top: calc(var(--n) * 15%);
-    right: calc(var(--n) * 20%);
-    overflow: hidden;
-    border: 1px solid var(--color-line-hi);
-    border-radius: 0.875rem;
-    background: var(--color-surface);
-    box-shadow: 0 28px 56px -18px oklch(0 0 0 / 0.5);
-    rotate: calc(3deg - var(--n) * 4deg);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    .hero-blob-1 {
-      animation: blob-drift-a 26s ease-in-out infinite alternate;
-    }
-    .hero-blob-2 {
-      animation: blob-drift-b 32s ease-in-out infinite alternate;
-    }
-    .hero-blob-3 {
-      animation: blob-drift-c 38s ease-in-out infinite alternate;
-    }
-    .hero-shot {
-      animation: shot-float 7s ease-in-out infinite alternate;
-      animation-delay: calc(var(--n) * -2.3s);
-    }
-  }
-  @keyframes blob-drift-a {
-    to {
-      transform: translate3d(-14%, 10%, 0) scale(1.12);
-    }
-  }
-  @keyframes blob-drift-b {
-    to {
-      transform: translate3d(-22%, 18%, 0) scale(0.9);
-    }
-  }
-  @keyframes blob-drift-c {
-    to {
-      transform: translate3d(26%, -16%, 0) scale(1.15);
-    }
-  }
-  @keyframes shot-float {
-    from {
-      translate: 0 -0.5rem;
-    }
-    to {
-      translate: 0 0.5rem;
-    }
-  }
-
   /* 專案卡旁的裝飾性大型序號：只描邊不填色，份量夠但不會搶過標題。 */
   .case-index {
     color: transparent;
     -webkit-text-stroke: 1.5px var(--color-line-hi);
+  }
+
+  /* 名字停靠：首頁的導覽列名字從 Hero 大標位置縮進左上角，起點位移 = 半個導覽列高 + Hero 上方留白 */
+  .brand {
+    position: absolute;
+    left: var(--spacing-gutter);
+    top: 50%;
+    translate: 0 -50%;
+    font-family: var(--font-sans);
+    font-size: 1.125rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    view-transition-name: brand;
+  }
+  .vt-no-cover .brand {
+    view-transition-name: none;
+  }
+  .hero-name {
+    line-height: 1;
+    font-weight: 700;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .brand-dock {
+        animation-name: brand-dock;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root);
+        animation-range: 0px calc(2rem + var(--hero-pt));
+      }
+      .hero-name {
+        visibility: hidden;
+      }
+    }
+  }
+  @keyframes brand-dock {
+    from {
+      font-size: var(--text-hero);
+      letter-spacing: var(--text-hero--letter-spacing);
+      translate: 0 calc(2rem + var(--hero-pt));
+    }
+  }
+
+  /* Hero 標題：整行從遮罩下推上來，接著螢光筆劃過重點 */
+  .line-reveal {
+    display: block;
+    overflow: clip;
+    padding-bottom: 0.1em;
+  }
+  .line-reveal > span {
+    display: inline-block;
+  }
+  .marker {
+    white-space: nowrap;
+    padding-inline: 0.08em;
+    margin-inline: -0.08em;
+    background-image: linear-gradient(var(--color-accent), var(--color-accent));
+    background-repeat: no-repeat;
+    background-position: 0 60%;
+    background-size: 100% 88%;
+    color: var(--color-accent-ink);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .line-reveal > span {
+      animation: line-up 1s var(--ease-out-expo) both;
+      animation-delay: calc(var(--i, 0) * 130ms + 100ms);
+    }
+    .marker {
+      animation:
+        marker-sweep 0.9s var(--ease-out-expo) 0.75s both,
+        marker-ink 0.2s linear 0.95s both;
+    }
+  }
+  @keyframes line-up {
+    from {
+      translate: 0 105%;
+    }
+  }
+  @keyframes marker-sweep {
+    from {
+      background-size: 0% 88%;
+    }
+  }
+  @keyframes marker-ink {
+    from {
+      color: var(--color-fg);
+    }
+  }
+
+  /* 滑過作品關鍵字時，截圖以 anchor positioning 貼在字旁，靠近視窗邊緣會自動翻面 */
+  .peek {
+    display: none;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    @supports (anchor-name: --a) {
+      .peek {
+        display: block;
+        position: absolute;
+        position-area: block-end span-inline-end;
+        position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
+        margin: 0.75rem;
+        width: 16rem;
+        pointer-events: none;
+        overflow: hidden;
+        border: 1px solid var(--color-line-hi);
+        border-radius: 0.75rem;
+        background: var(--color-surface);
+        box-shadow: 0 24px 48px -16px oklch(0 0 0 / 0.5);
+        opacity: 0;
+        scale: 0.94;
+        rotate: -2deg;
+        transition:
+          opacity 0.25s,
+          scale 0.4s var(--ease-out-expo),
+          rotate 0.4s var(--ease-out-expo);
+      }
+    }
+  }
+  .peek-word {
+    text-decoration: underline dotted;
+    text-decoration-color: var(--color-faint);
+    text-underline-offset: 0.3em;
+    transition:
+      color 0.2s,
+      text-decoration-color 0.2s;
+  }
+  .peek-word:hover,
+  .peek-word:focus-visible {
+    text-decoration-color: currentColor;
   }
 
   /* 主要行動按鈕。
