@@ -25,7 +25,7 @@ const demoUrl = new URL(data.demo);
 const demoLabel = (demoUrl.host + demoUrl.pathname).replace(/\/$/, '');
 ---
 
-<article class="relative py-6 sm:py-8">
+<article id={`work-${slug}`} class="relative scroll-mt-20 py-6 sm:py-8">
   <div
     class:list={[
       'flex flex-col gap-8 lg:gap-14 items-center',

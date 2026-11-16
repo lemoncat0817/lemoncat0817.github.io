@@ -98,26 +98,34 @@ const personSchema = {
       })();
     </script>
 
-    {/* 封面共享轉場只在首頁 ↔ 案例頁之間成立；其餘導覽拿掉命名，否則封面會各自飛動或殘留。pagereveal 在首次繪製前觸發，必須行內同步註冊 */}
+    {/* 封面只在首頁 ↔ 案例頁之間、被點的那一張且在畫面內時才命名；pagereveal 在首次繪製前觸發，必須行內同步註冊 */}
     <script is:inline>
       (() => {
-        const root = document.documentElement;
         const path = (url) => (url ? new URL(url).pathname : '');
         const isHome = (url) => /^\/(en\/)?$/.test(path(url));
-        const isCase = (url) => /\/work\/[^/]+\/$/.test(path(url));
-        const paired = (a, b) => (isHome(a) && isCase(b)) || (isCase(a) && isHome(b));
-        addEventListener('pageswap', (e) => {
-          if (e.viewTransition && e.activation && !paired(location.href, e.activation.entry?.url)) {
-            root.classList.add('vt-no-cover');
+        const caseSlug = (url) => path(url).match(/\/work\/([^/]+)\/$/)?.[1];
+        const pairedSlug = (a, b) => (isHome(a) && caseSlug(b)) || (isHome(b) && caseSlug(a)) || null;
+        const nameOnly = (slug) => {
+          for (const el of document.querySelectorAll('.vt-cover')) {
+            const r = el.getBoundingClientRect();
+            const keep =
+              slug &&
+              el.style.getPropertyValue('--vt-name').trim() === `cover-${slug}` &&
+              r.bottom > 0 &&
+              r.top < innerHeight;
+            el.style.viewTransitionName = keep ? '' : 'none';
           }
+        };
+        addEventListener('pageswap', (e) => {
+          if (e.viewTransition && e.activation) nameOnly(pairedSlug(location.href, e.activation.entry?.url));
         });
         addEventListener('pagereveal', (e) => {
-          root.classList.remove('vt-no-cover');
+          for (const el of document.querySelectorAll('.vt-cover')) el.style.viewTransitionName = '';
           const from = window.navigation?.activation?.from?.url;
-          if (e.viewTransition && from && !paired(from, location.href)) {
-            root.classList.add('vt-no-cover');
-            e.viewTransition.finished.finally(() => root.classList.remove('vt-no-cover'));
-          }
+          if (!e.viewTransition || !from) return;
+          // 錨點捲動發生在 pagereveal 之後、擷取畫面之前，先捲過去才判斷得出封面是否在畫面內
+          if (location.hash) document.getElementById(location.hash.slice(1))?.scrollIntoView({ behavior: 'instant' });
+          nameOnly(pairedSlug(from, location.href));
         });
       })();
     </script>
