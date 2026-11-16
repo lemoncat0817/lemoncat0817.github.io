@@ -5,17 +5,19 @@ import GithubIcon from './GithubIcon.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const year = new Date().getFullYear();
+const now = new Date();
+const year = now.getFullYear();
+const name = lang === 'zh-TW' ? profile.nameZh : profile.name;
+// build 當下的日期；部署 workflow 每天會重建一次，所以也代表網站最近一次更新
+const updated = new Intl.DateTimeFormat(lang, { dateStyle: 'long', timeZone: 'Asia/Taipei' }).format(now);
 ---
 
 <footer class="mt-32 border-t border-line">
   <div class="shell flex flex-col gap-6 py-10 sm:flex-row sm:items-center sm:justify-between">
-    <p class="text-sm text-muted">
-      © {year}
-      {lang === 'zh-TW' ? profile.nameZh : profile.name} · {t('footer.rights')}
-    </p>
+    <p class="text-sm text-muted">{`© ${year} ${name} · ${t('footer.tagline')}`}</p>
 
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <span class="font-mono text-xs text-faint">{t('footer.updated')}{updated}</span>
       <a
         href={`${profile.github}/lemoncat0817.github.io`}
         class="rounded-lg px-3 py-2 font-mono text-xs text-muted transition-colors hover:bg-surface hover:text-fg"

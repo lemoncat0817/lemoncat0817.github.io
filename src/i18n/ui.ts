@@ -53,7 +53,8 @@ export const ui = {
 
     'case.stack': '技術棧',
 
-    'footer.rights': '版權所有',
+    'footer.tagline': '用 Astro 做的，貓負責品管。',
+    'footer.updated': '最後更新：',
     'footer.source': '本站原始碼',
 
     '404.title': '這頁好像被貓踩掉了',
@@ -108,7 +109,8 @@ export const ui = {
 
     'case.stack': 'Stack',
 
-    'footer.rights': 'All rights reserved',
+    'footer.tagline': 'Built with Astro. Quality control by the cat.',
+    'footer.updated': 'Last updated: ',
     'footer.source': 'Source of this site',
 
     '404.title': 'Looks like the cat walked off with this page',
