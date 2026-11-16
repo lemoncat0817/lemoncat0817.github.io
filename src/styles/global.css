@@ -422,6 +422,25 @@
     }
   }
 
+  .type-caret {
+    display: inline-block;
+    width: 0.55em;
+    height: 1.15em;
+    margin-left: 0.15em;
+    vertical-align: -0.2em;
+    background: var(--color-accent-text);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .type-caret {
+      animation: caret-blink 1.05s steps(1) infinite;
+    }
+  }
+  @keyframes caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+
   /* 滑過作品關鍵字時，截圖以 anchor positioning 貼在字旁，靠近視窗邊緣會自動翻面 */
   .peek {
     display: none;
@@ -494,12 +513,54 @@
   :root[data-theme='light'] .route-paw {
     fill: var(--color-accent-text);
   }
-  .route-paw[data-on] {
+  [data-on] > .route-paw {
     opacity: 1;
     scale: 1;
   }
-  .route-paw[data-on][data-old] {
+  [data-on][data-old] > .route-paw {
     opacity: 0.35;
+  }
+  .route-paw-hit {
+    fill: transparent;
+    pointer-events: none;
+  }
+  [data-on] > .route-paw-hit {
+    pointer-events: all;
+    cursor: var(--cursor-pointer, pointer);
+  }
+  [data-pop] > .route-paw {
+    animation: paw-pop 0.45s var(--ease-spring);
+  }
+  @keyframes paw-pop {
+    40% {
+      scale: 1.6;
+    }
+  }
+  .paw-bubble {
+    position: absolute;
+    z-index: 20;
+    max-width: min(16rem, 100%);
+    width: max-content;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--color-line-hi);
+    border-radius: 0.9rem;
+    background: var(--color-surface);
+    box-shadow: 0 18px 40px -16px oklch(0 0 0 / 0.5);
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-fg);
+    pointer-events: none;
+    translate: -50% -100%;
+    opacity: 0;
+    scale: 0.9;
+    transform-origin: 50% 100%;
+    transition:
+      opacity 0.2s,
+      scale 0.35s var(--ease-spring);
+  }
+  .paw-bubble.is-open {
+    opacity: 1;
+    scale: 1;
   }
   @media (prefers-reduced-motion: no-preference) {
     .route-paw {

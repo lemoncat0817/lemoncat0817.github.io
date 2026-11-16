@@ -18,12 +18,16 @@
     <g data-route-stops></g>
   </svg>
 
+  <p class="paw-bubble" aria-hidden="true" data-paw-bubble></p>
+
   <div class="flex flex-col gap-20 lg:gap-36">
     <slot />
   </div>
 </div>
 
 <script>
+  import { catFacts } from '../data/catFacts';
+
   const root = document.querySelector<HTMLElement>('[data-route]');
 
   if (root) {
@@ -38,7 +42,11 @@
 
     let samples: { y: number; l: number }[] = [];
     let stations: number[] = [];
-    let paws: { l: number; el: SVGUseElement; on: boolean; old: boolean }[] = [];
+    const bubble = root.querySelector<HTMLElement>('[data-paw-bubble]')!;
+    const facts = catFacts[document.documentElement.lang.startsWith('zh') ? 'zh-TW' : 'en'];
+    let paws: { l: number; x: number; y: number; el: SVGGElement; on: boolean; old: boolean }[] = [];
+    let bubbleTimer = 0;
+    let lastFact = -1;
     let total = 0;
     let current = 0;
     let target = 0;
@@ -147,7 +155,7 @@
       const side = wide.matches ? 6 : 4;
       const scale = wide.matches ? 1.2 : 0.9;
       let markup = '';
-      const lengths: number[] = [];
+      const spots: { l: number; x: number; y: number }[] = [];
       for (let l = step / 2, i = 0; l < total - 4; l += step, i++) {
         const p = road.getPointAtLength(l);
         const q = road.getPointAtLength(Math.min(l + 1, total));
@@ -155,14 +163,43 @@
         const offset = i % 2 ? side : -side;
         const x = p.x - Math.sin(angle) * offset;
         const y = p.y + Math.cos(angle) * offset;
-        markup += `<g transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((angle * 180) / Math.PI).toFixed(1)}) scale(${scale})"><use class="route-paw" href="#route-paw"></use></g>`;
-        lengths.push(l);
+        markup += `<g class="route-paw-group" data-paw="${i}" transform="translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${((angle * 180) / Math.PI).toFixed(1)}) scale(${scale})"><circle class="route-paw-hit" r="14"></circle><use class="route-paw" href="#route-paw"></use></g>`;
+        spots.push({ l, x, y });
       }
       pawsGroup.innerHTML = markup;
-      paws = [...pawsGroup.querySelectorAll<SVGUseElement>('use')].map((el, i) => ({ l: lengths[i]!, el, on: false, old: false }));
+      paws = [...pawsGroup.querySelectorAll<SVGGElement>('g')].map((el, i) => ({ ...spots[i]!, el, on: false, old: false }));
+      hideBubble();
 
       update(true);
     };
+
+    function hideBubble() {
+      bubble.classList.remove('is-open');
+      clearTimeout(bubbleTimer);
+    }
+
+    // 走過的腳印可以點，點了冒出一則貓咪冷知識；腳印會隨 resize 重建，所以監聽掛在容器上
+    root.addEventListener('click', (e) => {
+      const hit = (e.target as Element).closest<SVGGElement>('.route-paw-group[data-on]');
+      if (!hit) return hideBubble();
+      const paw = paws[Number(hit.dataset.paw)];
+      if (!paw) return;
+      let n = Math.floor(Math.random() * facts.length);
+      if (n === lastFact) n = (n + 1) % facts.length;
+      lastFact = n;
+      bubble.textContent = facts[n]!;
+      const half = Math.min(bubble.offsetWidth || 240, root.clientWidth) / 2;
+      bubble.style.left = `${Math.min(Math.max(paw.x, half), root.clientWidth - half)}px`;
+      bubble.style.top = `${paw.y - 18}px`;
+      bubble.classList.remove('is-open');
+      void bubble.offsetWidth;
+      bubble.classList.add('is-open');
+      hit.removeAttribute('data-pop');
+      void hit.getBoundingClientRect();
+      hit.setAttribute('data-pop', '');
+      clearTimeout(bubbleTimer);
+      bubbleTimer = window.setTimeout(hideBubble, 5000);
+    });
 
     addEventListener('scroll', () => update(false), { passive: true });
     new ResizeObserver(build).observe(root);
