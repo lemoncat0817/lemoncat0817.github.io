@@ -197,6 +197,13 @@
         animation-timeline: view(), view();
         animation-range: entry 0% entry 55%, cover 0% cover 100%;
       }
+
+      /* 逐項錯開進場；不支援 sibling-index() 時整條宣告失效，退回 .reveal 的預設區間 */
+      .reveal-stagger {
+        animation-range:
+          entry calc(min((sibling-index() - 1) * 6%, 40%))
+          entry calc(min(55% + (sibling-index() - 1) * 6%, 95%));
+      }
     }
 
     .rise {
@@ -315,21 +322,6 @@
     background-size: 100% 2px;
   }
 
-  .cover-glow {
-    background: radial-gradient(closest-side, var(--color-accent), transparent);
-    opacity: 0.5;
-    transition: opacity 0.7s var(--ease-out-expo);
-  }
-  .cover-frame:hover .cover-glow {
-    opacity: 0.7;
-  }
-  :root[data-theme='light'] .cover-glow {
-    opacity: 0.55;
-  }
-  :root[data-theme='light'] .cover-frame:hover .cover-glow {
-    opacity: 0.8;
-  }
-
   /* 游標追光：::before 是跟著游標亮起的邊框，::after 是表面的柔光 */
   @media (hover: hover) and (pointer: fine) {
     .spotlight::before,
@@ -366,12 +358,6 @@
     .spotlight:hover::after {
       opacity: 1;
     }
-  }
-
-  /* 專案卡旁的裝飾性大型序號：只描邊不填色，份量夠但不會搶過標題。 */
-  .case-index {
-    color: transparent;
-    -webkit-text-stroke: 1.5px var(--color-line-hi);
   }
 
   /* 名字停靠：首頁的導覽列名字從 Hero 大標位置縮進左上角，起點位移 = 半個導覽列高 + Hero 上方留白 */
@@ -506,6 +492,68 @@
   .peek-word:hover,
   .peek-word:focus-visible {
     text-decoration-color: currentColor;
+  }
+
+  /* 作品路線：道路與貓腳印都由 Route.astro 依卡片版面位置算出 */
+  .route-svg {
+    position: absolute;
+    inset: 0 auto auto 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+  .route-road {
+    fill: none;
+    stroke: color-mix(in oklch, var(--color-fg) 7%, var(--color-bg));
+    stroke-width: 12;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .route-lane {
+    fill: none;
+    stroke: var(--color-line-hi);
+    stroke-width: 1.5;
+    stroke-dasharray: 7 11;
+  }
+  .route-paw {
+    fill: var(--color-accent);
+    opacity: 0;
+    scale: 0.3;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  :root[data-theme='light'] .route-paw {
+    fill: var(--color-accent-text);
+  }
+  .route-paw[data-on] {
+    opacity: 1;
+    scale: 1;
+  }
+  .route-paw[data-on][data-old] {
+    opacity: 0.35;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .route-paw {
+      transition:
+        opacity 0.6s var(--ease-out-expo),
+        scale 0.5s var(--ease-spring);
+    }
+  }
+  .route-stop {
+    fill: var(--color-bg);
+    stroke: var(--color-faint);
+    stroke-width: 2;
+    transition:
+      fill 0.3s,
+      stroke 0.3s;
+  }
+  .route-stop[data-passed] {
+    fill: var(--color-accent);
+    stroke: var(--color-accent);
+  }
+  @media (min-width: 64rem) {
+    .route-road {
+      stroke-width: 20;
+    }
   }
 
   /* 主要行動按鈕。

@@ -29,8 +29,8 @@ export const ui = {
     'hero.viewWork': '看看我的作品',
     'hero.scrollHint': '向下捲動',
 
-    'work.eyebrow': '精選作品',
-    'work.title': '四個從零做到上線的專案',
+    'work.eyebrow': '作品',
+    'work.stop': '第 {n} 站',
     'work.readCase': '專案詳情',
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
@@ -108,8 +108,8 @@ export const ui = {
     'hero.viewWork': 'See my work',
     'hero.scrollHint': 'Scroll',
 
-    'work.eyebrow': 'Selected work',
-    'work.title': 'Four projects taken from zero to production',
+    'work.eyebrow': 'Work',
+    'work.stop': 'Stop {n}',
     'work.readCase': 'Project Details',
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
