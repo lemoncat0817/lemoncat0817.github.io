@@ -5,16 +5,17 @@
 ## 常用指令
 
 ```bash
-npm run dev       # 開發伺服器 http://localhost:4321
-npm run check     # 型別檢查（astro check），沒有另外的 lint/test 指令
-npm run build     # = astro check && astro build，輸出到 dist/
-npm run preview   # 預覽 build 結果
-npm run og        # 重新產生社群分享圖與 icon（scripts/generate-og.mjs）
-npm run fonts     # 重新下載自架字體檔（scripts/fetch-fonts.mjs，只有換字體時需要）
+pnpm dev          # 開發伺服器 http://localhost:4321
+pnpm check        # 型別檢查（astro check），沒有另外的 lint/test 指令
+pnpm build        # = astro check && astro build，輸出到 dist/
+pnpm preview      # 預覽 build 結果
+pnpm og           # 重新產生社群分享圖與 icon（scripts/generate-og.mjs）
+pnpm fonts        # 重新下載自架字體檔（scripts/fetch-fonts.mjs，只有換字體時需要）
 ```
 
 本專案沒有測試套件；`astro check` 是唯一的自動化正確性檢查，改完 `.astro`／`.ts` 檔後務必跑一次。
 Node 版本需 `>= 22.12`（Astro 7 要求）。
+套件管理用 pnpm（`package.json` 的 `packageManager` 固定版本，CI 的 `withastro/action` 依 `pnpm-lock.yaml` 自動改用 pnpm），不要在這個專案跑 npm，否則會多出一份 `package-lock.json`。pnpm 預設不執行依賴的安裝後腳本，需要放行的套件寫在 `pnpm-workspace.yaml` 的 `allowBuilds`。
 
 ## 架構重點
 
@@ -49,7 +50,7 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 **貓咪元素**：
 - 貓咪冷知識集中在 `src/data/catFacts.ts`（中英各一份），Hero 的打字列和作品路線的腳印都從這裡取。只放查得到可靠來源的說法，玩笑句要寫得一看就知道是玩笑。打字列預留兩行高度，換行時下方版面不會跳；開啟減少動態時只顯示第一則。
 - 走過的腳印可以點，點了會冒出一則冷知識。腳印會隨版面重建，所以點擊監聽掛在 `[data-route]` 容器上，不要綁在個別腳印。彩蛋不寫說明文字：最前端的腳印（`data-lead`）在訪客點過之前會一直泛出波紋，第一次走到路線時再冒一次「喵？點我看看」；兩者分別用 localStorage 的 `lemoncat:paw-hinted`、`lemoncat:paw-found` 記住，只提示一次。
-- 全站游標是貓掌（`global.css` 的 base 層），一般、指到連結、按下（`:active`）三種 PNG 由 `npm run og` 產生在 `public/cursors/`；熱點座標（一般 `10 8`、按下 `11 10`）寫在 CSS 裡，改圖時兩邊要一起對。作品封面刻意保留 `cursor-zoom-in`，提示可以放大看。
+- 全站游標是貓掌（`global.css` 的 base 層），一般、指到連結、按下（`:active`）三種 PNG 由 `pnpm og` 產生在 `public/cursors/`；熱點座標（一般 `10 8`、按下 `11 10`）寫在 CSS 裡，改圖時兩邊要一起對。作品封面刻意保留 `cursor-zoom-in`，提示可以放大看。
 - 左鍵或觸控點擊會在點的位置留一個淡出的貓掌（`BaseLayout.astro` 的 `pointerdown`，樣式 `.click-paw`）；右鍵刻意不處理，減少動態時關閉。
 - 404 頁是貓咪版（腳印走到一半就斷掉），貓掌圖形統一用 `PawIcon.astro`。
 
@@ -68,4 +69,4 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 - **改個人資料**（是否顯示 email、求職狀態等）：`src/data/profile.ts`。聯絡方式是「寄信給我」mailto 按鈕，下面再用小字列出信箱加複製鈕（`EmailLink.astro` 的 `button`／`address` 兩種），照顧沒有設定郵件軟體、點 mailto 沒反應的訪客；`email` 留空字串兩者都會隱藏
 - **改介面文字**：`src/i18n/ui.ts`
 - **改配色**：`src/styles/global.css` 的 `@theme` 區塊
-- **改 Hero 文案**：`src/i18n/ui.ts` 之外，分享圖（`public/og-default*.png`）裡也有同一句標題，改完要跑 `npm run og`；favicon 的貓掌也由同一支腳本產生
+- **改 Hero 文案**：`src/i18n/ui.ts` 之外，分享圖（`public/og-default*.png`）裡也有同一句標題，改完要跑 `pnpm og`；favicon 的貓掌也由同一支腳本產生

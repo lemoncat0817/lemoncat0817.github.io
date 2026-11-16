@@ -1,7 +1,7 @@
 /**
  * 產生社群分享圖（Open Graph）、favicon、apple-touch-icon 與貓掌游標。
  *
- * 執行：npm run og
+ * 執行：pnpm og
  * 產物：public/og-default.png、public/og-default-en.png（1200×630）、
  *       public/favicon.svg、public/apple-touch-icon.png（180×180）、
  *       public/cursors/paw*.png（一般、指到連結、按下三種，各有 1x／2x）

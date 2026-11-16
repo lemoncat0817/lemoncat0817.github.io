@@ -1,7 +1,7 @@
 /**
  * 下載字體檔到 src/assets/fonts/。
  *
- * 執行：npm run fonts
+ * 執行：pnpm fonts
  *
  * 為什麼要自己收字體檔而不是讓 Astro 在建置時去抓：
  * Google 會輪換 fonts.gstatic.com 的檔名 hash，舊網址會變成 404。

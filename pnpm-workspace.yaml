@@ -1,0 +1,3 @@
+# pnpm 預設不執行依賴的安裝後腳本；esbuild 需要它來確認平台對應的執行檔
+allowBuilds:
+  esbuild: true

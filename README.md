@@ -17,15 +17,15 @@
 
 ## 開發
 
-需要 Node.js >= 22.12。
+需要 Node.js >= 22.12 與 pnpm（版本見 `package.json` 的 `packageManager`）。
 
 ```bash
-npm install
-npm run dev       # 開發伺服器 http://localhost:4321
-npm run build     # 型別檢查 + 建置到 dist/
-npm run preview   # 預覽建置結果
-npm run og        # 重新產生社群分享圖與 icon
-npm run fonts     # 重新下載字體檔（只有要換字體時才需要）
+pnpm install
+pnpm dev          # 開發伺服器 http://localhost:4321
+pnpm build        # 型別檢查 + 建置到 dist/
+pnpm preview      # 預覽建置結果
+pnpm og           # 重新產生社群分享圖與 icon
+pnpm fonts        # 重新下載字體檔（只有要換字體時才需要）
 ```
 
 ## 專案結構
