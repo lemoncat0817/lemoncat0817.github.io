@@ -2,7 +2,6 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/Hero.astro';
 import WorkCard from '../components/WorkCard.astro';
-import TechStack from '../components/TechStack.astro';
 import Contact from '../components/Contact.astro';
 import { getWorkEntries, entrySlug } from '../lib/work';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
@@ -11,7 +10,6 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const entries = await getWorkEntries(lang);
-const projectTitles = Object.fromEntries(entries.map((e) => [entrySlug(e), e.data.title]));
 ---
 
 <BaseLayout>
@@ -39,8 +37,6 @@ const projectTitles = Object.fromEntries(entries.map((e) => [entrySlug(e), e.dat
       }
     </div>
   </section>
-
-  <TechStack projectTitles={projectTitles} />
 
   <Contact />
 </BaseLayout>

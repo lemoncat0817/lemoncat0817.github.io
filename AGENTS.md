@@ -22,7 +22,7 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 
 **Content Collections 的 id 大小寫陷阱**：`src/content.config.ts` 用 `glob` loader 讀 `src/content/work/**/*.md`，loader 會把 id 轉小寫，所以資料夾 `zh-TW/` 對應的 id 前綴其實是 `zh-tw/`。`src/lib/work.ts` 的 `getWorkEntries()` 因此用大小寫不敏感比對；`en` 因為本來就是小寫，這個問題不會在英文版浮現，只會在中文版出包，改這段邏輯時要留意。
 
-**新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個同 slug 的 `.md`（schema 見 `content.config.ts`），封面圖放進 `src/assets/work/`（`astro:assets` 處理最佳化與放大檢視用的原圖）。首頁與案例頁會自動生成，不需要改任何元件。要記得同步更新 `src/data/profile.ts` 裡 `techStack` 的技術 ↔ 專案對應（技能標籤要有作品背書，不是自評）。
+**新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個同 slug 的 `.md`（schema 見 `content.config.ts`），封面圖放進 `src/assets/work/`（`astro:assets` 處理最佳化與放大檢視用的原圖）。首頁與案例頁會自動生成，不需要改任何元件。
 
 **`src/data/profile.ts` 是個人資料單一來源**，Hero、關於頁、Footer、SEO meta、JSON-LD 都從這裡讀，不要在元件裡另外寫死。
 

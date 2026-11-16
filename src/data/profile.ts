@@ -24,36 +24,3 @@ export const profile = {
    */
   formEndpoint: 'https://formspree.io/f/mljebebn',
 } as const;
-
-/**
- * 首頁技術棧區塊。每項技術對應到實際使用它的專案 slug，讓技能由作品背書
- * （取代舊站無法驗證的自評進度條）。
- *
- * 資料來源：各專案 repo 的 package.json 與 GitHub 語言統計，非估計值。
- * 新增專案或幫舊專案換技術棧時，請一併更新此處的對應關係。
- */
-export const techStack = [
-  { name: 'Vue 3', projects: ['pos-system', 'todo-list', 'weather-tw', 'lohas-pets-cafe'] },
-  { name: 'Angular', projects: [] },
-  { name: 'Spring Boot', projects: [] },
-  {
-    name: 'TypeScript',
-    projects: ['pos-system', 'todo-list', 'weather-tw', 'lohas-pets-cafe'],
-  },
-  { name: 'Nuxt', projects: ['weather-tw', 'lohas-pets-cafe'] },
-  {
-    name: 'Tailwind CSS',
-    projects: ['pos-system', 'todo-list', 'weather-tw', 'lohas-pets-cafe'],
-  },
-  { name: 'shadcn-vue', projects: ['lohas-pets-cafe'] },
-  { name: 'Pinia', projects: ['pos-system'] },
-  { name: 'Hono', projects: ['pos-system'] },
-  { name: 'ECharts', projects: ['pos-system', 'weather-tw'] },
-  { name: 'MapLibre GL', projects: ['weather-tw'] },
-  { name: 'Cloudflare Workers', projects: ['pos-system', 'weather-tw'] },
-  { name: 'Supabase', projects: ['todo-list'] },
-  { name: 'Vitest', projects: ['pos-system', 'todo-list', 'weather-tw'] },
-  { name: 'Playwright', projects: ['pos-system', 'todo-list'] },
-] as const;
-
-export type TechItem = (typeof techStack)[number];

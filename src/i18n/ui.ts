@@ -13,7 +13,6 @@ export const ui = {
       '專注 Vue 生態系的網頁工程師，來自高雄。作品包含 POS 點餐系統、氣象資訊站、寵物咖啡廳形象網站與待辦事項應用。',
 
     'nav.work': '作品',
-    'nav.stack': '技術',
     'nav.about': '關於',
     'nav.contact': '聯絡',
     'nav.skipToContent': '跳至主要內容',
@@ -42,14 +41,6 @@ export const ui = {
     'work.viewSource': '原始碼',
     'work.allProjects': '全部作品',
     'work.zoomImage': '放大檢視截圖',
-
-    'stack.eyebrow': '技術棧',
-    'stack.title': '我用什麼做出這些東西',
-    'stack.intro': '點擊任一技術，看看實際用它做出來的專案 — 技能由作品背書，不是自評分數。',
-    'stack.usedIn': '使用於',
-    'stack.showAll': '顯示全部',
-    'stack.filtered': '已篩選',
-    'stack.comingSoon': '尚無對應的上線作品',
 
     'about.eyebrow': '關於',
     'about.title': '關於我',
@@ -106,7 +97,6 @@ export const ui = {
       'Web engineer from Kaohsiung, Taiwan, focused on the Vue ecosystem. Projects include a POS ordering system, a weather data app, a pet cafe site, and a todo app.',
 
     'nav.work': 'Work',
-    'nav.stack': 'Stack',
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.skipToContent': 'Skip to main content',
@@ -136,15 +126,6 @@ export const ui = {
     'work.viewSource': 'Source',
     'work.allProjects': 'All work',
     'work.zoomImage': 'View enlarged screenshot',
-
-    'stack.eyebrow': 'Stack',
-    'stack.title': 'What I build with',
-    'stack.intro':
-      'Click any technology to see the projects I actually used it in — skills backed by work, not self-rated percentages.',
-    'stack.usedIn': 'Used in',
-    'stack.showAll': 'Show all',
-    'stack.filtered': 'Filtered',
-    'stack.comingSoon': 'No shipped project yet',
 
     'about.eyebrow': 'About',
     'about.title': 'About me',

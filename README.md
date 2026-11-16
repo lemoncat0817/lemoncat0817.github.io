@@ -37,7 +37,7 @@ src/
 ├─ content/work/       案例研究內容
 │  ├─ zh-TW/
 │  └─ en/
-├─ data/profile.ts     個人資料與技術棧對應（單一來源）
+├─ data/profile.ts     個人資料（單一來源）
 ├─ i18n/               翻譯字串與語言工具
 ├─ layouts/            共用頁面版型（BaseLayout 等）
 ├─ lib/                作品資料處理與輔助函式
@@ -49,7 +49,6 @@ src/
 
 **新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個 `.md`，
 封面圖放進 `src/assets/work/`。首頁與案例頁會自動帶出，不需要改任何元件。
-記得同步更新 `src/data/profile.ts` 裡技術與專案的對應關係。
 
 **改個人資料**：`src/data/profile.ts`（是否顯示 email、求職狀態等）。
 
