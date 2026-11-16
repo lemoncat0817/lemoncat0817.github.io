@@ -8,17 +8,10 @@ const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 ---
 
-<section id="contact" class="shell scroll-mt-24 py-20 sm:py-28">
+<section id="contact" class="shell scroll-mt-24 pb-20 sm:pb-28">
   <div
     class="spotlight reveal relative overflow-hidden rounded-3xl border border-line bg-surface px-6 py-14 text-center sm:px-12 sm:py-20"
   >
-    <div
-      class="pointer-events-none absolute -top-1/2 left-1/2 aspect-square w-[40rem] -translate-x-1/2 rounded-full opacity-[0.12] blur-3xl"
-      style="background: radial-gradient(circle, var(--color-accent), transparent 65%)"
-      aria-hidden="true"
-    >
-    </div>
-
     <div class="relative">
       <p class="font-mono text-xs tracking-widest text-accent-text uppercase">{t('contact.eyebrow')}</p>
       <h2 class="text-display mt-3 font-semibold">{t('contact.title')}</h2>
