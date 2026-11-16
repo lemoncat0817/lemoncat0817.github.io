@@ -34,7 +34,7 @@ npm run fonts     # 重新下載字體檔（只有要換字體時才需要）
 src/
 ├─ assets/work/        作品封面圖（由 astro:assets 最佳化）
 ├─ components/         UI 元件
-├─ content/work/       案例研究內容
+├─ content/work/       作品卡資料（只有 frontmatter）
 │  ├─ zh-TW/
 │  └─ en/
 ├─ data/profile.ts     個人資料（單一來源）
@@ -48,7 +48,7 @@ src/
 ## 常見維護作業
 
 **新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個 `.md`，
-封面圖放進 `src/assets/work/`。首頁與案例頁會自動帶出，不需要改任何元件。
+封面圖放進 `src/assets/work/`。首頁作品卡會自動帶出，不需要改任何元件。
 
 **改個人資料**：`src/data/profile.ts`（是否顯示 email、求職狀態等）。
 
