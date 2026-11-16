@@ -32,6 +32,7 @@ export const ui = {
     'work.eyebrow': '作品',
     'work.stop': '第 {n} 站',
     'work.pawHint': '喵？點我看看',
+    'work.stackLabel': '技術',
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
     'work.allProjects': '全部作品',
@@ -50,8 +51,6 @@ export const ui = {
     'contact.copyFailed': '已選取，請手動複製',
 
     'modal.close': '關閉',
-
-    'case.stack': '技術棧',
 
     'footer.tagline': '用 Astro 做的，貓負責品管。',
     'footer.updated': '最後更新：',
@@ -87,6 +86,7 @@ export const ui = {
     'work.eyebrow': 'Work',
     'work.stop': 'Stop {n}',
     'work.pawHint': 'Meow? Click me',
+    'work.stackLabel': 'Built with',
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
     'work.allProjects': 'All work',
@@ -106,8 +106,6 @@ export const ui = {
     'contact.copyFailed': 'Selected, copy it manually',
 
     'modal.close': 'Close',
-
-    'case.stack': 'Stack',
 
     'footer.tagline': 'Built with Astro. Quality control by the cat.',
     'footer.updated': 'Last updated: ',

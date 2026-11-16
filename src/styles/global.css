@@ -227,13 +227,6 @@
         animation-timeline: view(), view();
         animation-range: entry 0% entry 55%, cover 0% cover 100%;
       }
-
-      /* 逐項錯開進場；不支援 sibling-index() 時整條宣告失效，退回 .reveal 的預設區間 */
-      .reveal-stagger {
-        animation-range:
-          entry calc(min((sibling-index() - 1) * 6%, 40%))
-          entry calc(min(55% + (sibling-index() - 1) * 6%, 95%));
-      }
     }
 
     .rise {

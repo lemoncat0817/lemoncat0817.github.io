@@ -79,17 +79,10 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
         {tagline}
       </p>
 
-      <ul class="mt-6 flex flex-wrap gap-2" aria-label={t('case.stack')}>
-        {
-          data.stack.map((tech) => (
-            <li
-              class="reveal reveal-stagger rounded-md border border-line bg-surface px-2.5 py-1 font-mono text-xs text-muted transition-colors hover:border-line-hi hover:text-fg"
-            >
-              {tech}
-            </li>
-          ))
-        }
-      </ul>
+      <dl class="mt-5 flex gap-4 text-sm">
+        <dt class="shrink-0 pt-px font-mono text-xs leading-6 text-faint">{t('work.stackLabel')}</dt>
+        <dd class="leading-6 text-muted">{data.stack.join(lang === 'zh-TW' ? '、' : ', ')}</dd>
+      </dl>
 
       <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
         <a

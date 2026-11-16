@@ -7,8 +7,6 @@ stack:
   - TypeScript
   - Tailwind CSS
   - shadcn-vue
-  - Zod
-  - VueUse
 demo: https://lemoncat0817.github.io/lohas-pets-cafe/
 repo: https://github.com/lemoncat0817/lohas-pets-cafe
 cover: ../../../assets/work/lohas-pets-cafe.png

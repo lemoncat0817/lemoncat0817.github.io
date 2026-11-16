@@ -8,9 +8,6 @@ stack:
   - Cloudflare Workers
   - MapLibre GL
   - ECharts
-  - Tailwind CSS
-  - VueUse
-  - Vitest
 demo: https://weather-tw.jimdeng0817.workers.dev
 repo: https://github.com/lemoncat0817/weather-tw
 cover: ../../../assets/work/weather-tw.png

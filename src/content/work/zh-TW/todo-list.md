@@ -7,11 +7,6 @@ stack:
   - TypeScript
   - IndexedDB
   - Supabase
-  - Pinia
-  - Vue Router
-  - Tailwind CSS
-  - Vite
-  - Vitest
   - Playwright
 demo: https://lemoncat0817.github.io/todo-list/
 repo: https://github.com/lemoncat0817/todo-list

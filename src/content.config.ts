@@ -18,7 +18,8 @@ const work = defineCollection({
       tagline: z.string(),
       /** Hero「最近做的」那行裡代表這個作品的詞，滑過會顯示封面 */
       keyword: z.string().min(1),
-      stack: z.array(z.string()).min(1),
+      /** 只放最能代表這個專案的技術，完整清單在 repo 的 README */
+      stack: z.array(z.string()).min(1).max(5),
 
       demo: z.url(),
       repo: z.url(),
