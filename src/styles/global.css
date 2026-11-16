@@ -171,6 +171,11 @@
     cursor: url('/cursors/paw-pointer.png') 10 8, pointer;
     cursor: image-set(url('/cursors/paw-pointer.png') 1x, url('/cursors/paw-pointer@2x.png') 2x) 10 8, pointer;
   }
+  :root:active,
+  :root :active:not(input, textarea, [contenteditable]) {
+    cursor: url('/cursors/paw-pressed.png') 11 10, auto;
+    cursor: image-set(url('/cursors/paw-pressed.png') 1x, url('/cursors/paw-pressed@2x.png') 2x) 11 10, auto;
+  }
   input:not([type='button'], [type='submit'], [type='checkbox'], [type='radio']),
   textarea,
   [contenteditable] {
@@ -604,6 +609,36 @@
   @media (min-width: 64rem) {
     .route-road {
       stroke-width: 20;
+    }
+  }
+
+  .click-paw {
+    position: fixed;
+    z-index: 100;
+    width: 1.5rem;
+    height: 1.5rem;
+    translate: -50% -50%;
+    pointer-events: none;
+    color: var(--color-accent-text);
+    animation: click-paw 0.65s var(--ease-out-expo) forwards;
+  }
+  .click-paw svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  @keyframes click-paw {
+    from {
+      scale: 0.3;
+      opacity: 0.9;
+    }
+    35% {
+      scale: 1;
+      opacity: 0.85;
+    }
+    to {
+      scale: 1.05;
+      opacity: 0;
     }
   }
 
