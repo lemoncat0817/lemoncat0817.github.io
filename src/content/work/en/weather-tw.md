@@ -1,6 +1,6 @@
 ---
 title: Weather, Explained
-tagline: Turning raw meteorological data into a site people actually open during a typhoon
+tagline: Live weather, forecasts, radar, typhoon tracks and earthquake reports for Taiwan, all in one place
 keyword: typhoons
 stack:
   - Nuxt

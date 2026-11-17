@@ -16,7 +16,7 @@ const work = defineCollection({
       title: z.string(),
       /** 一句話定位。中文版會優先用 GitHub repo 的 About（見 lib/repoAbout.ts），這裡是抓不到時的備援 */
       tagline: z.string(),
-      /** Hero「最近做的」那行裡代表這個作品的詞，滑過會顯示封面 */
+      /** Hero「最近做的」那行裡代表這個作品的詞，點了會捲到該作品卡 */
       keyword: z.string().min(1),
       /** 只放最能代表這個專案的技術，完整清單在 repo 的 README */
       stack: z.array(z.string()).min(1).max(5),

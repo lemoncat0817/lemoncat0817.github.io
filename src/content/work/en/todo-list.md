@@ -1,6 +1,6 @@
 ---
 title: Todo List
-tagline: Local-first, keyboard-first, and it doesn't lose your data
+tagline: A to-do app with nothing to install and no sign-up. Just open the page and start
 keyword: to-dos
 stack:
   - Vue 3

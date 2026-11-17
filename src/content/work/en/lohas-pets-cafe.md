@@ -1,6 +1,6 @@
 ---
 title: Lohas Pet Cafe
-tagline: From making people want to visit to letting them actually book the table
+tagline: A brand website for a pet-friendly café
 keyword: a pet café
 stack:
   - Nuxt

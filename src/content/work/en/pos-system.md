@@ -1,6 +1,6 @@
 ---
 title: POS System
-tagline: A multi-tenant POS system for restaurants and drink shops, covering ordering, the back office and analytics
+tagline: "A multi-tenant POS system for restaurants and drink shops: ordering and checkout, table management, member marketing and analytics"
 keyword: ordering
 stack:
   - Vue 3

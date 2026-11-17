@@ -10,7 +10,7 @@ export const ui = {
   'zh-TW': {
     'meta.title': 'Lemoncat — 網頁工程師',
     'meta.description':
-      '來自高雄的網頁工程師，前端用 Vue／Angular，後端用 Spring Boot。作品包含 POS 點餐系統、氣象資訊站、寵物咖啡廳形象網站與待辦事項應用。',
+      '來自高雄的全端網頁工程師，前端用 Vue／Angular，後端用 Spring Boot。作品包含 POS 點餐系統、氣象資訊站、寵物咖啡廳形象網站與待辦事項應用。',
 
     'nav.work': '作品',
     'nav.about': '關於',
@@ -26,7 +26,6 @@ export const ui = {
     'hero.mark': '輕巧、安靜、剛好',
     'hero.recent': '最近做的：',
     'hero.viewWork': '看看我的作品',
-    'hero.scrollHint': '向下捲動',
 
     'work.eyebrow': '作品',
     'work.stop': '第 {n} 站',
@@ -34,7 +33,6 @@ export const ui = {
     'work.stackLabel': '技術',
     'work.viewDemo': '線上 Demo',
     'work.viewSource': '原始碼',
-    'work.allProjects': '全部作品',
     'work.zoomImage': '放大檢視截圖',
 
     'about.eyebrow': '關於',
@@ -69,7 +67,7 @@ export const ui = {
     'nav.about': 'About',
     'nav.contact': 'Contact',
     'nav.skipToContent': 'Skip to main content',
-    'nav.toggleTheme': 'Toggle colour theme',
+    'nav.toggleTheme': 'Toggle color theme',
     'nav.switchLang': '切換為繁體中文',
     'nav.menu': 'Menu',
 
@@ -79,7 +77,6 @@ export const ui = {
     'hero.mark': 'light, quiet',
     'hero.recent': 'Recently: ',
     'hero.viewWork': 'See my work',
-    'hero.scrollHint': 'Scroll',
 
     'work.eyebrow': 'Work',
     'work.stop': 'Stop {n}',
@@ -87,7 +84,6 @@ export const ui = {
     'work.stackLabel': 'Built with',
     'work.viewDemo': 'Live demo',
     'work.viewSource': 'Source',
-    'work.allProjects': 'All work',
     'work.zoomImage': 'View enlarged screenshot',
 
     'about.eyebrow': 'About',
