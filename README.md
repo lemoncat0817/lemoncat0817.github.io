@@ -11,7 +11,7 @@
 | 框架 | Astro 7（靜態產出，預設不送 JS） |
 | 樣式 | Tailwind CSS 4（透過 `@tailwindcss/vite`） |
 | 內容 | Content Collections + Zod schema 驗證 |
-| 字體 | Astro Fonts API + 收進 repo 的 woff2（建置期不連外） |
+| 字體 | Astro Fonts API + 收進 repo 的 woff2（不向外部字體服務取檔） |
 | 語言 | 繁體中文（`/`）與英文（`/en/`） |
 | 部署 | GitHub Actions → GitHub Pages |
 
@@ -22,9 +22,10 @@
 ```bash
 pnpm install
 pnpm dev          # 開發伺服器 http://localhost:4321
+pnpm check        # 型別檢查
 pnpm build        # 型別檢查 + 建置到 dist/
 pnpm preview      # 預覽建置結果
-pnpm og           # 重新產生社群分享圖與 icon
+pnpm og           # 重新產生分享圖、favicon／icon 與貓掌游標
 pnpm fonts        # 重新下載字體檔（只有要換字體時才需要）
 ```
 
@@ -45,19 +46,4 @@ src/
 └─ styles/global.css   設計 token 與基礎樣式
 ```
 
-## 常見維護作業
-
-**新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個 `.md`，
-封面圖放進 `src/assets/work/`。首頁作品卡會自動帶出，不需要改任何元件。
-
-**改個人資料**：`src/data/profile.ts`（是否顯示 email、求職狀態等）。
-
-**改介面文字**：`src/i18n/ui.ts`。
-
-**改配色**：`src/styles/global.css` 的 `@theme` 區塊。
-`--color-accent`（填色）與 `--color-accent-text`（文字色）刻意分開，
-因為兩者的對比需求不同：作為背景色時觀感良好的黃色，直接當文字色在淺色背景上對比不足。
-
-## 部署
-
-推送到 `main` 會觸發 `.github/workflows/deploy.yml` 自動建置並部署。
+維護做法與架構上的取捨、陷阱都寫在 [AGENTS.md](AGENTS.md)。

@@ -43,7 +43,7 @@ export default defineConfig({
   // 把 woff2 收進 repo 之後：建置不依賴外部網路、結果可重現、CI 不會因為
   // 第三方服務變動而掛掉，也省下建置期的下載時間。
   //
-  // 要更新字體版本時執行：npm run fonts
+  // 要更新字體版本時執行：pnpm fonts
   fonts: [
     {
       provider: fontProviders.local(),
