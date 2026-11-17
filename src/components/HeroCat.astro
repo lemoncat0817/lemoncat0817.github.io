@@ -1,0 +1,166 @@
+---
+interface Props {
+  class?: string;
+  style?: string;
+}
+const { class: className, style } = Astro.props;
+
+const eyes = [
+  { id: 'l', cx: 78 },
+  { id: 'r', cx: 122 },
+];
+---
+
+<div class:list={['hero-cat', className]} style={style} data-hero-cat aria-hidden="true">
+  <svg viewBox="0 0 200 224" class="w-full overflow-visible">
+    <defs>
+      {
+        eyes.map((e) => (
+          <clipPath id={`hero-cat-eye-${e.id}`}>
+            <ellipse cx={e.cx} cy="94" rx="13" ry="14" />
+          </clipPath>
+        ))
+      }
+    </defs>
+
+    <path class="cat-edge" d="M140 204c38 2 48-28 32-50" fill="none" stroke-width="15" stroke-linecap="round"></path>
+    <path d="M140 204c38 2 48-28 32-50" fill="none" stroke="var(--color-accent)" stroke-width="12" stroke-linecap="round"></path>
+    <path class="cat-fill" d="M58 214c-12-44 0-86 42-88 42 2 54 44 42 88z"></path>
+    <path d="M100 164v50" stroke="var(--color-accent-ink)" stroke-opacity="0.25" stroke-width="2"></path>
+
+    <path class="cat-fill" d="M60 72 54 22l38 28zM140 72l6-50-38 28z"></path>
+    <path d="M62 62 59 36l18 13zM138 62l3-26-18 13z" fill="var(--color-accent-ink)" fill-opacity="0.18"></path>
+    <path
+      class="cat-fill"
+      d="M30 96c6-3 13-7 18-13 8-24 30-36 52-36s44 12 52 36c5 6 12 10 18 13-6 3-13 7-18 13-8 24-30 36-52 36s-44-12-52-36c-5-6-12-10-18-13z"
+    ></path>
+    <path
+      d="M58 70q12-12 30-16"
+      fill="none"
+      stroke="oklch(1 0 0)"
+      stroke-opacity="0.45"
+      stroke-width="4"
+      stroke-linecap="round"></path>
+    <g fill="var(--color-accent-ink)" fill-opacity="0.14">
+      <circle cx="56" cy="88" r="1.4"></circle>
+      <circle cx="64" cy="116" r="1.4"></circle>
+      <circle cx="100" cy="134" r="1.4"></circle>
+      <circle cx="138" cy="122" r="1.4"></circle>
+      <circle cx="146" cy="84" r="1.4"></circle>
+      <circle cx="112" cy="60" r="1.4"></circle>
+      <circle cx="82" cy="130" r="1.4"></circle>
+    </g>
+    <path d="M100 48q1-8 6-12" fill="none" stroke="oklch(0.45 0.08 120)" stroke-width="2.5" stroke-linecap="round"></path>
+    <path class="cat-leaf" d="M105 37c6-10 18-12 26-8-5 9-17 13-26 8z"></path>
+
+    {
+      eyes.map((e) => (
+        <g class="cat-eye">
+          <ellipse cx={e.cx} cy="94" rx="13" ry="14" fill="oklch(0.98 0.01 96)" data-eye />
+          <g clip-path={`url(#hero-cat-eye-${e.id})`}>
+            <ellipse class="cat-pupil" cx={e.cx} cy="94" rx="4.5" ry="9.5" fill="var(--color-accent-ink)" data-pupil />
+          </g>
+        </g>
+      ))
+    }
+
+    <path d="M95 112h10l-5 6z" fill="var(--color-accent-ink)"></path>
+    <path
+      d="M100 118q-5 6-10 2m10-2q5 6 10 2M62 108l-40-4m40 10-40 4m116-10 40-4m-40 10 40 4"
+      fill="none"
+      stroke="var(--color-accent-ink)"
+      stroke-width="2"
+      stroke-linecap="round"
+      stroke-opacity="0.55"></path>
+  </svg>
+</div>
+
+<style>
+  .cat-fill {
+    fill: var(--color-accent);
+    stroke: var(--color-accent-edge);
+    stroke-width: 2;
+    stroke-linejoin: round;
+  }
+  .cat-leaf {
+    fill: oklch(0.7 0.16 140);
+    stroke: var(--color-accent-edge);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .cat-edge {
+    stroke: var(--color-accent-edge);
+  }
+  .cat-eye {
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .cat-pupil {
+      transition: transform 0.18s var(--ease-out-expo);
+    }
+    .cat-eye {
+      animation: cat-blink 7s infinite;
+    }
+    .cat-eye + .cat-eye {
+      animation-delay: 0.04s;
+    }
+  }
+  @keyframes cat-blink {
+    0%,
+    94%,
+    100% {
+      transform: scaleY(1);
+    }
+    96% {
+      transform: scaleY(0.1);
+    }
+  }
+</style>
+
+<script>
+  const cat = document.querySelector<HTMLElement>('[data-hero-cat]');
+  const eyes = [...(cat?.querySelectorAll<SVGGElement>('.cat-eye') ?? [])].map((g) => ({
+    white: g.querySelector<SVGEllipseElement>('[data-eye]')!,
+    pupil: g.querySelector<SVGEllipseElement>('[data-pupil]')!,
+  }));
+
+  if (cat && eyes.length) {
+    // 與 Tailwind 的 xl 斷點一致：貓沒顯示時不必監聽游標
+    const shown = matchMedia('(min-width: 80rem)');
+    let x = 0;
+    let y = 0;
+    let frame = 0;
+
+    const look = () => {
+      frame = 0;
+      for (const { white, pupil } of eyes) {
+        const r = white.getBoundingClientRect();
+        const dx = x - (r.left + r.width / 2);
+        const dy = y - (r.top + r.height / 2);
+        const reach = Math.min(1, Math.hypot(dx, dy) / 360);
+        const a = Math.atan2(dy, dx);
+        pupil.style.transform = `translate(${Math.cos(a) * 6.5 * reach}px, ${Math.sin(a) * 4.5 * reach}px)`;
+      }
+    };
+    const onMove = (e: PointerEvent) => {
+      x = e.clientX;
+      y = e.clientY;
+      frame ||= requestAnimationFrame(look);
+    };
+    const onLeave = (e: PointerEvent) => {
+      if (!e.relatedTarget) for (const { pupil } of eyes) pupil.style.transform = '';
+    };
+    const sync = () => {
+      if (shown.matches) {
+        addEventListener('pointermove', onMove, { passive: true });
+        document.addEventListener('pointerout', onLeave);
+      } else {
+        removeEventListener('pointermove', onMove);
+        document.removeEventListener('pointerout', onLeave);
+      }
+    };
+    shown.addEventListener('change', sync);
+    sync();
+  }
+</script>

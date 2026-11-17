@@ -4,6 +4,7 @@ import { profile } from '../data/profile';
 import { getWorkEntries, entrySlug } from '../lib/work';
 import { catFacts } from '../data/catFacts';
 import PawIcon from './PawIcon.astro';
+import HeroCat from './HeroCat.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -22,64 +23,69 @@ const recent = parts.map((p) => (p.type === 'element' ? { ...words[wordIndex++]!
 ---
 
 <section class="relative pb-20 sm:pb-28" style="padding-top: var(--hero-pt)">
-  <div class="shell">
-    <p class="hero-name text-hero font-sans" aria-hidden="true">
-      {lang === 'zh-TW' ? profile.nameZh : profile.name}
-    </p>
+  {/* 貓只在 xl 以上出現：再窄的話文字欄會擠到打字列預留的行數不夠，打字時版面會跳 */}
+  <div class="shell xl:flex xl:items-start xl:gap-16">
+    <div class="min-w-0 flex-1">
+      <p class="hero-name text-hero font-sans" aria-hidden="true">
+        {lang === 'zh-TW' ? profile.nameZh : profile.name}
+      </p>
 
-    <h1 class="text-display mt-8 font-bold sm:mt-10">
-      <span class="line-reveal"><span style="--i: 0">{t('hero.headline.1')}</span></span>
-      <span class="line-reveal">
-        <span style="--i: 1">
-          {afterMark === undefined ? line2 : (
-            <>
-              {beforeMark}<span class="marker">{mark}</span>{afterMark}
-            </>
-          )}
+      <h1 class="text-display mt-8 font-bold sm:mt-10">
+        <span class="line-reveal"><span style="--i: 0">{t('hero.headline.1')}</span></span>
+        <span class="line-reveal">
+          <span style="--i: 1">
+            {afterMark === undefined ? line2 : (
+              <>
+                {beforeMark}<span class="marker">{mark}</span>{afterMark}
+              </>
+            )}
+          </span>
         </span>
-      </span>
-    </h1>
+      </h1>
 
-    {/* 打字中的字串對螢幕閱讀器沒意義，讀到的是固定的一則；預留最長一則的行數，換行時下方版面不會跳 */}
-    <p
-      class:list={[
-        'rise mt-6 flex max-w-3xl items-start gap-2.5 font-mono text-sm leading-[1.7] text-muted [text-wrap:wrap] sm:text-base',
-        lang === 'en' ? 'min-h-[5.1em] sm:min-h-[3.4em]' : 'min-h-[3.4em]',
-      ]}
-      style="--i: 4"
-      data-cat-fact
-    >
-      <PawIcon class="mt-[0.3em] size-4 shrink-0 text-accent-text" />
-      <span aria-hidden="true"><span data-cat-fact-text>{firstFact}</span><span class="type-caret"></span></span>
-      <span class="sr-only">{firstFact}</span>
-    </p>
+      {/* 打字中的字串對螢幕閱讀器沒意義，讀到的是固定的一則；預留最長一則的行數，換行時下方版面不會跳 */}
+      <p
+        class:list={[
+          'rise mt-6 flex max-w-3xl items-start gap-2.5 font-mono text-sm leading-[1.7] text-muted [text-wrap:wrap] sm:text-base',
+          lang === 'en' ? 'min-h-[5.1em] sm:min-h-[3.4em]' : 'min-h-[3.4em]',
+        ]}
+        style="--i: 4"
+        data-cat-fact
+      >
+        <PawIcon class="mt-[0.3em] size-4 shrink-0 text-accent-text" />
+        <span aria-hidden="true"><span data-cat-fact-text>{firstFact}</span><span class="type-caret"></span></span>
+        <span class="sr-only">{firstFact}</span>
+      </p>
 
-    <p class="hero-recent rise mt-6 max-w-3xl text-lg text-muted sm:text-xl" style="--i: 6">
-      {t('hero.recent')}
-      {
-        recent.map((part) =>
-          'slug' in part ? (
-            <a
-              href={`#work-${part.slug}`}
-              class="recent-word whitespace-nowrap text-fg hover:text-accent-text focus-visible:text-accent-text"
-            >
-              {part.text}
-            </a>
-          ) : (
-            part.text
-          ),
-        )
-      }
-    </p>
+      <p class="hero-recent rise mt-6 max-w-3xl text-lg text-muted sm:text-xl" style="--i: 6">
+        {t('hero.recent')}
+        {
+          recent.map((part) =>
+            'slug' in part ? (
+              <a
+                href={`#work-${part.slug}`}
+                class="recent-word whitespace-nowrap text-fg hover:text-accent-text focus-visible:text-accent-text"
+              >
+                {part.text}
+              </a>
+            ) : (
+              part.text
+            ),
+          )
+        }
+      </p>
 
-    <a
-      href="#work"
-      class="rise group mt-10 inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
-      style="--i: 8"
-    >
-      {t('hero.viewWork')}
-      <span class="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">↓</span>
-    </a>
+      <a
+        href="#work"
+        class="rise group mt-10 inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
+        style="--i: 8"
+      >
+        {t('hero.viewWork')}
+        <span class="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">↓</span>
+      </a>
+    </div>
+
+    <HeroCat class="rise hidden w-56 shrink-0 self-center xl:block 2xl:w-64" style="--i: 3" />
   </div>
 </section>
 

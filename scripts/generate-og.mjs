@@ -85,14 +85,14 @@ const variants = [
     file: 'public/og-default.png',
     name: '檸檬貓',
     nameFont: `${CJK} Bold 128`,
-    lines: ['好用的網頁，', ['是', '一個一個決定', '堆出來的。']],
+    lines: ['網頁該像貓，', ['', '輕巧、安靜、剛好', '在你要的地方。']],
     lineFont: `${CJK} Bold 62`,
   },
   {
     file: 'public/og-default-en.png',
     name: 'Lemoncat',
     nameFont: 'Space Grotesk,Noto Sans,DejaVu Sans Bold 128',
-    lines: ['Good interfaces', ['are a pile of ', 'small decisions', '.']],
+    lines: ['Websites should be like cats:', ['', 'light, quiet', ', and right where\nyou want them.']],
     lineFont: 'Space Grotesk,Noto Sans,DejaVu Sans Bold 62',
   },
 ];
