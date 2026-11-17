@@ -52,7 +52,7 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 - 走過的腳印可以點，點了會冒出一則冷知識。腳印會隨版面重建，所以點擊監聽掛在 `[data-route]` 容器上，不要綁在個別腳印。彩蛋不寫說明文字：最前端的腳印（`data-lead`）在訪客點過之前會一直泛出波紋，第一次走到路線時再冒一次「喵？點我看看」；兩者分別用 localStorage 的 `lemoncat:paw-hinted`、`lemoncat:paw-found` 記住，只提示一次。
 - 全站游標是貓掌（`global.css` 的 base 層），一般、指到連結、按下（`:active`）三種 PNG 由 `pnpm og` 產生在 `public/cursors/`；熱點座標（一般 `10 8`、按下 `11 10`）寫在 CSS 裡，改圖時兩邊要一起對。作品封面刻意保留 `cursor-zoom-in`，提示可以放大看。
 - 左鍵或觸控點擊會在點的位置留一個淡出的貓掌（`BaseLayout.astro` 的 `pointerdown`，樣式 `.click-paw`）；右鍵刻意不處理，減少動態時關閉。
-- Hero 右側的貓（`HeroCat.astro`）眼睛會跟著游標轉，只在 `xl` 以上顯示；再窄的話文字欄會窄到打字列預留的行數不夠，打字時版面會跳。腳本裡的 `matchMedia('(min-width: 80rem)')` 要跟 `xl` 斷點一致。減少動態時仍會跟著游標，但沒有緩動也不會眨眼。
+- Hero 右側的貓（`HeroCat.astro`）眼睛會跟著游標轉，只在 `xl` 以上顯示；再窄的話文字欄會窄到打字列預留的行數不夠，打字時版面會跳。腳本裡的 `matchMedia('(min-width: 80rem)')` 要跟 `xl` 斷點一致。減少動態時仍會跟著游標，但沒有緩動，也不會眨眼、甩尾巴。
 - 404 頁是貓咪版（腳印走到一半就斷掉），貓掌圖形統一用 `PawIcon.astro`。
 
 **彈窗與游標效果慣例**：

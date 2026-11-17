@@ -23,8 +23,10 @@ const eyes = [
       }
     </defs>
 
-    <path class="cat-edge" d="M140 204c38 2 48-28 32-50" fill="none" stroke-width="15" stroke-linecap="round"></path>
-    <path d="M140 204c38 2 48-28 32-50" fill="none" stroke="var(--color-accent)" stroke-width="12" stroke-linecap="round"></path>
+    <g class="cat-tail">
+      <path class="cat-edge" d="M140 204c38 2 48-28 32-50" fill="none" stroke-width="15" stroke-linecap="round"></path>
+      <path d="M140 204c38 2 48-28 32-50" fill="none" stroke="var(--color-accent)" stroke-width="12" stroke-linecap="round"></path>
+    </g>
     <path class="cat-fill" d="M58 214c-12-44 0-86 42-88 42 2 54 44 42 88z"></path>
     <path d="M100 164v50" stroke="var(--color-accent-ink)" stroke-opacity="0.25" stroke-width="2"></path>
 
@@ -104,6 +106,28 @@ const eyes = [
     }
     .cat-eye + .cat-eye {
       animation-delay: 0.04s;
+    }
+    .cat-tail {
+      transform-box: view-box;
+      transform-origin: 140px 204px;
+      animation: cat-tail 5.3s ease-in-out infinite;
+    }
+  }
+  /* 甩兩下就停一陣子；一直規律搖擺在眼角會干擾讀標題 */
+  @keyframes cat-tail {
+    0%,
+    40%,
+    100% {
+      rotate: 0deg;
+    }
+    12% {
+      rotate: 8deg;
+    }
+    22% {
+      rotate: -3deg;
+    }
+    31% {
+      rotate: 5deg;
     }
   }
   @keyframes cat-blink {
