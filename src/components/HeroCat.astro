@@ -2,8 +2,10 @@
 interface Props {
   class?: string;
   style?: string;
+  /** 黏土材質版，而且不分螢幕寬度都會看游標 */
+  clay?: boolean;
 }
-const { class: className, style } = Astro.props;
+const { class: className, style, clay = false } = Astro.props;
 
 const eyes = [
   { id: 'l', cx: 78 },
@@ -11,9 +13,34 @@ const eyes = [
 ];
 ---
 
-<div class:list={['hero-cat', className]} style={style} data-hero-cat aria-hidden="true">
-  <svg viewBox="0 0 200 224" class="w-full overflow-visible">
+<div class:list={['hero-cat', className]} style={style} data-hero-cat data-clay={clay ? '' : undefined} aria-hidden="true">
+  <svg viewBox="0 0 200 224" class="w-full overflow-visible" filter={clay ? 'url(#hero-cat-clay)' : undefined}>
     <defs>
+      {
+        clay && (
+          // 輪廓模糊後當高度圖，混一點雜訊當手捏的凹凸，再打漫射光與高光
+          <filter id="hero-cat-clay" x="-15%" y="-15%" width="130%" height="140%" color-interpolation-filters="sRGB">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="dome" />
+            <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="8" result="grain" />
+            <feColorMatrix in="grain" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0.5 0.5 0 0 0" result="grainA" />
+            <feComposite in="dome" in2="grainA" operator="arithmetic" k1="0.3" k2="0.85" k3="0" k4="0" result="height" />
+            <feDiffuseLighting in="height" surfaceScale="5" diffuseConstant="1.1" lighting-color="#fff" result="diffuse">
+              <feDistantLight azimuth="235" elevation="64" />
+            </feDiffuseLighting>
+            <feComposite in="SourceGraphic" in2="diffuse" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="lit" />
+            <feSpecularLighting in="height" surfaceScale="5" specularConstant="0.4" specularExponent="12" lighting-color="#fff" result="spec">
+              <feDistantLight azimuth="235" elevation="64" />
+            </feSpecularLighting>
+            <feComposite in="spec" in2="SourceAlpha" operator="in" result="shine" />
+            <feComposite in="shine" in2="lit" operator="arithmetic" k1="0" k2="1" k3="1" k4="0" result="clay" />
+            <feDropShadow in="SourceAlpha" dx="0" dy="10" stdDeviation="8" flood-color="#000" flood-opacity="0.35" result="shadow" />
+            <feMerge>
+              <feMergeNode in="shadow" />
+              <feMergeNode in="clay" />
+            </feMerge>
+          </filter>
+        )
+      }
       {
         eyes.map((e) => (
           <clipPath id={`hero-cat-eye-${e.id}`}>
@@ -150,8 +177,8 @@ const eyes = [
   }));
 
   if (cat && eyes.length) {
-    // 與 Tailwind 的 xl 斷點一致：貓沒顯示時不必監聽游標
-    const shown = matchMedia('(min-width: 80rem)');
+    // 與 Tailwind 的 xl 斷點一致：貓沒顯示時不必監聽游標；黏土版沒有斷點限制
+    const shown = matchMedia(cat.hasAttribute('data-clay') ? 'all' : '(min-width: 80rem)');
     let x = 0;
     let y = 0;
     let frame = 0;

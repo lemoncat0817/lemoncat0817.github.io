@@ -50,6 +50,7 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 **玻璃與材質**（每種只用在一處，別再往其他區塊加）：
 - 導覽列的玻璃畫在 `.glass-bar::before`（`global.css`），不是 header 本身：header 自己掛 `backdrop-filter` 會變成 backdrop root，裡面的元素就疊不了自己的模糊。首頁多一個 `.glass-dock`，玻璃跟名字停靠用同一段 `scroll(root)` 範圍淡入，兩邊的 `animation-range` 要一起改；手機選單打開時用 `:has()` 取消動畫，選單才有底。刻意不做折射（`backdrop-filter: url()`），那只有 Chromium 支援。
 - 封面放大成燈箱用同文件 View Transition（`ImageLightbox.astro` 的 `morph()`）：封面縮圖與燈箱大圖輪流掛 `view-transition-name: cover`，期間 `<html>` 加上 `lightbox-morph`，用來停掉 `.dialog-motion` 的過場並取消導覽列名字的命名（理由同 `theme-switching`）。大圖 300ms 內沒解碼完、不支援或減少動態時，退回原本的彈窗動畫。Esc 的 `cancel` 事件被攔下來改走同一條關閉路徑。
+- 404 頁的貓是 `<HeroCat clay />`：同一隻 SVG 套上 `#hero-cat-clay` 濾鏡（輪廓模糊當高度圖，加漫射光與高光），並取消「只在 `xl` 以上看游標」的限制。首頁的貓維持扁平，不要套。
 
 **貓咪元素**：
 - 貓咪冷知識集中在 `src/data/catFacts.ts`（中英各一份），Hero 的打字列和作品路線的腳印都從這裡取。只放查得到可靠來源的說法，玩笑句要寫得一看就知道是玩笑。打字列預留兩行高度，換行時下方版面不會跳；開啟減少動態時只顯示第一則。
