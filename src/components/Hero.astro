@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile } from '../data/profile';
 import { getWorkEntries, entrySlug } from '../lib/work';
@@ -16,17 +15,10 @@ const mark = t('hero.mark');
 const [beforeMark, afterMark] = line2.split(mark) as [string, string?];
 
 // formatToParts 讓連接詞（「、」「和」、", and"）跟著語言走，關鍵字本身換成連結
-const words = entries.map((e) => ({ slug: entrySlug(e), word: e.data.keyword, entry: e }));
+const words = entries.map((e) => ({ slug: entrySlug(e), word: e.data.keyword }));
 const parts = new Intl.ListFormat(lang, { type: 'conjunction' }).formatToParts(words.map((w) => w.word));
 let wordIndex = 0;
 const recent = parts.map((p) => (p.type === 'element' ? { ...words[wordIndex++]!, text: p.value } : { text: p.value }));
-
-const peekCss = words
-  .map(
-    ({ slug }) =>
-      `.hero-recent:has([data-peek="${slug}"]:is(:hover,:focus-visible))~[data-peek-for="${slug}"]{opacity:1;scale:1;rotate:-1deg}`,
-  )
-  .join('');
 ---
 
 <section class="relative pb-20 sm:pb-28" style="padding-top: var(--hero-pt)">
@@ -69,9 +61,7 @@ const peekCss = words
           'slug' in part ? (
             <a
               href={`#work-${part.slug}`}
-              class="peek-word whitespace-nowrap text-fg hover:text-accent-text focus-visible:text-accent-text"
-              data-peek={part.slug}
-              style={`anchor-name: --peek-${part.slug}`}
+              class="recent-word whitespace-nowrap text-fg hover:text-accent-text focus-visible:text-accent-text"
             >
               {part.text}
             </a>
@@ -81,22 +71,6 @@ const peekCss = words
         )
       }
     </p>
-
-    {
-      words.map(({ slug, entry }) => (
-        <span class="peek" data-peek-for={slug} style={`position-anchor: --peek-${slug}`} aria-hidden="true">
-          <Image
-            src={entry.data.cover}
-            alt=""
-            widths={[480, 800]}
-            sizes="16rem"
-            loading="lazy"
-            class="block aspect-[16/10] w-full object-cover"
-          />
-        </span>
-      ))
-    }
-    <style is:inline set:html={peekCss}></style>
 
     <a
       href="#work"

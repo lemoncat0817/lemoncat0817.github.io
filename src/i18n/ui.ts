@@ -25,7 +25,6 @@ export const ui = {
     'hero.headline.2': '是一個一個決定堆出來的。',
     'hero.mark': '一個一個決定',
     'hero.recent': '最近做的：',
-    'hero.available': '開放合作機會',
     'hero.viewWork': '看看我的作品',
     'hero.scrollHint': '向下捲動',
 
@@ -79,7 +78,6 @@ export const ui = {
     'hero.headline.2': 'are a pile of small decisions.',
     'hero.mark': 'small decisions',
     'hero.recent': 'Recently: ',
-    'hero.available': 'Open to opportunities',
     'hero.viewWork': 'See my work',
     'hero.scrollHint': 'Scroll',
 

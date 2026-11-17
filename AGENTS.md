@@ -23,7 +23,7 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 
 **Content Collections 的 id 大小寫陷阱**：`src/content.config.ts` 用 `glob` loader 讀 `src/content/work/**/*.md`，loader 會把 id 轉小寫，所以資料夾 `zh-TW/` 對應的 id 前綴其實是 `zh-tw/`。`src/lib/work.ts` 的 `getWorkEntries()` 因此用大小寫不敏感比對；`en` 因為本來就是小寫，這個問題不會在英文版浮現，只會在中文版出包，改這段邏輯時要留意。
 
-**新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個同 slug 的 `.md`（schema 見 `content.config.ts`），封面圖放進 `src/assets/work/`（`astro:assets` 處理最佳化與放大檢視用的原圖）。首頁作品卡會自動生成，不需要改任何元件。作品只有卡片，沒有站內案例頁：卡片主按鈕直接開線上 Demo，詳細說明交給各專案 repo 的 README，Markdown 檔只寫 frontmatter。`astro.config.mjs` 會自動把舊的 `/work/<slug>/` 網址轉到首頁對應的作品卡。`stack` 最多 5 個，只放最能代表這個專案的技術（schema 會擋），卡片上是「技術」標籤加一句用頓號（英文用逗號）串起的清單，刻意不做成標籤方塊或用「·」之類的裝飾分隔。frontmatter 的 `keyword` 是 Hero「最近做的：…」那行裡代表該作品的詞（滑過會跳出封面），兩個語言都要填。
+**新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個同 slug 的 `.md`（schema 見 `content.config.ts`），封面圖放進 `src/assets/work/`（`astro:assets` 處理最佳化與放大檢視用的原圖）。首頁作品卡會自動生成，不需要改任何元件。作品只有卡片，沒有站內案例頁：卡片主按鈕直接開線上 Demo，詳細說明交給各專案 repo 的 README，Markdown 檔只寫 frontmatter。`astro.config.mjs` 會自動把舊的 `/work/<slug>/` 網址轉到首頁對應的作品卡。`stack` 最多 5 個，只放最能代表這個專案的技術（schema 會擋），卡片上是「技術」標籤加一句用頓號（英文用逗號）串起的清單，刻意不做成標籤方塊或用「·」之類的裝飾分隔。frontmatter 的 `keyword` 是 Hero「最近做的：…」那行裡代表該作品的詞（點了會捲到該作品卡），兩個語言都要填。
 
 **`src/data/profile.ts` 是個人資料單一來源**，導覽列名字、Hero、關於頁、Footer、SEO meta、JSON-LD 都從這裡讀，不要在元件裡另外寫死。
 
@@ -41,8 +41,6 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 
 **作品路線**（`Route.astro`）：首頁作品卡包在 `<Route>` 裡，script 依各張 `[data-route-stop]` 的 `offsetTop`／`offsetLeft` 畫出 SVG 道路，並沿路每隔一段距離放一個左右交錯的貓腳印。前進位置對應「視窗 55% 高度那條線」並加緩動，走過的腳印依序浮現、太舊的會變淡，到站的卡片會加上 `data-current`。必須讀 `offset*` 而非 `getBoundingClientRect()`：卡片內容有進場與視差的 transform，用後者路線會跟著抖。車道靠 `WorkCard` 的寬度（`lg:w-[78%]`）與左右交錯、手機版的左側 `ml-10` 留出來，改卡片版面時要一起顧到。減少動態時腳印直接跟著捲動位置出現，沒有緩動與彈出動畫。
 
-**Hero 作品關鍵字預覽**：每個關鍵字連結設 `anchor-name`，對應的封面 `.peek` 用 `position-anchor` + `position-area` 貼在字旁，`position-try-fallbacks` 處理靠邊翻面；顯示與否由 `Hero.astro` 產生的行內 `:has()` 規則控制。只在 `(hover: hover) and (pointer: fine)` 且支援 anchor positioning 時啟用，觸控裝置點下去就是一般連結。預覽的定位容器是整個 Hero `section`，別在中間包一層 `relative`，否則空間不夠會被翻到上方蓋住標題。
-
 **跨頁轉場用原生 cross-document View Transitions**（`global.css` 的 `@view-transition`，沒有用 Astro 的 `<ClientRouter>`，每次換頁都是完整載入）：
 - 導覽列名字有 `view-transition-name: brand`，換頁時會從首頁的大字直接縮到其他頁的小字。
 - 主題切換用同文件 View Transition 做圓形揭露（`ThemeToggle.astro`），期間在 `<html>` 加上 `theme-switching`，同時取消導覽列名字的命名，避免它自成一組浮在遮罩上方。
@@ -56,7 +54,6 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 
 **彈窗與游標效果慣例**：
 - 新的 `<dialog>` 加上 `.dialog-motion` 就有進出場動畫（`@starting-style` + `allow-discrete`）。關閉時若要清空內容，要等動畫播完再清，參考 `ImageLightbox.astro`。
-- 游標追光：元素加上 `.spotlight` 即可，`BaseLayout.astro` 有一段委派的 `pointermove` 負責寫入座標。元素本身要是 `relative`（或其他定位），且只在 `(hover: hover) and (pointer: fine)` 啟用。
 
 **互動元件走原生 `<dialog>`，沒有 UI 元件庫、沒有 React/Vue 等前端框架**（純 Astro + Tailwind CSS 4，僅在需要互動的地方用 vanilla `<script>`）。`ImageLightbox.astro` 是這套慣例的範本：`showModal()` / `close()`、點擊座標落在 dialog 外才視為點背景關閉、`modal.dataset.initialized` 防止重複綁定、監聽 `astro:page-load` 重新初始化（目前沒有用 `<ClientRouter>`，這個事件不會觸發；保留是為了日後改用時 DOM 重建不會漏綁）。新增彈窗類元件請照抄這個模式，不要另外引入 lightbox/modal 套件。
 

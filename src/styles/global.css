@@ -311,44 +311,6 @@
     background-size: 100% 2px;
   }
 
-  /* 游標追光：::before 是跟著游標亮起的邊框，::after 是表面的柔光 */
-  @media (hover: hover) and (pointer: fine) {
-    .spotlight::before,
-    .spotlight::after {
-      content: '';
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-      pointer-events: none;
-      opacity: 0;
-      transition: opacity 0.5s var(--ease-out-expo);
-    }
-    .spotlight::before {
-      z-index: 1;
-      padding: 1px;
-      background: radial-gradient(
-        16rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
-        var(--color-accent-text),
-        transparent 70%
-      );
-      mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
-      mask-composite: exclude;
-    }
-    .spotlight::after {
-      background: radial-gradient(
-        24rem circle at var(--spot-x, 50%) var(--spot-y, 50%),
-        color-mix(in oklch, var(--color-accent) 10%, transparent),
-        transparent 70%
-      );
-    }
-    .spotlight:hover::before,
-    .spotlight:hover::after {
-      opacity: 1;
-    }
-  }
-
   /* 名字停靠：首頁的導覽列名字從 Hero 大標位置縮進左上角，起點位移 = 半個導覽列高 + Hero 上方留白 */
   .brand {
     position: absolute;
@@ -460,36 +422,7 @@
     }
   }
 
-  /* 滑過作品關鍵字時，截圖以 anchor positioning 貼在字旁，靠近視窗邊緣會自動翻面 */
-  .peek {
-    display: none;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    @supports (anchor-name: --a) {
-      .peek {
-        display: block;
-        position: absolute;
-        position-area: block-end span-inline-end;
-        position-try-fallbacks: flip-inline, flip-block, flip-block flip-inline;
-        margin: 0.75rem;
-        width: 16rem;
-        pointer-events: none;
-        overflow: hidden;
-        border: 1px solid var(--color-line-hi);
-        border-radius: 0.75rem;
-        background: var(--color-surface);
-        box-shadow: 0 24px 48px -16px oklch(0 0 0 / 0.5);
-        opacity: 0;
-        scale: 0.94;
-        rotate: -2deg;
-        transition:
-          opacity 0.25s,
-          scale 0.4s var(--ease-out-expo),
-          rotate 0.4s var(--ease-out-expo);
-      }
-    }
-  }
-  .peek-word {
+  .recent-word {
     text-decoration: underline dotted;
     text-decoration-color: var(--color-faint);
     text-underline-offset: 0.3em;
@@ -497,8 +430,8 @@
       color 0.2s,
       text-decoration-color 0.2s;
   }
-  .peek-word:hover,
-  .peek-word:focus-visible {
+  .recent-word:hover,
+  .recent-word:focus-visible {
     text-decoration-color: currentColor;
   }
 

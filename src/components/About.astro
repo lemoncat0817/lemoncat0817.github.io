@@ -39,7 +39,7 @@ const facts = zh
 
   <div class="mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem]">
     <div class="flex flex-col gap-6">
-      <div class="relative size-24 sm:size-28">
+      <div class="size-24 sm:size-28">
         <img
           src={`${profile.github}.png`}
           alt={zh ? profile.nameZh : profile.name}
@@ -48,17 +48,6 @@ const facts = zh
           class="size-full rounded-2xl border border-line-hi bg-surface object-cover shadow-lg shadow-black/20"
           loading="eager"
         />
-        {
-          profile.available && (
-            <span
-              class="absolute -bottom-1 -right-1 flex size-3.5 items-center justify-center rounded-full border-2 border-bg bg-accent"
-              title={t('hero.available')}
-              aria-label={t('hero.available')}
-            >
-              <span class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-60" />
-            </span>
-          )
-        }
       </div>
 
       <div class="prose">
