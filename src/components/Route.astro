@@ -40,6 +40,8 @@ const t = useTranslations(getLangFromUrl(Astro.url));
     const pawsGroup = svg.querySelector<SVGGElement>('[data-route-paws]')!;
     const stopsGroup = svg.querySelector<SVGGElement>('[data-route-stops]')!;
     const stops = [...root.querySelectorAll<HTMLElement>('[data-route-stop]')];
+    // 終點站是路線外的聯絡卡，不列入 stops，因為 stops 決定車道位置
+    const terminus = document.querySelector<HTMLElement>('[data-route-end]');
     const wide = matchMedia('(min-width: 64rem)');
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
@@ -113,6 +115,7 @@ const t = useTranslations(getLangFromUrl(Astro.url));
         if (current >= l - 4) at = i;
       });
       stops.forEach((el, i) => el.toggleAttribute('data-current', i === at));
+      terminus?.toggleAttribute('data-current', at === stops.length);
       [...stopsGroup.children].forEach((dot, i) => dot.toggleAttribute('data-passed', i <= at));
     };
 
@@ -126,6 +129,8 @@ const t = useTranslations(getLangFromUrl(Astro.url));
 
     const update = (jump: boolean) => {
       target = lengthAt(innerHeight * 0.55 - root.getBoundingClientRect().top);
+      // 視窗很高時，捲到底路線末端仍到不了 55% 那條線，直接算抵達終點
+      if (innerHeight + scrollY >= document.documentElement.scrollHeight - 2) target = total;
       if (jump || reduced.matches) {
         current = target;
         paint();
@@ -164,8 +169,10 @@ const t = useTranslations(getLangFromUrl(Astro.url));
         prevX = lanes[i]!;
         prevY = bottom;
       });
-      const gap = h - prevY;
-      d += ` C ${prevX} ${prevY + gap * 0.62}, ${endX} ${h - gap * 0.62}, ${endX} ${h}`;
+      // 聯絡卡在 DOM 後面、會蓋住路線，終點站畫在卡片上緣之上
+      const endY = h - (wide.matches ? 16 : 12);
+      const gap = endY - prevY;
+      d += ` C ${prevX} ${prevY + gap * 0.62}, ${endX} ${endY - gap * 0.62}, ${endX} ${endY}`;
 
       road.setAttribute('d', d);
       lane.setAttribute('d', d);
@@ -182,6 +189,10 @@ const t = useTranslations(getLangFromUrl(Astro.url));
       stopsGroup.innerHTML = stationYs
         .map((y, i) => `<circle class="route-stop" cx="${lanes[i]}" cy="${y}" r="${wide.matches ? 6 : 4.5}"></circle>`)
         .join('');
+      if (terminus) {
+        stations.push(total);
+        stopsGroup.innerHTML += `<circle class="route-stop route-end" cx="${endX}" cy="${endY}" r="${wide.matches ? 9 : 7}"></circle>`;
+      }
 
       // 左右腳交錯踩在中線兩側，腳尖朝前進方向
       const step = wide.matches ? 52 : 40;
@@ -189,7 +200,7 @@ const t = useTranslations(getLangFromUrl(Astro.url));
       const scale = wide.matches ? 1.2 : 0.9;
       let markup = '';
       const spots: { l: number; x: number; y: number }[] = [];
-      for (let l = step / 2, i = 0; l < total - 4; l += step, i++) {
+      for (let l = step / 2, i = 0; l < total - 22; l += step, i++) {
         const p = road.getPointAtLength(l);
         const q = road.getPointAtLength(Math.min(l + 1, total));
         const angle = Math.atan2(q.y - p.y, q.x - p.x);

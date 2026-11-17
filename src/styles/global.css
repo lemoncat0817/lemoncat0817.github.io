@@ -560,6 +560,9 @@
     fill: var(--color-accent);
     stroke: var(--color-accent);
   }
+  .route-end {
+    stroke-width: 3;
+  }
   @media (min-width: 64rem) {
     .route-road {
       stroke-width: 20;

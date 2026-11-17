@@ -41,7 +41,7 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 
 **名字停靠**：導覽列的名字（`Header.astro` 的 `.brand`）在首頁加上 `.brand-dock`，用 `animation-timeline: scroll(root)` 從 Hero 大標的字級與位置縮回左上角，純 CSS。起點位移由 `--hero-pt`（Hero 上方留白，`global.css` 定義、`Hero.astro` 套用）算出，兩邊要一起改。Hero 的 `.hero-name` 是同尺寸的佔位字，支援時隱藏、不支援或減少動態時直接顯示，導覽列名字則維持小字。字級是用 `font-size` 動畫而非 `scale`，大字縮放才不會糊。
 
-**作品路線**（`Route.astro`）：首頁作品卡包在 `<Route>` 裡，script 依各張 `[data-route-stop]` 的 `offsetTop`／`offsetLeft` 畫出 SVG 道路，並沿路每隔一段距離放一個左右交錯的貓腳印。前進位置對應「視窗 55% 高度那條線」並加緩動，走過的腳印依序浮現、太舊的會變淡，到站的卡片會加上 `data-current`。必須讀 `offset*` 而非 `getBoundingClientRect()`：卡片內容有進場與視差的 transform，用後者路線會跟著抖。車道靠 `WorkCard` 的寬度（`lg:w-[78%]`）與左右交錯、手機版的左側 `ml-10` 留出來，改卡片版面時要一起顧到。減少動態時腳印直接跟著捲動位置出現，沒有緩動與彈出動畫。
+**作品路線**（`Route.astro`）：首頁作品卡包在 `<Route>` 裡，script 依各張 `[data-route-stop]` 的 `offsetTop`／`offsetLeft` 畫出 SVG 道路，並沿路每隔一段距離放一個左右交錯的貓腳印。前進位置對應「視窗 55% 高度那條線」並加緩動，走過的腳印依序浮現、太舊的會變淡，到站的卡片會加上 `data-current`。必須讀 `offset*` 而非 `getBoundingClientRect()`：卡片內容有進場與視差的 transform，用後者路線會跟著抖。車道靠 `WorkCard` 的寬度（`lg:w-[78%]`）與左右交錯、手機版的左側 `ml-10` 留出來，改卡片版面時要一起顧到。減少動態時腳印直接跟著捲動位置出現，沒有緩動與彈出動畫。路線的終點站是聯絡卡（`Contact.astro` 的 `[data-route-end]`），抵達時卡片邊框亮起；它不在 `stops` 裡，因為 `stops` 決定車道位置。聯絡卡在 DOM 後面、會蓋住路線，所以終點圓點畫在卡片上緣之上。視窗很高、捲到底仍到不了 55% 那條線時，直接算抵達終點。
 
 **跨頁轉場用原生 cross-document View Transitions**（`global.css` 的 `@view-transition`，沒有用 Astro 的 `<ClientRouter>`，每次換頁都是完整載入）：
 - 導覽列名字有 `view-transition-name: brand`，換頁時會從首頁的大字直接縮到其他頁的小字。
