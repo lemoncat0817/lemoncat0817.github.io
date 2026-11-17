@@ -64,16 +64,7 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
     >
       <span class="font-mono text-xs tracking-wide text-faint transition-colors duration-300 group-data-current/stop:text-accent-text">{stopLabel}</span>
 
-      <h3 class="mt-2 text-2xl font-semibold tracking-tight text-fg sm:text-3xl">
-        <a
-          href={data.demo}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="link-underline transition-colors hover:text-accent-text"
-        >
-          {data.title}
-        </a>
-      </h3>
+      <h3 class="mt-2 text-2xl font-semibold tracking-tight text-fg sm:text-3xl">{data.title}</h3>
 
       <p class="mt-3 text-base sm:text-lg leading-relaxed text-muted">
         {tagline}
@@ -89,6 +80,7 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
           href={data.demo}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`${t('work.viewDemo')} — ${data.title}`}
           class="group inline-flex items-center gap-1.5 btn-accent rounded-full px-5 py-2.5 text-sm font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
         >
           {t('work.viewDemo')}
@@ -104,6 +96,7 @@ const fullImage = await getImage({ src: data.cover, width: data.cover.width, for
           href={data.repo}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`${t('work.viewSource')} — ${data.title}`}
           class="group inline-flex items-center gap-1.5 font-mono text-xs text-faint transition-colors hover:text-accent-text"
         >
           {t('work.viewSource')}

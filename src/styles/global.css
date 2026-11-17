@@ -297,20 +297,6 @@
     }
   }
 
-  /* 標題底線：hover／focus 時從左至右畫出，用 background-size 而非
-     border-bottom，才不會影響行高造成跳動。 */
-  .link-underline {
-    background-image: linear-gradient(var(--color-accent-text), var(--color-accent-text));
-    background-repeat: no-repeat;
-    background-position: left bottom;
-    background-size: 0% 2px;
-    transition: background-size 0.45s var(--ease-out-expo);
-  }
-  .link-underline:hover,
-  .link-underline:focus-visible {
-    background-size: 100% 2px;
-  }
-
   /* 名字停靠：首頁的導覽列名字從 Hero 大標位置縮進左上角，起點位移 = 半個導覽列高 + Hero 上方留白 */
   .brand {
     position: absolute;
