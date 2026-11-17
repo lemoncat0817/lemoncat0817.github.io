@@ -191,6 +191,8 @@ const t = useTranslations(getLangFromUrl(Astro.url));
         .join('');
       if (terminus) {
         stations.push(total);
+        // 路線與聯絡卡同在版心內、左緣對齊，終點的 x 可以直接給卡片的光暈當圓心
+        terminus.style.setProperty('--route-end-x', `${endX}px`);
         stopsGroup.innerHTML += `<circle class="route-stop route-end" cx="${endX}" cy="${endY}" r="${wide.matches ? 9 : 7}"></circle>`;
       }
 
