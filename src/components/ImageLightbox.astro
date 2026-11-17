@@ -14,7 +14,7 @@ const t = useTranslations(lang);
     <button
       type="button"
       id="lightbox-close-btn"
-      class="absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full bg-surface/90 text-fg backdrop-blur transition-colors hover:bg-surface-hi"
+      class="glass-chip absolute right-3 top-3 z-10 grid size-9 place-items-center rounded-full text-fg transition-colors hover:bg-surface-hi"
       aria-label={t('modal.close')}
     >
       <svg class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -33,31 +33,94 @@ const t = useTranslations(lang);
     if (!modal || modal.dataset.initialized === 'true') return;
     modal.dataset.initialized = 'true';
 
+    const root = document.documentElement;
     const img = document.getElementById('lightbox-image') as HTMLImageElement | null;
     const closeBtn = document.getElementById('lightbox-close-btn');
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
     // 記住觸發元素，關閉時把焦點還回去，鍵盤／螢幕報讀器操作才不會迷失位置
     let lastTrigger: HTMLElement | null = null;
+    let current: ViewTransition | null = null;
+    let opening = 0;
+    let clearTimer = 0;
+    let closing = false;
 
-    const openLightbox = (trigger: HTMLElement) => {
-      const src = trigger.getAttribute('data-lightbox-src');
-      if (!src || !img) return;
-      img.src = src;
-      img.alt = trigger.getAttribute('data-lightbox-alt') ?? '';
-      lastTrigger = trigger;
+    const thumbOf = (trigger: HTMLElement) => trigger.querySelector<HTMLElement>('img') ?? trigger;
+    const canMorph = () => 'startViewTransition' in document && !reducedMotion.matches;
+
+    // 封面與燈箱大圖輪流掛同一個 view-transition-name，瀏覽器就會把兩者補間成同一張圖
+    const morph = (from: HTMLElement, to: HTMLElement, update: () => void) => {
+      root.classList.add('lightbox-morph');
+      from.style.viewTransitionName = 'cover';
+      const transition = document.startViewTransition(() => {
+        from.style.viewTransitionName = '';
+        to.style.viewTransitionName = 'cover';
+        update();
+      });
+      current = transition;
+      // 連點時前一次會被跳過並提早結束，只能由最新一次收尾
+      transition.finished.finally(() => {
+        to.style.viewTransitionName = '';
+        if (current === transition) root.classList.remove('lightbox-morph');
+      });
+    };
+
+    const show = () => {
       modal.showModal();
       document.body.style.overflow = 'hidden';
     };
 
-    const closeLightbox = () => modal.close();
+    const openLightbox = async (trigger: HTMLElement) => {
+      const src = trigger.getAttribute('data-lightbox-src');
+      if (!src || !img || modal.open) return;
+      const ticket = ++opening;
+      clearTimeout(clearTimer);
+      img.src = src;
+      img.alt = trigger.getAttribute('data-lightbox-alt') ?? '';
+      lastTrigger = trigger;
+      if (!canMorph()) return show();
+      // 大圖要先解碼完，轉場才量得到終點尺寸；等太久就退回一般的彈窗動畫
+      const ready = await Promise.race([
+        img.decode().then(
+          () => true,
+          () => false,
+        ),
+        new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 300)),
+      ]);
+      if (ticket !== opening || modal.open) return;
+      if (ready) morph(thumbOf(trigger), img, show);
+      else show();
+    };
 
-    document.querySelectorAll('[data-lightbox-src]').forEach((trigger) => {
-      trigger.addEventListener('click', () => openLightbox(trigger as HTMLElement));
+    const closeLightbox = () => {
+      if (!modal.open || closing) return;
+      closing = true;
+      if (img && lastTrigger && canMorph()) morph(img, thumbOf(lastTrigger), () => modal.close());
+      else modal.close();
+    };
+
+    document.querySelectorAll<HTMLElement>('[data-lightbox-src]').forEach((trigger) => {
+      trigger.addEventListener('click', () => openLightbox(trigger));
+      const warm = () => {
+        const src = trigger.getAttribute('data-lightbox-src');
+        if (src) new Image().src = src;
+      };
+      trigger.addEventListener('pointerenter', warm, { once: true });
+      trigger.addEventListener('focus', warm, { once: true });
     });
 
     closeBtn?.addEventListener('click', closeLightbox);
 
+    // Esc 預設會直接關掉 dialog，攔下來才走得到縮回封面的轉場
+    modal.addEventListener('cancel', (e) => {
+      if (!canMorph()) return;
+      e.preventDefault();
+      closeLightbox();
+    });
+
     // 點擊圖片以外的遮罩區域關閉（dialog 本身就是點擊目標，用座標判斷是否落在內容外）
     modal.addEventListener('click', (e) => {
+      // 鍵盤觸發的 click 座標是 0,0，不擋掉會被當成點到遮罩
+      if (e.target !== modal) return;
       const rect = modal.getBoundingClientRect();
       const isInDialog =
         rect.top <= e.clientY &&
@@ -68,12 +131,14 @@ const t = useTranslations(lang);
     });
 
     modal.addEventListener('close', () => {
+      closing = false;
+      opening++;
       document.body.style.overflow = '';
       // 等離場動畫播完才清圖，否則圖片會先消失
-      setTimeout(() => {
+      clearTimer = window.setTimeout(() => {
         if (!modal.open && img) img.src = '';
       }, 400);
-      lastTrigger?.focus();
+      lastTrigger?.focus({ preventScroll: true });
       lastTrigger = null;
     });
   }

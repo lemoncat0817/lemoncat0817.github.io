@@ -94,6 +94,10 @@
   }
   :root {
     --hero-pt: 4rem;
+    --glass-edge: oklch(1 0 0 / 0.09);
+  }
+  :root[data-theme='light'] {
+    --glass-edge: oklch(1 0 0 / 0.7);
   }
   @media (min-width: 40rem) {
     :root {
@@ -297,6 +301,51 @@
     }
   }
 
+  /* 玻璃：模糊層放在 ::before，header 本身不建立 backdrop root，裡面的元素才能再疊自己的模糊 */
+  .glass-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-bottom: 1px solid color-mix(in oklch, var(--color-line) 60%, transparent);
+    background: color-mix(in oklch, var(--color-bg) 70%, transparent);
+    box-shadow: inset 0 1px 0 var(--glass-edge);
+    -webkit-backdrop-filter: blur(24px) saturate(1.5);
+    backdrop-filter: blur(24px) saturate(1.5);
+    pointer-events: none;
+  }
+  .glass-chip {
+    border: 1px solid var(--color-line-hi);
+    background: color-mix(in oklch, var(--color-surface) 72%, transparent);
+    box-shadow: inset 0 1px 0 var(--glass-edge);
+    -webkit-backdrop-filter: blur(12px) saturate(1.5);
+    backdrop-filter: blur(12px) saturate(1.5);
+  }
+  /* 首頁頂端沒有東西可以透，玻璃跟著名字停靠的同一段捲動才成形；手機選單打開時要立刻有底 */
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: scroll()) {
+      .glass-dock:not(:has([aria-expanded='true']))::before {
+        animation-name: glass-in;
+        animation-duration: auto;
+        animation-timing-function: linear;
+        animation-fill-mode: both;
+        animation-timeline: scroll(root);
+        animation-range: 0px calc(2rem + var(--hero-pt));
+      }
+    }
+  }
+  @keyframes glass-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* 封面放大轉場期間由 view transition 負責補間，彈窗自己的淡入縮放要停掉，否則會疊成兩段動畫 */
+  .lightbox-morph .dialog-motion,
+  .lightbox-morph .dialog-motion::backdrop {
+    transition: none;
+  }
+
   /* 名字停靠：首頁的導覽列名字從 Hero 大標位置縮進左上角，起點位移 = 半個導覽列高 + Hero 上方留白 */
   .brand {
     position: absolute;
@@ -311,7 +360,8 @@
     white-space: nowrap;
     view-transition-name: brand;
   }
-  .theme-switching .brand {
+  .theme-switching .brand,
+  .lightbox-morph .brand {
     view-transition-name: none;
   }
   .hero-name {
@@ -776,6 +826,27 @@
     to {
       clip-path: circle(var(--reveal-r) at var(--reveal-x) var(--reveal-y));
     }
+  }
+  .lightbox-morph::view-transition-old(root),
+  .lightbox-morph::view-transition-new(root) {
+    animation-duration: 0.4s;
+    animation-timing-function: linear;
+    animation-name: vt-out;
+  }
+  .lightbox-morph::view-transition-new(root) {
+    animation-direction: reverse;
+  }
+  ::view-transition-group(cover) {
+    animation-duration: 0.5s;
+    animation-timing-function: var(--ease-out-expo);
+  }
+  /* 縮圖是裁切過的 16:10、大圖是原比例，兩張都鋪滿補間框才不會在途中變形 */
+  ::view-transition-old(cover),
+  ::view-transition-new(cover) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 1rem;
   }
   @keyframes vt-out {
     to {

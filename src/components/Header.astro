@@ -14,9 +14,7 @@ const links = [
 ];
 ---
 
-<header
-  class="sticky top-0 z-50 border-b border-line/60 bg-bg/70 backdrop-blur-xl backdrop-saturate-150"
->
+<header class:list={['glass-bar sticky top-0 z-50', isHome && 'glass-dock']}>
   <div class="shell relative flex h-16 items-center justify-end gap-4">
     <a href={home} class:list={['brand', isHome && 'brand-dock']} aria-current={isHome ? 'page' : undefined}>
       {lang === 'zh-TW' ? profile.nameZh : profile.name}
