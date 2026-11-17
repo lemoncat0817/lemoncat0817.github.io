@@ -25,6 +25,8 @@ Node 版本需 `>= 22.12`（Astro 7 要求）。
 
 **新增一個作品**：在 `src/content/work/zh-TW/` 與 `src/content/work/en/` 各放一個同 slug 的 `.md`（schema 見 `content.config.ts`），封面圖放進 `src/assets/work/`（`astro:assets` 處理最佳化與放大檢視用的原圖）。首頁作品卡會自動生成，不需要改任何元件。作品只有卡片，沒有站內案例頁：卡片主按鈕直接開線上 Demo，詳細說明交給各專案 repo 的 README，Markdown 檔只寫 frontmatter。`astro.config.mjs` 會自動把舊的 `/work/<slug>/` 網址轉到首頁對應的作品卡。`stack` 最多 5 個，只放最能代表這個專案的技術（schema 會擋），卡片上是「技術」標籤加一句用頓號（英文用逗號）串起的清單，刻意不做成標籤方塊或用「·」之類的裝飾分隔。frontmatter 的 `keyword` 是 Hero「最近做的：…」那行裡代表該作品的詞（點了會捲到該作品卡），兩個語言都要填。
 
+**關於頁暫時隱藏**：`src/pages/_about.astro` 與 `src/pages/en/_about.astro` 檔名加了底線前綴，Astro 不會產生路由，導覽列連結也已移除。要恢復時把兩個檔案改回 `about.astro`，並在 `Header.astro` 的 `links` 補回 `{ href: localizePath('/about', lang), label: t('nav.about') }`。
+
 **`src/data/profile.ts` 是個人資料單一來源**，導覽列名字、Hero、關於頁、Footer、SEO meta、JSON-LD 都從這裡讀，不要在元件裡另外寫死。
 
 **`src/i18n/ui.ts`** 是翻譯字典（`UIKey` type 約束兩語言 key 必須一致），搭配 `useTranslations(lang)` 取得 `t()`。缺字會 fallback 回預設語言（繁中），不會顯示 undefined。
