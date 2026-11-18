@@ -1,7 +1,6 @@
 ---
 title: 氣象知多少
 tagline: 台灣即時天氣、預報、雷達回波、颱風路徑與地震資訊平台
-keyword: 颱風
 stack:
   - Nuxt
   - TypeScript

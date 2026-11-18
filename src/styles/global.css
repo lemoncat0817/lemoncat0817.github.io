@@ -458,19 +458,6 @@
     }
   }
 
-  .recent-word {
-    text-decoration: underline dotted;
-    text-decoration-color: var(--color-faint);
-    text-underline-offset: 0.3em;
-    transition:
-      color 0.2s,
-      text-decoration-color 0.2s;
-  }
-  .recent-word:hover,
-  .recent-word:focus-visible {
-    text-decoration-color: currentColor;
-  }
-
   /* 作品路線：道路與貓腳印都由 Route.astro 依卡片版面位置算出 */
   .route-svg {
     position: absolute;

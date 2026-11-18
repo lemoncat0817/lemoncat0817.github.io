@@ -34,7 +34,6 @@ pnpm fonts        # 重新下載自架字體檔（scripts/fetch-fonts.mjs，只�
 - 新增作品：兩個語言資料夾各放一個同 slug 的 `.md`（只寫 frontmatter，schema 見 `src/content.config.ts`），封面圖放進 `src/assets/work/`。作品卡會自動生成，不需要改元件。
 - 作品只有卡片，沒有站內案例頁；舊的 `/work/<slug>/` 網址由 `astro.config.mjs` 轉到首頁對應的作品卡。
 - `stack` 最多 5 個（schema 會擋）。卡片上是一句用頓號（英文用逗號）串起的清單，刻意不做成標籤方塊或用「·」分隔。
-- `keyword` 是 Hero「最近做的：…」那行裡代表該作品的詞，兩個語言都要填。
 - id 大小寫陷阱：`glob` loader 會把 id 轉小寫，`zh-TW/` 的 id 前綴其實是 `zh-tw/`，所以 `src/lib/work.ts` 的 `getWorkEntries()` 用大小寫不敏感比對。這個問題只會在中文版出包。
 - 中文版作品卡的一句話介紹在 build 時由 `src/lib/repoAbout.ts` 讀各專案 repo 的 GitHub About，任何失敗都退回 frontmatter 的 `tagline`，build 不能因此失敗。英文版維持 frontmatter。
 

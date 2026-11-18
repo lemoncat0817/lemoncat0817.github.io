@@ -1,7 +1,6 @@
 ---
 title: POS 收銀系統
 tagline: 多租戶餐飲與飲料店 POS 系統：點餐結帳、桌況管理、會員行銷與數據分析
-keyword: 點餐
 stack:
   - Vue 3
   - TypeScript

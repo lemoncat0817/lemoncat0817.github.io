@@ -1,7 +1,6 @@
 ---
 title: Lohas Pet Cafe
 tagline: A brand website for a pet-friendly café
-keyword: a pet café
 stack:
   - Nuxt
   - TypeScript

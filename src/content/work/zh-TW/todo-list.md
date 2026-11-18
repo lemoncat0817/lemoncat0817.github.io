@@ -1,7 +1,6 @@
 ---
 title: Todo List
 tagline: 一個待辦事項工具：免安裝、免註冊，打開網頁就能用
-keyword: 待辦
 stack:
   - Vue 3
   - TypeScript

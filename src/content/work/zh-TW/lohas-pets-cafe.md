@@ -1,7 +1,6 @@
 ---
 title: 樂活寵物咖啡廳
 tagline: 寵物友善咖啡廳形象網站
-keyword: 寵物咖啡廳
 stack:
   - Nuxt
   - TypeScript

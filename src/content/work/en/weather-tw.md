@@ -1,7 +1,6 @@
 ---
 title: Weather, Explained
 tagline: Live weather, forecasts, radar, typhoon tracks and earthquake reports for Taiwan, all in one place
-keyword: typhoons
 stack:
   - Nuxt
   - TypeScript

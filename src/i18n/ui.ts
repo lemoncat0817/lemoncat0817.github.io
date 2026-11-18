@@ -24,7 +24,6 @@ export const ui = {
     'hero.headline.1': '網頁該像貓，',
     'hero.headline.2': '輕巧、安靜、剛好在你要的地方。',
     'hero.mark': '輕巧、安靜、剛好',
-    'hero.recent': '最近做的：',
     'hero.viewWork': '看看我的作品',
 
     'work.eyebrow': '作品',
@@ -75,7 +74,6 @@ export const ui = {
     'hero.headline.1': 'Websites should be like cats:',
     'hero.headline.2': 'light, quiet, and right where you want them.',
     'hero.mark': 'light, quiet',
-    'hero.recent': 'Recently: ',
     'hero.viewWork': 'See my work',
 
     'work.eyebrow': 'Work',

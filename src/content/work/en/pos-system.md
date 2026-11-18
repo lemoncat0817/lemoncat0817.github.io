@@ -1,7 +1,6 @@
 ---
 title: POS System
 tagline: "A multi-tenant POS system for restaurants and drink shops: ordering and checkout, table management, member marketing and analytics"
-keyword: ordering
 stack:
   - Vue 3
   - TypeScript

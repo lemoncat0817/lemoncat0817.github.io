@@ -1,25 +1,17 @@
 ---
 import { getLangFromUrl, useTranslations } from '../i18n/utils';
 import { profile } from '../data/profile';
-import { getWorkEntries, entrySlug } from '../lib/work';
 import { catFacts } from '../data/catFacts';
 import PawIcon from './PawIcon.astro';
 import HeroCat from './HeroCat.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
-const entries = await getWorkEntries(lang);
 const firstFact = catFacts[lang][0]!;
 
 const line2 = t('hero.headline.2');
 const mark = t('hero.mark');
 const [beforeMark, afterMark] = line2.split(mark) as [string, string?];
-
-// formatToParts 讓連接詞（「、」「和」、", and"）跟著語言走，關鍵字本身換成連結
-const words = entries.map((e) => ({ slug: entrySlug(e), word: e.data.keyword }));
-const parts = new Intl.ListFormat(lang, { type: 'conjunction' }).formatToParts(words.map((w) => w.word));
-let wordIndex = 0;
-const recent = parts.map((p) => (p.type === 'element' ? { ...words[wordIndex++]!, text: p.value } : { text: p.value }));
 ---
 
 <section class="relative pb-20 sm:pb-28" style="padding-top: var(--hero-pt)">
@@ -57,28 +49,10 @@ const recent = parts.map((p) => (p.type === 'element' ? { ...words[wordIndex++]!
         <span class="sr-only">{firstFact}</span>
       </p>
 
-      <p class="hero-recent rise mt-6 max-w-3xl text-lg text-muted sm:text-xl" style="--i: 6">
-        {t('hero.recent')}
-        {
-          recent.map((part) =>
-            'slug' in part ? (
-              <a
-                href={`#work-${part.slug}`}
-                class="recent-word whitespace-nowrap text-fg hover:text-accent-text focus-visible:text-accent-text"
-              >
-                {part.text}
-              </a>
-            ) : (
-              part.text
-            ),
-          )
-        }
-      </p>
-
       <a
         href="#work"
         class="rise group mt-10 inline-flex items-center gap-2 btn-accent rounded-full px-6 py-3 font-semibold transition-transform duration-300 ease-[var(--ease-spring)] hover:scale-[1.03]"
-        style="--i: 8"
+        style="--i: 6"
       >
         {t('hero.viewWork')}
         <span class="transition-transform duration-300 group-hover:translate-y-0.5" aria-hidden="true">↓</span>
